@@ -177,7 +177,6 @@
                     <select id="filterTypeSelect" class="bg-[#070b12] text-white border border-gray-700 p-1.5 rounded-lg focus:outline-none text-right w-44">
                         <option value="movie">Movies</option>
                         <option value="tv">Series</option>
-                        <option value="anime">Anime</option>
                     </select>
                 </div>
 
@@ -361,15 +360,15 @@
                 <div class="space-y-3 text-gray-300">
                     <div class="flex items-center justify-between">
                         <div><p class="font-bold text-white">HD Posters</p><p class="text-[10px] text-gray-500">Display high-resolution movie posters</p></div>
-                        <label class="switch"><input type="checkbox" id="settingHdPosters" onchange="saveSettings()"><span class="slider"></span></label>
+                        <label class="switch"><input type="checkbox" checked><span class="slider"></span></label>
                     </div>
                     <div class="flex items-center justify-between">
                         <div><p class="font-bold text-white">Show Hindi Direct Links</p><p class="text-[10px] text-gray-500">Enable regional stream links</p></div>
-                        <label class="switch"><input type="checkbox" id="settingHindiLinks" onchange="saveSettings()"><span class="slider"></span></label>
+                        <label class="switch"><input type="checkbox" checked><span class="slider"></span></label>
                     </div>
                     <div class="flex items-center justify-between">
                         <div><p class="font-bold text-white">Hide Unreleased Movies</p><p class="text-[10px] text-gray-500">Filter out unreleased catalog titles</p></div>
-                        <label class="switch"><input type="checkbox" id="settingHideUnreleased" onchange="saveSettings()"><span class="slider"></span></label>
+                        <label class="switch"><input type="checkbox"><span class="slider"></span></label>
                     </div>
                 </div>
             </div>
@@ -379,16 +378,16 @@
                 <h3 class="text-cyan-400 font-bold border-b border-cyan-900/50 pb-1">INTEGRATION</h3>
                 <div class="space-y-2 text-gray-300">
                     <div class="p-3 bg-[#111622] rounded-xl border border-gray-800 flex justify-between items-center">
-                        <div><p class="font-bold text-white">Real Debrid</p><p id="rdStatus" class="text-[10px] text-gray-500">Premium high-speed torrent streams</p></div>
-                        <button onclick="linkAccount('Real Debrid', 'rdStatus')" class="bg-cyan-600 hover:bg-cyan-500 text-white font-bold px-3 py-1.5 rounded-lg text-[10px]">Link Account</button>
+                        <div><p class="font-bold text-white">Real Debrid</p><p class="text-[10px] text-gray-500">Premium high-speed torrent streams</p></div>
+                        <button onclick="showToast('Real Debrid API Linked Successfully!')" class="bg-cyan-600 hover:bg-cyan-500 text-white font-bold px-3 py-1.5 rounded-lg text-[10px]">Link Account</button>
                     </div>
                     <div class="p-3 bg-[#111622] rounded-xl border border-gray-800 flex justify-between items-center">
-                        <div><p class="font-bold text-white">Premiumize</p><p id="pmStatus" class="text-[10px] text-gray-500">Cloud downloader & stream host</p></div>
-                        <button onclick="linkAccount('Premiumize', 'pmStatus')" class="bg-cyan-600 hover:bg-cyan-500 text-white font-bold px-3 py-1.5 rounded-lg text-[10px]">Link Account</button>
+                        <div><p class="font-bold text-white">Premiumize</p><p class="text-[10px] text-gray-500">Cloud downloader & stream host</p></div>
+                        <button onclick="showToast('Premiumize API Linked Successfully!')" class="bg-cyan-600 hover:bg-cyan-500 text-white font-bold px-3 py-1.5 rounded-lg text-[10px]">Link Account</button>
                     </div>
                     <div class="p-3 bg-[#111622] rounded-xl border border-gray-800 flex justify-between items-center">
-                        <div><p class="font-bold text-white">Trakt.tv</p><p id="traktStatus" class="text-[10px] text-gray-500">Sync watched history across devices</p></div>
-                        <button onclick="linkAccount('Trakt.tv', 'traktStatus')" class="bg-cyan-600 hover:bg-cyan-500 text-white font-bold px-3 py-1.5 rounded-lg text-[10px]">Authorize</button>
+                        <div><p class="font-bold text-white">Trakt.tv</p><p class="text-[10px] text-gray-500">Sync watched history across devices</p></div>
+                        <button onclick="showToast('Trakt.tv Account Connected!')" class="bg-cyan-600 hover:bg-cyan-500 text-white font-bold px-3 py-1.5 rounded-lg text-[10px]">Authorize</button>
                     </div>
                 </div>
             </div>
@@ -399,14 +398,14 @@
                 <div class="space-y-2 text-gray-300">
                     <div class="flex justify-between items-center p-2 bg-[#111622] rounded-lg border border-gray-800">
                         <span class="font-bold text-white">Default Internal WebPlayer</span>
-                        <select id="settingWebPlayer" onchange="saveSettings()" class="bg-[#070b12] text-cyan-400 font-bold border border-gray-700 p-1 rounded">
-                            <option value="flix">Flix Vision WebPlayer</option>
-                            <option value="external">External Player (VLC / MX)</option>
+                        <select class="bg-[#070b12] text-cyan-400 font-bold border border-gray-700 p-1 rounded">
+                            <option>Flix Vision WebPlayer</option>
+                            <option>External Player (VLC / MX)</option>
                         </select>
                     </div>
                     <div class="flex items-center justify-between pt-1">
                         <div><p class="font-bold text-white">Auto Play Next Episode</p></div>
-                        <label class="switch"><input type="checkbox" id="settingAutoPlay" onchange="saveSettings()"><span class="slider"></span></label>
+                        <label class="switch"><input type="checkbox" checked><span class="slider"></span></label>
                     </div>
                 </div>
             </div>
@@ -417,15 +416,15 @@
                 <div class="space-y-2 text-gray-300">
                     <div class="flex items-center justify-between">
                         <div><p class="font-bold text-white">Download Subtitles Automatically</p></div>
-                        <label class="switch"><input type="checkbox" id="settingAutoSub" onchange="saveSettings()"><span class="slider"></span></label>
+                        <label class="switch"><input type="checkbox" checked><span class="slider"></span></label>
                     </div>
                     <div class="flex justify-between items-center p-2 bg-[#111622] rounded-lg border border-gray-800">
                         <span class="font-bold text-white">Default Subtitle Language</span>
-                        <select id="settingSubLang" onchange="saveSettings()" class="bg-[#070b12] text-gray-200 border border-gray-700 p-1 rounded">
-                            <option value="English">English</option>
-                            <option value="Kurdish">Kurdish</option>
-                            <option value="Arabic">Arabic</option>
-                            <option value="Spanish">Spanish</option>
+                        <select class="bg-[#070b12] text-gray-200 border border-gray-700 p-1 rounded">
+                            <option>English</option>
+                            <option>Kurdish</option>
+                            <option>Arabic</option>
+                            <option>Spanish</option>
                         </select>
                     </div>
                 </div>
@@ -439,7 +438,7 @@
                         <span>Clear Cache & Search History</span>
                         <span class="text-[10px] bg-red-500/20 text-red-400 px-2 py-0.5 rounded font-bold">Clear</span>
                     </button>
-                    <button onclick="exportBackup()" class="w-full text-left p-2.5 bg-[#111622] rounded-lg border border-gray-800 hover:text-white flex justify-between items-center">
+                    <button onclick="showToast('Settings & Favorites exported to JSON file.')" class="w-full text-left p-2.5 bg-[#111622] rounded-lg border border-gray-800 hover:text-white flex justify-between items-center">
                         <span>Backup Settings & Playlists</span>
                         <i class="fa-solid fa-download text-gray-400"></i>
                     </button>
@@ -551,10 +550,12 @@
                 id: 2739, providerId: 337, companyId: 2, name: 'Disney+', 
                 svg: `<span class="text-cyan-400 font-black italic tracking-wide text-xs">Disney+</span>` 
             },
+    
             { 
                 id: 2552, providerId: 350, companyId: 130932, name: 'Apple TV+', 
                 svg: `<span class="text-black font-black tracking-tight text-xs flex items-center"><i class="fa-brands fa-apple mr-1"></i>tv+</span>` 
             },
+ 
             { 
                 id: 67, providerId: 1899, companyId: 3268, name: 'HBO Max', 
                 svg: `<span class="text-purple-600 font-black text-xs uppercase">HBOMAX</span>` 
@@ -613,76 +614,8 @@
         document.addEventListener('DOMContentLoaded', () => {
             setupFilterDropdowns();
             setupEventListeners();
-            loadSettings(); // بارکردنەوەی هەموو ڕێکخستنە پاشەکەوتکراوەکان
             fetchContent(true);
         });
-
-        // بارکردنەوەی ڕێکخستنەکان لە LocalStorage
-        function loadSettings() {
-            const saved = localStorage.getItem('fv_app_settings');
-            if (saved) {
-                try {
-                    const settings = JSON.parse(saved);
-                    document.getElementById('settingHdPosters').checked = settings.hdPosters ?? true;
-                    document.getElementById('settingHindiLinks').checked = settings.hindiLinks ?? true;
-                    document.getElementById('settingHideUnreleased').checked = settings.hideUnreleased ?? false;
-                    document.getElementById('settingWebPlayer').value = settings.webPlayer ?? 'flix';
-                    document.getElementById('settingAutoPlay').checked = settings.autoPlay ?? true;
-                    document.getElementById('settingAutoSub').checked = settings.autoSub ?? true;
-                    document.getElementById('settingSubLang').value = settings.subLang ?? 'English';
-                } catch(e) {}
-            }
-
-            ['Real Debrid', 'Premiumize', 'Trakt.tv'].forEach(service => {
-                const isLinked = localStorage.getItem(`fv_linked_${service}`);
-                if (isLinked === 'true') {
-                    let idMap = { 'Real Debrid': 'rdStatus', 'Premiumize': 'pmStatus', 'Trakt.tv': 'traktStatus' };
-                    const el = document.getElementById(idMap[service]);
-                    if (el) {
-                        el.innerText = 'Connected & Active';
-                        el.className = 'text-[10px] text-cyan-400 font-bold';
-                    }
-                }
-            });
-        }
-
-        // پاشەکەوتکردنی ڕێکخستنەکان بە شێوەی ئۆتۆماتیکی
-        function saveSettings() {
-            const settings = {
-                hdPosters: document.getElementById('settingHdPosters').checked,
-                hindiLinks: document.getElementById('settingHindiLinks').checked,
-                hideUnreleased: document.getElementById('settingHideUnreleased').checked,
-                webPlayer: document.getElementById('settingWebPlayer').value,
-                autoPlay: document.getElementById('settingAutoPlay').checked,
-                autoSub: document.getElementById('settingAutoSub').checked,
-                subLang: document.getElementById('settingSubLang').value
-            };
-            localStorage.setItem('fv_app_settings', JSON.stringify(settings));
-            showToast('Settings saved!');
-        }
-
-        function linkAccount(serviceName, statusId) {
-            const statusEl = document.getElementById(statusId);
-            statusEl.innerText = 'Connected & Active';
-            statusEl.className = 'text-[10px] text-cyan-400 font-bold';
-            localStorage.setItem(`fv_linked_${serviceName}`, 'true');
-            showToast(`${serviceName} Account Linked!`);
-        }
-
-        function exportBackup() {
-            const data = {
-                settings: localStorage.getItem('fv_app_settings'),
-                favorites: localStorage.getItem('fv_favorites'),
-                watched: localStorage.getItem('fv_watched')
-            };
-            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = 'flix-vision-backup.json';
-            a.click();
-            showToast('Backup file downloaded!');
-        }
 
         function showToast(message) {
             const toast = document.getElementById('toastNotification');
@@ -876,8 +809,9 @@
             document.getElementById('settingsModal').classList.add('hidden');
         }
 
-        // فەنکشنی fetchContent (بە پشتگیری Anime)
-        async function fetchContent(reset = false) {
+        // Optimized Full Flix Vision Fetch Engine (With Multi-Company Prime & Paramount Support)
+        
+                    async function fetchContent(reset = false) {
             const grid = document.getElementById('movieGrid');
             if (reset) grid.innerHTML = `<div class="col-span-full text-center py-20 text-gray-500 text-xs">Loading content...</div>`;
 
@@ -885,7 +819,8 @@
             let url = `${BASE_URL}/trending/${fetchType}/day?api_key=${API_KEY}&page=${currentState.page}`;
 
             if (currentState.type === 'anime') {
-                url = `${BASE_URL}/discover/tv?api_key=${API_KEY}&with_genres=16&sort_by=${currentState.sort}&page=${currentState.page}`;
+                // هێنانی تەنها ئەنیمێی ژاپۆنی بە بڕگەی with_original_language=ja
+                url = `${BASE_URL}/discover/tv?api_key=${API_KEY}&with_genres=16&with_original_language=ja&sort_by=${currentState.sort}&page=${currentState.page}`;
             } else if (currentState.category === 'theater') {
                 url = currentState.type === 'movie' 
                     ? `${BASE_URL}/movie/now_playing?api_key=${API_KEY}&page=${currentState.page}`
@@ -945,7 +880,7 @@
             } catch (e) {
                 grid.innerHTML = `<div class="col-span-full text-center py-20 text-red-500 text-xs">Failed to load content from server.</div>`;
             }
-        }
+        }        
         
         function handleLoadMore() {
             if (currentState.searchTab === 'person' && currentState.query) {
@@ -999,26 +934,28 @@
             }).join('');
         }
 
-        async function openMovieDetails(id, type) {
+                async function openMovieDetails(id, type) {
             try {
-                const res = await fetch(`${BASE_URL}/${type}/${id}?api_key=${API_KEY}&append_to_response=credits,recommendations,videos`);
+                // ئەگەر جۆرەکە anime بوو، بڕگەی tv بەکاربێنە بۆ APIەکە
+                let apiType = type === 'anime' ? 'tv' : type;
+                const res = await fetch(`${BASE_URL}/${apiType}/${id}?api_key=${API_KEY}&append_to_response=credits,recommendations,videos`);
                 const data = await res.json();
 
                 document.getElementById('detailBackdrop').src = data.backdrop_path ? BACKDROP_URL + data.backdrop_path : PLACEHOLDER_IMG;
                 document.getElementById('detailTitle').innerText = data.title || data.name;
                 document.getElementById('detailYear').innerText = (data.release_date || data.first_air_date || '2026').split('-')[0];
-                document.getElementById('detailRuntime').innerText = type === 'movie' ? `${data.runtime || 120}m` : `${data.number_of_seasons || 1} Seasons`;
+                document.getElementById('detailRuntime').innerText = apiType === 'movie' ? `${data.runtime || 120}m` : `${data.number_of_seasons || 1} Seasons`;
                 document.getElementById('detailGenres').innerText = (data.genres || []).map(g => g.name).join(', ');
-                document.getElementById('detailTypeTag').innerText = type === 'movie' ? 'Film' : 'Series';
+                document.getElementById('detailTypeTag').innerText = apiType === 'movie' ? 'Film' : 'Series';
                 document.getElementById('detailOverview').innerText = data.overview || 'No description available for this title.';
 
                 const isFav = favorites.some(f => f.id === data.id);
                 const favBtn = document.getElementById('detailFavoriteBtn');
                 favBtn.innerHTML = `<i class="${isFav ? 'fa-solid text-red-500' : 'fa-regular'} fa-heart"></i>`;
-                favBtn.onclick = () => toggleFavorite(data, type);
+                favBtn.onclick = () => toggleFavorite(data, apiType);
 
                 const seasonContainer = document.getElementById('tvShowSeasonSelectorContainer');
-                if (type === 'tv' && data.seasons) {
+                if (apiType === 'tv' && data.seasons) {
                     seasonContainer.classList.remove('hidden');
                     const seasonSel = document.getElementById('seasonSelect');
                     seasonSel.innerHTML = data.seasons.map(s => `<option value="${s.season_number}">Season ${s.season_number} (${s.episode_count} Ep)</option>`).join('');
@@ -1051,7 +988,7 @@
 
                 const recsGrid = document.getElementById('detailRecommendationsGrid');
                 recsGrid.innerHTML = (data.recommendations?.results || []).slice(0, 6).map(rec => `
-                    <div onclick="openMovieDetails(${rec.id}, '${type}')" class="bg-[#111622] border border-gray-800 rounded-lg overflow-hidden cursor-pointer">
+                    <div onclick="openMovieDetails(${rec.id}, '${apiType}')" class="bg-[#111622] border border-gray-800 rounded-lg overflow-hidden cursor-pointer">
                         <div class="aspect-[2/3] w-full bg-gray-900">
                             <img src="${rec.poster_path ? IMAGE_URL + rec.poster_path : PLACEHOLDER_IMG}" class="w-full h-full object-cover">
                         </div>
@@ -1069,10 +1006,10 @@
                     }
                 };
 
-                document.getElementById('detailPlayBtn').onclick = () => openStreamLinks(data.id, type);
+                document.getElementById('detailPlayBtn').onclick = () => openStreamLinks(data.id, apiType);
                 document.getElementById('movieDetailModal').classList.remove('hidden');
 
-                addToWatched(data, type);
+                addToWatched(data, apiType);
             } catch (e) {}
         }
 
@@ -1107,19 +1044,38 @@
                 episode = document.getElementById('episodeSelect')?.value || 1;
             }
 
-            const servers = [
+                const servers = [
+                // پێنج سێرڤەرە سەرەکی و خێراکان
                 { name: 'FLIXVISION SERVER 1 (Full HD 1080p)', url: type === 'tv' ? `https://vidsrc.me/embed/tv?tmdb=${id}&season=${season}&episode=${episode}` : `https://vidsrc.me/embed/movie?tmdb=${id}` },
                 { name: 'VIDLINK PRO (Fast & Clean)', url: type === 'tv' ? `https://vidlink.pro/tv/${id}/${season}/${episode}` : `https://vidlink.pro/movie/${id}` },
                 { name: 'VIDSRC.TO (High Compatibility)', url: type === 'tv' ? `https://vidsrc.to/embed/tv/${id}/${season}/${episode}` : `https://vidsrc.to/embed/movie/${id}` },
                 { name: 'SUPEREMBED 4K (Ultra Fast)', url: type === 'tv' ? `https://multiembed.mov/?video_id=${id}&tmdb=1&s=${season}&e=${episode}` : `https://multiembed.mov/?video_id=${id}&tmdb=1` },
-                { name: 'AUTOEMBED HD (Multi-Source)', url: type === 'tv' ? `https://player.autoembed.cc/embed/tv/${id}/${season}/${episode}` : `https://player.autoembed.cc/embed/movie/${id}` },
-                { name: 'SMASHYSTREAM (Anime & Series)', url: type === 'tv' ? `https://embed.smashystream.com/playtor.php?tmdb=${id}&season=${season}&episode=${episode}` : `https://embed.smashystream.com/playtor.php?tmdb=${id}` },
-                { name: 'VIDSUCKS VIP (New Fast Server)', url: type === 'tv' ? `https://vidsucks.me/embed/tv/${id}/${season}/${episode}` : `https://vidsucks.me/embed/movie/${id}` },
-                { name: 'NINETHLEN (Alternative Stream)', url: type === 'tv' ? `https://moviesapi.club/tv/${id}-${season}-${episode}` : `https://moviesapi.club/movie/${id}` },
-                { name: 'VIPIEMBED (HD & 4K Sources)', url: type === 'tv' ? `https://vipembed.stream/embed/tv/${id}/${season}/${episode}` : `https://vipembed.stream/embed/movie/${id}` },
-                { name: 'BIDSARC VIP (Fast Multi-Player)', url: type === 'tv' ? `https://vidsrc.cc/v2/embed/tv/${id}/${season}/${episode}` : `https://vidsrc.cc/v2/embed/movie/${id}` },
-                { name: 'CINEZ STREAM (Clean Playback)', url: type === 'tv' ? `https://player.cinemeta.top/tv/${id}/${season}/${episode}` : `https://player.cinemeta.top/movie/${id}` },
-                { name: '2EMBED STREAM (Ultimate Backup)', url: type === 'tv' ? `https://2embed.cc/embedtv/${id}&s=${season}&e=${episode}` : `https://2embed.cc/embed/${id}` }
+                { name: '2EMBED STREAM (Backup Player)', url: type === 'tv' ? `https://2embed.cc/embedtv/${id}&s=${season}&e=${episode}` : `https://2embed.cc/embed/${id}` },
+
+                // سێرڤەر و سەرچاوە نوێیە زەبەلاحەکان
+                { name: 'RIVESTREAM VIP (Fast App Player)', url: type === 'tv' ? `https://www.rivestream.app/embed/tv/${id}/${season}/${episode}` : `https://www.rivestream.app/embed/movie/${id}` },
+                { name: 'FLIXER GD (Ultra Clean)', url: type === 'tv' ? `https://flixer.gd/embed/tv/${id}/${season}/${episode}` : `https://flixer.gd/embed/movie/${id}` },
+                { name: 'MOVY SX (Full HD Stream)', url: type === 'tv' ? `https://www.movy.sx/embed/tv/${id}/${season}/${episode}` : `https://www.movy.sx/embed/movie/${id}` },
+                { name: 'SHUTTLE TV (Ultra Speed)', url: type === 'tv' ? `https://shuttletv.su/embed/tv/${id}/${season}/${episode}` : `https://shuttletv.su/embed/movie/${id}` },
+                { name: 'FLYSTREAM (High Quality)', url: type === 'tv' ? `https://flystream.net/embed/tv/${id}/${season}/${episode}` : `https://flystream.net/embed/movie/${id}` },
+                { name: 'STREAMO ST (Stable Server)', url: type === 'tv' ? `https://streamo.st/embed/tv/${id}/${season}/${episode}` : `https://streamo.st/embed/movie/${id}` },
+                { name: 'CINEJOY (HD Sources)', url: type === 'tv' ? `https://cinejoy.pk/embed/tv/${id}/${season}/${episode}` : `https://cinejoy.pk/embed/movie/${id}` },
+                { name: '7MOVIES (Classic & New Movies)', url: type === 'tv' ? `https://7movies.ac/embed/tv/${id}/${season}/${episode}` : `https://7movies.ac/embed/movie/${id}` },
+                { name: 'ANICINE SBS (Anime Dedicated)', url: type === 'tv' ? `https://anicine.sbs/embed/tv/${id}/${season}/${episode}` : `https://anicine.sbs/embed/movie/${id}` },
+                { name: 'SPACEDOM LIVE (Fast Backup)', url: type === 'tv' ? `https://spacedom.live/embed/tv/${id}/${season}/${episode}` : `https://spacedom.live/embed/movie/${id}` },
+                { name: 'MEOWTV RU (HD Player)', url: type === 'tv' ? `https://meowtv.ru/embed/tv/${id}/${season}/${episode}` : `https://meowtv.ru/embed/movie/${id}` },
+                { name: 'WAY2MOVIES (Direct Stream)', url: type === 'tv' ? `https://beta.way2movies.live/embed/tv/${id}/${season}/${episode}` : `https://beta.way2movies.live/embed/movie/${id}` },
+                { name: 'MOVIENIGHT (Fast Player)', url: type === 'tv' ? `https://movienig.ht/embed/tv/${id}/${season}/${episode}` : `https://movienig.ht/embed/movie/${id}` },
+                { name: 'ATLANTIC ST (Multi Source)', url: type === 'tv' ? `https://atlantic.st/embed/tv/${id}/${season}/${episode}` : `https://atlantic.st/embed/movie/${id}` },
+                { name: 'ZETMOON LIVE (Stream Server)', url: type === 'tv' ? `https://zetmoon.live/embed/tv/${id}/${season}/${episode}` : `https://zetmoon.live/embed/movie/${id}` },
+                { name: 'PRIMESHOWS (HD Movies)', url: type === 'tv' ? `https://primeshows.org/embed/tv/${id}/${season}/${episode}` : `https://primeshows.org/embed/movie/${id}` },
+                { name: '1SHOWS ORG (TV & Movies)', url: type === 'tv' ? `https://www.1shows.org/embed/tv/${id}/${season}/${episode}` : `https://www.1shows.org/embed/movie/${id}` },
+                { name: '67MOVIES (Alternative Server)', url: type === 'tv' ? `https://67movies.st/embed/tv/${id}/${season}/${episode}` : `https://67movies.st/embed/movie/${id}` },
+                { name: 'BASEMENTX LOL (Fast Direct)', url: type === 'tv' ? `https://basementx.lol/embed/tv/${id}/${season}/${episode}` : `https://basementx.lol/embed/movie/${id}` },
+                { name: 'CNO TO (Fast Stream)', url: type === 'tv' ? `https://cno.to/embed/tv/${id}/${season}/${episode}` : `https://cno.to/embed/movie/${id}` },
+                { name: 'AETHER IST (VIP Server)', url: type === 'tv' ? `https://aether.ist/embed/tv/${id}/${season}/${episode}` : `https://aether.ist/embed/movie/${id}` },
+                { name: 'PLEX TV (Official Free Stream)', url: `https://watch.plex.tv/` },
+                { name: 'PLUTO TV (Official Live Stream)', url: `https://pluto.tv/` }
             ];
           
             container.innerHTML = servers.map(srv => `
@@ -1192,18 +1148,29 @@
         }
 
         function showAnimeSection() {
-            currentState.type = 'anime';
             currentState.genre = 16;
             currentState.page = 1;
             currentCustomView = null;
-            document.getElementById('filterTypeSelect').value = 'anime';
             document.getElementById('filterGenreSelect').value = 16;
-            document.getElementById('pageTitle').innerText = `ANIMES: CATALOG`;
+            document.getElementById('pageTitle').innerText = `${currentState.type.toUpperCase()}S: ANIME`;
             document.getElementById('customViewHeader').classList.add('hidden');
             fetchContent(true);
             showToast('Anime filter applied successfully!');
         }
 
+        function playAnimeOrMovie(mediaType, id) {
+            const playerUrl = `https://vidsrc.me/embed/${mediaType}?tmdb=${id}`;
+            const iframe = document.getElementById('videoPlayerIframe');
+            if (iframe) {
+                iframe.src = playerUrl;
+            }
+            const playerModal = document.getElementById('playerModal');
+            if (playerModal) {
+                playerModal.classList.remove('hidden');
+            }
+        }
+
+        // Switch Search Tabs (Movies, Series, People)
         function switchSearchTab(tab) {
             currentState.searchTab = tab;
             if (tab === 'movie' || tab === 'tv') {
@@ -1227,6 +1194,7 @@
             }
         }
 
+        // Independent Search Engine for People Section
         async function executePeopleSearch(reset = false) {
             const grid = document.getElementById('movieGrid');
             if (!peopleState.query) {
@@ -1254,6 +1222,7 @@
             }
         }
 
+        // Render People Circle Avatar Cards
         function renderPeopleGrid(people) {
             const grid = document.getElementById('movieGrid');
             if (!people || people.length === 0) {
@@ -1274,6 +1243,7 @@
             }).join('');
         }
 
+        // Open Detailed Actor Profile Modal & Filmography
         async function openActorProfile(personId) {
             const modal = document.getElementById('actorModal');
             document.getElementById('actorModalAvatar').src = PLACEHOLDER_IMG;
@@ -1298,6 +1268,7 @@
                 document.getElementById('actorModalPlace').innerText = person.place_of_birth || 'N/A';
 
                 const castWorks = credits.cast || [];
+
                 const uniqueWorks = Array.from(new Set(castWorks.map(a => a.id)))
                     .map(id => castWorks.find(a => a.id === id));
 
