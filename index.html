@@ -1045,17 +1045,18 @@
             }
 
             const servers = [
-                { name: 'VIDSRC.VIP (Ultra Fast HD)', url: type === 'tv' ? `https://vidsrc.vip/embed/tv/${id}/${season}/${episode}` : `https://vidsrc.vip/embed/movie/${id}` },
-                { name: 'VIDLINK PRO (Clean & Stable)', url: type === 'tv' ? `https://vidlink.pro/tv/${id}/${season}/${episode}` : `https://vidlink.pro/movie/${id}` },
-                { name: 'STREAMWISH (Fast HD)', url: type === 'tv' ? `https://streamwish.to/embed-${id}-${season}x${episode}.html` : `https://streamwish.to/embed-${id}.html` },
-                { name: 'VIDMOLY (Stable Server)', url: type === 'tv' ? `https://vidmoly.to/embed-${id}-${season}x${episode}.html` : `https://vidmoly.to/embed-${id}.html` },
-                { name: 'STREAMB (Alternative Mirror)', url: type === 'tv' ? `https://streamb.net/embed-${id}-${season}x${episode}.html` : `https://streamb.net/embed-${id}.html` },
-                { name: 'GAIAFLIX (New Server)', url: type === 'tv' ? `https://gaiaflix.live/embed/tv/${id}/${season}/${episode}` : `https://gaiaflix.live/embed/movie/${id}` },
-                { name: 'SSFLIX (Alternative)', url: type === 'tv' ? `https://ssflix.pro/tv/${id}/${season}/${episode}` : `https://ssflix.pro/movie/${id}` },
-                { name: 'VIDSRC.WIN (Mirror Server)', url: type === 'tv' ? `https://vidsrc.win/embed/tv/${id}/${season}/${episode}` : `https://vidsrc.win/embed/movie/${id}` },
-                { name: 'BRAFLIX (HD Stream)', url: type === 'tv' ? `https://braflix.uk/tv/${id}/${season}/${episode}` : `https://braflix.uk/movie/${id}` },
-                { name: 'CINEHD (Fast Player)', url: type === 'tv' ? `https://cinehd.vc/tv/${id}/${season}/${episode}` : `https://cinehd.vc/movie/${id}` },
-                { name: '2EMBED.CC (Ultimate Mirror)', url: type === 'tv' ? `https://2embed.cc/embedtv/${id}&s=${season}&e=${episode}` : `https://2embed.cc/embed/${id}` }
+                { name: 'FLIXVISION SERVER 1 (Full HD 1080p)', url: type === 'tv' ? `https://vidsrc.me/embed/tv?tmdb=${id}&season=${season}&episode=${episode}` : `https://vidsrc.me/embed/movie?tmdb=${id}` },
+                { name: 'VIDLINK PRO (Fast & Clean)', url: type === 'tv' ? `https://vidlink.pro/tv/${id}/${season}/${episode}` : `https://vidlink.pro/movie/${id}` },
+                { name: 'VIDSRC.TO (High Compatibility)', url: type === 'tv' ? `https://vidsrc.to/embed/tv/${id}/${season}/${episode}` : `https://vidsrc.to/embed/movie/${id}` },
+                { name: 'SUPEREMBED 4K (Ultra Fast)', url: type === 'tv' ? `https://multiembed.mov/?video_id=${id}&tmdb=1&s=${season}&e=${episode}` : `https://multiembed.mov/?video_id=${id}&tmdb=1` },
+                { name: '2EMBED STREAM (Backup Player)', url: type === 'tv' ? `https://2embed.cc/embedtv/${id}&s=${season}&e=${episode}` : `https://2embed.cc/embed/${id}` },
+                { name: 'FILEDOWNLOADZ (Custom Server)', url: type === 'tv' ? `https://filedownloadz.my/vidsrc/embed/tv?tmdb=${id}&season=${season}&episode=${episode}` : `https://filedownloadz.my/vidsrc/embed/movie?tmdb=${id}` },
+                { name: 'VIDSRC.PK (Official Embed)', url: type === 'tv' ? `https://embed.vidsrc.pk/tv/${id}/${season}/${episode}` : `https://embed.vidsrc.pk/movie/${id}` },
+                { name: 'VIDSRC2 OFFICIAL (New Mirror)', url: type === 'tv' ? `https://vidsrc2-offcial.cyou/embed/tv/${id}/${season}/${episode}` : `https://vidsrc2-offcial.cyou/embed/movie/${id}` },
+                { name: 'VIDCORE (New Fast Server)', url: type === 'tv' ? `https://vidcore.org/embed/tv/${id}/${season}/${episode}` : `https://vidcore.org/embed/movie/${id}` },
+                { name: 'EMBEDWAVE (Alternative HD)', url: type === 'tv' ? `https://embedwave.cc/embed/tv/${id}/${season}/${episode}` : `https://embedwave.cc/embed/movie/${id}` },
+                { name: '2EMBED.ORG (Direct Mirror)', url: type === 'tv' ? `https://2embed.org/embed/tv?tmdb=${id}&s=${season}&e=${episode}` : `https://2embed.org/embed/movie/${id}` },
+                { name: 'SUPEREMBED.STREAM (Multi-Source)', url: type === 'tv' ? `https://superembed.stream/embed/tv/${id}/${season}/${episode}` : `https://superembed.stream/embed/movie/${id}` }
             ];
           
             container.innerHTML = servers.map(srv => `
