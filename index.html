@@ -816,7 +816,8 @@
         }
 
         // Optimized Full Flix Vision Fetch Engine (With Multi-Company Prime & Paramount Support)
-                async function fetchContent(reset = false) {
+    
+            async function fetchContent(reset = false) {
             const grid = document.getElementById('movieGrid');
             if (reset) grid.innerHTML = `<div class="col-span-full text-center py-20 text-gray-500 text-xs">Loading content...</div>`;
 
@@ -847,9 +848,14 @@
                             url += `&with_networks=213`;
                         }
                     } else if (currentState.network === '1024' || netObj?.name === 'Prime Video') {
-                        url += `&with_companies=20580,21652,157973`;
+                        // Prime Video Provider ID: 119
+                        url += `&with_watch_providers=119&watch_region=US`;
                     } else if (currentState.network === '433' || netObj?.name === 'Paramount+') {
-                        url += `&with_companies=4,3324,7326`;
+                        // Paramount+ Provider ID: 531
+                        url += `&with_watch_providers=531&watch_region=US`;
+                    } else if (currentState.network === '2552' || netObj?.name === 'Apple TV+') {
+                        // Apple TV+ Provider ID: 350
+                        url += `&with_watch_providers=350&watch_region=US`;
                     } else if (currentState.type === 'tv') {
                         url += `&with_networks=${currentState.network}`;
                     } else {
