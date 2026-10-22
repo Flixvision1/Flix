@@ -1051,13 +1051,21 @@
                 episode = document.getElementById('episodeSelect')?.value || 1;
             }
 
-            const servers = [
+                const servers = [
                 { name: 'FLIXVISION SERVER 1 (Full HD 1080p)', url: type === 'tv' ? `https://vidsrc.me/embed/tv?tmdb=${id}&season=${season}&episode=${episode}` : `https://vidsrc.me/embed/movie?tmdb=${id}` },
-                { name: 'FLIXVISION SERVER 2 (Fast Stream)', url: type === 'tv' ? `https://vidlink.pro/tv/${id}/${season}/${episode}` : `https://vidlink.pro/movie/${id}` },
-                { name: 'GXPLAYER (Multi-Source)', url: type === 'tv' ? `https://2embed.cc/embedtv/${id}&s=${season}&e=${episode}` : `https://2embed.cc/embed/${id}` },
-                { name: 'AUTOEMBED (Backup Player)', url: type === 'tv' ? `https://player.autoembed.cc/embed/tv/${id}/${season}/${episode}` : `https://player.autoembed.cc/embed/movie/${id}` }
+                { name: 'VIDLINK PRO (Fast & Clean)', url: type === 'tv' ? `https://vidlink.pro/tv/${id}/${season}/${episode}` : `https://vidlink.pro/movie/${id}` },
+                { name: 'VIDSRC.TO (High Compatibility)', url: type === 'tv' ? `https://vidsrc.to/embed/tv/${id}/${season}/${episode}` : `https://vidsrc.to/embed/movie/${id}` },
+                { name: 'SUPEREMBED 4K (Ultra Fast)', url: type === 'tv' ? `https://multiembed.mov/?video_id=${id}&tmdb=1&s=${season}&e=${episode}` : `https://multiembed.mov/?video_id=${id}&tmdb=1` },
+                { name: 'AUTOEMBED HD (Multi-Source)', url: type === 'tv' ? `https://player.autoembed.cc/embed/tv/${id}/${season}/${episode}` : `https://player.autoembed.cc/embed/movie/${id}` },
+                { name: 'SMASHYSTREAM (Anime & Series)', url: type === 'tv' ? `https://embed.smashystream.com/playtor.php?tmdb=${id}&season=${season}&episode=${episode}` : `https://embed.smashystream.com/playtor.php?tmdb=${id}` },
+                { name: 'VIDSUCKS VIP (New Fast Server)', url: type === 'tv' ? `https://vidsucks.me/embed/tv/${id}/${season}/${episode}` : `https://vidsucks.me/embed/movie/${id}` },
+                { name: 'NINETHLEN (Alternative Stream)', url: type === 'tv' ? `https://moviesapi.club/tv/${id}-${season}-${episode}` : `https://moviesapi.club/movie/${id}` },
+                { name: 'VIPIEMBED (HD & 4K Sources)', url: type === 'tv' ? `https://vipembed.stream/embed/tv/${id}/${season}/${episode}` : `https://vipembed.stream/embed/movie/${id}` },
+                { name: 'BIDSARC VIP (Fast Multi-Player)', url: type === 'tv' ? `https://vidsrc.cc/v2/embed/tv/${id}/${season}/${episode}` : `https://vidsrc.cc/v2/embed/movie/${id}` },
+                { name: 'CINEZ STREAM (Clean Playback)', url: type === 'tv' ? `https://player.cinemeta.top/tv/${id}/${season}/${episode}` : `https://player.cinemeta.top/movie/${id}` },
+                { name: '2EMBED STREAM (Ultimate Backup)', url: type === 'tv' ? `https://2embed.cc/embedtv/${id}&s=${season}&e=${episode}` : `https://2embed.cc/embed/${id}` }
             ];
-
+          
             container.innerHTML = servers.map(srv => `
                 <div onclick="playStreamInApp('${srv.url}', '${srv.name}')" class="w-full text-left p-3 rounded-xl bg-[#070b12] hover:bg-cyan-600/20 border border-gray-800 flex items-center justify-between cursor-pointer transition group">
                     <div>
