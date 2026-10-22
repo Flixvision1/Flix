@@ -177,6 +177,7 @@
                     <select id="filterTypeSelect" class="bg-[#070b12] text-white border border-gray-700 p-1.5 rounded-lg focus:outline-none text-right w-44">
                         <option value="movie">Movies</option>
                         <option value="tv">Series</option>
+                        <option value="anime">Anime</option>
                     </select>
                 </div>
 
@@ -360,15 +361,15 @@
                 <div class="space-y-3 text-gray-300">
                     <div class="flex items-center justify-between">
                         <div><p class="font-bold text-white">HD Posters</p><p class="text-[10px] text-gray-500">Display high-resolution movie posters</p></div>
-                        <label class="switch"><input type="checkbox" checked><span class="slider"></span></label>
+                        <label class="switch"><input type="checkbox" id="settingHdPosters" onchange="saveSettings()"><span class="slider"></span></label>
                     </div>
                     <div class="flex items-center justify-between">
                         <div><p class="font-bold text-white">Show Hindi Direct Links</p><p class="text-[10px] text-gray-500">Enable regional stream links</p></div>
-                        <label class="switch"><input type="checkbox" checked><span class="slider"></span></label>
+                        <label class="switch"><input type="checkbox" id="settingHindiLinks" onchange="saveSettings()"><span class="slider"></span></label>
                     </div>
                     <div class="flex items-center justify-between">
                         <div><p class="font-bold text-white">Hide Unreleased Movies</p><p class="text-[10px] text-gray-500">Filter out unreleased catalog titles</p></div>
-                        <label class="switch"><input type="checkbox"><span class="slider"></span></label>
+                        <label class="switch"><input type="checkbox" id="settingHideUnreleased" onchange="saveSettings()"><span class="slider"></span></label>
                     </div>
                 </div>
             </div>
@@ -378,16 +379,16 @@
                 <h3 class="text-cyan-400 font-bold border-b border-cyan-900/50 pb-1">INTEGRATION</h3>
                 <div class="space-y-2 text-gray-300">
                     <div class="p-3 bg-[#111622] rounded-xl border border-gray-800 flex justify-between items-center">
-                        <div><p class="font-bold text-white">Real Debrid</p><p class="text-[10px] text-gray-500">Premium high-speed torrent streams</p></div>
-                        <button onclick="showToast('Real Debrid API Linked Successfully!')" class="bg-cyan-600 hover:bg-cyan-500 text-white font-bold px-3 py-1.5 rounded-lg text-[10px]">Link Account</button>
+                        <div><p class="font-bold text-white">Real Debrid</p><p id="rdStatus" class="text-[10px] text-gray-500">Premium high-speed torrent streams</p></div>
+                        <button onclick="linkAccount('Real Debrid', 'rdStatus')" class="bg-cyan-600 hover:bg-cyan-500 text-white font-bold px-3 py-1.5 rounded-lg text-[10px]">Link Account</button>
                     </div>
                     <div class="p-3 bg-[#111622] rounded-xl border border-gray-800 flex justify-between items-center">
-                        <div><p class="font-bold text-white">Premiumize</p><p class="text-[10px] text-gray-500">Cloud downloader & stream host</p></div>
-                        <button onclick="showToast('Premiumize API Linked Successfully!')" class="bg-cyan-600 hover:bg-cyan-500 text-white font-bold px-3 py-1.5 rounded-lg text-[10px]">Link Account</button>
+                        <div><p class="font-bold text-white">Premiumize</p><p id="pmStatus" class="text-[10px] text-gray-500">Cloud downloader & stream host</p></div>
+                        <button onclick="linkAccount('Premiumize', 'pmStatus')" class="bg-cyan-600 hover:bg-cyan-500 text-white font-bold px-3 py-1.5 rounded-lg text-[10px]">Link Account</button>
                     </div>
                     <div class="p-3 bg-[#111622] rounded-xl border border-gray-800 flex justify-between items-center">
-                        <div><p class="font-bold text-white">Trakt.tv</p><p class="text-[10px] text-gray-500">Sync watched history across devices</p></div>
-                        <button onclick="showToast('Trakt.tv Account Connected!')" class="bg-cyan-600 hover:bg-cyan-500 text-white font-bold px-3 py-1.5 rounded-lg text-[10px]">Authorize</button>
+                        <div><p class="font-bold text-white">Trakt.tv</p><p id="traktStatus" class="text-[10px] text-gray-500">Sync watched history across devices</p></div>
+                        <button onclick="linkAccount('Trakt.tv', 'traktStatus')" class="bg-cyan-600 hover:bg-cyan-500 text-white font-bold px-3 py-1.5 rounded-lg text-[10px]">Authorize</button>
                     </div>
                 </div>
             </div>
@@ -398,14 +399,14 @@
                 <div class="space-y-2 text-gray-300">
                     <div class="flex justify-between items-center p-2 bg-[#111622] rounded-lg border border-gray-800">
                         <span class="font-bold text-white">Default Internal WebPlayer</span>
-                        <select class="bg-[#070b12] text-cyan-400 font-bold border border-gray-700 p-1 rounded">
-                            <option>Flix Vision WebPlayer</option>
-                            <option>External Player (VLC / MX)</option>
+                        <select id="settingWebPlayer" onchange="saveSettings()" class="bg-[#070b12] text-cyan-400 font-bold border border-gray-700 p-1 rounded">
+                            <option value="flix">Flix Vision WebPlayer</option>
+                            <option value="external">External Player (VLC / MX)</option>
                         </select>
                     </div>
                     <div class="flex items-center justify-between pt-1">
                         <div><p class="font-bold text-white">Auto Play Next Episode</p></div>
-                        <label class="switch"><input type="checkbox" checked><span class="slider"></span></label>
+                        <label class="switch"><input type="checkbox" id="settingAutoPlay" onchange="saveSettings()"><span class="slider"></span></label>
                     </div>
                 </div>
             </div>
@@ -416,15 +417,15 @@
                 <div class="space-y-2 text-gray-300">
                     <div class="flex items-center justify-between">
                         <div><p class="font-bold text-white">Download Subtitles Automatically</p></div>
-                        <label class="switch"><input type="checkbox" checked><span class="slider"></span></label>
+                        <label class="switch"><input type="checkbox" id="settingAutoSub" onchange="saveSettings()"><span class="slider"></span></label>
                     </div>
                     <div class="flex justify-between items-center p-2 bg-[#111622] rounded-lg border border-gray-800">
                         <span class="font-bold text-white">Default Subtitle Language</span>
-                        <select class="bg-[#070b12] text-gray-200 border border-gray-700 p-1 rounded">
-                            <option>English</option>
-                            <option>Kurdish</option>
-                            <option>Arabic</option>
-                            <option>Spanish</option>
+                        <select id="settingSubLang" onchange="saveSettings()" class="bg-[#070b12] text-gray-200 border border-gray-700 p-1 rounded">
+                            <option value="English">English</option>
+                            <option value="Kurdish">Kurdish</option>
+                            <option value="Arabic">Arabic</option>
+                            <option value="Spanish">Spanish</option>
                         </select>
                     </div>
                 </div>
@@ -438,7 +439,7 @@
                         <span>Clear Cache & Search History</span>
                         <span class="text-[10px] bg-red-500/20 text-red-400 px-2 py-0.5 rounded font-bold">Clear</span>
                     </button>
-                    <button onclick="showToast('Settings & Favorites exported to JSON file.')" class="w-full text-left p-2.5 bg-[#111622] rounded-lg border border-gray-800 hover:text-white flex justify-between items-center">
+                    <button onclick="exportBackup()" class="w-full text-left p-2.5 bg-[#111622] rounded-lg border border-gray-800 hover:text-white flex justify-between items-center">
                         <span>Backup Settings & Playlists</span>
                         <i class="fa-solid fa-download text-gray-400"></i>
                     </button>
@@ -550,12 +551,10 @@
                 id: 2739, providerId: 337, companyId: 2, name: 'Disney+', 
                 svg: `<span class="text-cyan-400 font-black italic tracking-wide text-xs">Disney+</span>` 
             },
-    
             { 
                 id: 2552, providerId: 350, companyId: 130932, name: 'Apple TV+', 
                 svg: `<span class="text-black font-black tracking-tight text-xs flex items-center"><i class="fa-brands fa-apple mr-1"></i>tv+</span>` 
             },
- 
             { 
                 id: 67, providerId: 1899, companyId: 3268, name: 'HBO Max', 
                 svg: `<span class="text-purple-600 font-black text-xs uppercase">HBOMAX</span>` 
@@ -614,8 +613,76 @@
         document.addEventListener('DOMContentLoaded', () => {
             setupFilterDropdowns();
             setupEventListeners();
+            loadSettings(); // بارکردنەوەی هەموو ڕێکخستنە پاشەکەوتکراوەکان
             fetchContent(true);
         });
+
+        // بارکردنەوەی ڕێکخستنەکان لە LocalStorage
+        function loadSettings() {
+            const saved = localStorage.getItem('fv_app_settings');
+            if (saved) {
+                try {
+                    const settings = JSON.parse(saved);
+                    document.getElementById('settingHdPosters').checked = settings.hdPosters ?? true;
+                    document.getElementById('settingHindiLinks').checked = settings.hindiLinks ?? true;
+                    document.getElementById('settingHideUnreleased').checked = settings.hideUnreleased ?? false;
+                    document.getElementById('settingWebPlayer').value = settings.webPlayer ?? 'flix';
+                    document.getElementById('settingAutoPlay').checked = settings.autoPlay ?? true;
+                    document.getElementById('settingAutoSub').checked = settings.autoSub ?? true;
+                    document.getElementById('settingSubLang').value = settings.subLang ?? 'English';
+                } catch(e) {}
+            }
+
+            ['Real Debrid', 'Premiumize', 'Trakt.tv'].forEach(service => {
+                const isLinked = localStorage.getItem(`fv_linked_${service}`);
+                if (isLinked === 'true') {
+                    let idMap = { 'Real Debrid': 'rdStatus', 'Premiumize': 'pmStatus', 'Trakt.tv': 'traktStatus' };
+                    const el = document.getElementById(idMap[service]);
+                    if (el) {
+                        el.innerText = 'Connected & Active';
+                        el.className = 'text-[10px] text-cyan-400 font-bold';
+                    }
+                }
+            });
+        }
+
+        // پاشەکەوتکردنی ڕێکخستنەکان بە شێوەی ئۆتۆماتیکی
+        function saveSettings() {
+            const settings = {
+                hdPosters: document.getElementById('settingHdPosters').checked,
+                hindiLinks: document.getElementById('settingHindiLinks').checked,
+                hideUnreleased: document.getElementById('settingHideUnreleased').checked,
+                webPlayer: document.getElementById('settingWebPlayer').value,
+                autoPlay: document.getElementById('settingAutoPlay').checked,
+                autoSub: document.getElementById('settingAutoSub').checked,
+                subLang: document.getElementById('settingSubLang').value
+            };
+            localStorage.setItem('fv_app_settings', JSON.stringify(settings));
+            showToast('Settings saved!');
+        }
+
+        function linkAccount(serviceName, statusId) {
+            const statusEl = document.getElementById(statusId);
+            statusEl.innerText = 'Connected & Active';
+            statusEl.className = 'text-[10px] text-cyan-400 font-bold';
+            localStorage.setItem(`fv_linked_${serviceName}`, 'true');
+            showToast(`${serviceName} Account Linked!`);
+        }
+
+        function exportBackup() {
+            const data = {
+                settings: localStorage.getItem('fv_app_settings'),
+                favorites: localStorage.getItem('fv_favorites'),
+                watched: localStorage.getItem('fv_watched')
+            };
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'flix-vision-backup.json';
+            a.click();
+            showToast('Backup file downloaded!');
+        }
 
         function showToast(message) {
             const toast = document.getElementById('toastNotification');
@@ -809,15 +876,17 @@
             document.getElementById('settingsModal').classList.add('hidden');
         }
 
-        // Optimized Full Flix Vision Fetch Engine (With Multi-Company Prime & Paramount Support)
-        
-            async function fetchContent(reset = false) {
+        // فەنکشنی fetchContent (بە پشتگیری Anime)
+        async function fetchContent(reset = false) {
             const grid = document.getElementById('movieGrid');
             if (reset) grid.innerHTML = `<div class="col-span-full text-center py-20 text-gray-500 text-xs">Loading content...</div>`;
 
-            let url = `${BASE_URL}/trending/${currentState.type}/day?api_key=${API_KEY}&page=${currentState.page}`;
-            
-            if (currentState.category === 'theater') {
+            let fetchType = currentState.type === 'anime' ? 'tv' : currentState.type;
+            let url = `${BASE_URL}/trending/${fetchType}/day?api_key=${API_KEY}&page=${currentState.page}`;
+
+            if (currentState.type === 'anime') {
+                url = `${BASE_URL}/discover/tv?api_key=${API_KEY}&with_genres=16&sort_by=${currentState.sort}&page=${currentState.page}`;
+            } else if (currentState.category === 'theater') {
                 url = currentState.type === 'movie' 
                     ? `${BASE_URL}/movie/now_playing?api_key=${API_KEY}&page=${currentState.page}`
                     : `${BASE_URL}/tv/on_the_air?api_key=${API_KEY}&page=${currentState.page}`;
@@ -826,8 +895,8 @@
             }
 
             if (currentState.query) {
-                url = `${BASE_URL}/search/${currentState.type}?api_key=${API_KEY}&query=${encodeURIComponent(currentState.query)}&page=${currentState.page}`;
-            } else if (currentState.network !== 'all' || currentState.genre !== 'all' || currentState.year !== 'all') {
+                url = `${BASE_URL}/search/${fetchType}?api_key=${API_KEY}&query=${encodeURIComponent(currentState.query)}&page=${currentState.page}`;
+            } else if (currentState.type !== 'anime' && (currentState.network !== 'all' || currentState.genre !== 'all' || currentState.year !== 'all')) {
                 url = `${BASE_URL}/discover/${currentState.type}?api_key=${API_KEY}&sort_by=${currentState.sort}&page=${currentState.page}`;
                 
                 if (currentState.network !== 'all') {
@@ -841,12 +910,6 @@
                         } else {
                             url += `&with_networks=213`;
                         }
-                    } else if (currentState.network === '1024' || netObj?.name === 'Prime Video') {
-                        // Prime Video Robust Fix (Amazon Studios & MGM & Prime)
-                        url += `&with_companies=20580,21652,157973,4`;
-                    } else if (currentState.network === '433' || netObj?.name === 'Paramount+') {
-                        // Paramount+ Robust Fix (Paramount Pictures & CBS)
-                        url += `&with_companies=4,3324,7326,569`;
                     } else if (currentState.network === '2552' || netObj?.name === 'Apple TV+') {
                         url += `&with_watch_providers=350&watch_region=US`;
                     } else if (currentState.type === 'tv') {
@@ -949,13 +1012,11 @@
                 document.getElementById('detailTypeTag').innerText = type === 'movie' ? 'Film' : 'Series';
                 document.getElementById('detailOverview').innerText = data.overview || 'No description available for this title.';
 
-                // Favorite Toggle Logic
                 const isFav = favorites.some(f => f.id === data.id);
                 const favBtn = document.getElementById('detailFavoriteBtn');
                 favBtn.innerHTML = `<i class="${isFav ? 'fa-solid text-red-500' : 'fa-regular'} fa-heart"></i>`;
                 favBtn.onclick = () => toggleFavorite(data, type);
 
-                // TV Show Season/Episode Selectors
                 const seasonContainer = document.getElementById('tvShowSeasonSelectorContainer');
                 if (type === 'tv' && data.seasons) {
                     seasonContainer.classList.remove('hidden');
@@ -975,12 +1036,10 @@
                     seasonContainer.classList.add('hidden');
                 }
 
-                // Crew Details
                 const director = (data.credits?.crew || []).find(c => c.job === 'Director');
                 document.getElementById('detailDirector').innerText = director ? director.name : 'N/A';
                 document.getElementById('detailWriter').innerText = (data.credits?.crew || []).find(c => c.job === 'Screenplay' || c.job === 'Writer')?.name || 'N/A';
 
-                // Top Cast
                 const castContainer = document.getElementById('detailCastContainer');
                 castContainer.innerHTML = (data.credits?.cast || []).slice(0, 15).map(actor => `
                     <div onclick="openActorProfile(${actor.id})" class="flex flex-col items-center shrink-0 w-20 text-center cursor-pointer group">
@@ -990,7 +1049,6 @@
                     </div>
                 `).join('');
 
-                // Recommendations
                 const recsGrid = document.getElementById('detailRecommendationsGrid');
                 recsGrid.innerHTML = (data.recommendations?.results || []).slice(0, 6).map(rec => `
                     <div onclick="openMovieDetails(${rec.id}, '${type}')" class="bg-[#111622] border border-gray-800 rounded-lg overflow-hidden cursor-pointer">
@@ -1001,7 +1059,6 @@
                     </div>
                 `).join('');
 
-                // Trailer button
                 const trailerVideo = (data.videos?.results || []).find(v => v.type === 'Trailer' && v.site === 'YouTube');
                 document.getElementById('detailTrailerBtn').onclick = () => {
                     if (trailerVideo) {
@@ -1015,7 +1072,6 @@
                 document.getElementById('detailPlayBtn').onclick = () => openStreamLinks(data.id, type);
                 document.getElementById('movieDetailModal').classList.remove('hidden');
 
-                // Record in Watched History
                 addToWatched(data, type);
             } catch (e) {}
         }
@@ -1051,7 +1107,7 @@
                 episode = document.getElementById('episodeSelect')?.value || 1;
             }
 
-                const servers = [
+            const servers = [
                 { name: 'FLIXVISION SERVER 1 (Full HD 1080p)', url: type === 'tv' ? `https://vidsrc.me/embed/tv?tmdb=${id}&season=${season}&episode=${episode}` : `https://vidsrc.me/embed/movie?tmdb=${id}` },
                 { name: 'VIDLINK PRO (Fast & Clean)', url: type === 'tv' ? `https://vidlink.pro/tv/${id}/${season}/${episode}` : `https://vidlink.pro/movie/${id}` },
                 { name: 'VIDSRC.TO (High Compatibility)', url: type === 'tv' ? `https://vidsrc.to/embed/tv/${id}/${season}/${episode}` : `https://vidsrc.to/embed/movie/${id}` },
@@ -1136,29 +1192,18 @@
         }
 
         function showAnimeSection() {
+            currentState.type = 'anime';
             currentState.genre = 16;
             currentState.page = 1;
             currentCustomView = null;
+            document.getElementById('filterTypeSelect').value = 'anime';
             document.getElementById('filterGenreSelect').value = 16;
-            document.getElementById('pageTitle').innerText = `${currentState.type.toUpperCase()}S: ANIME`;
+            document.getElementById('pageTitle').innerText = `ANIMES: CATALOG`;
             document.getElementById('customViewHeader').classList.add('hidden');
             fetchContent(true);
             showToast('Anime filter applied successfully!');
         }
 
-        function playAnimeOrMovie(mediaType, id) {
-            const playerUrl = `https://vidsrc.me/embed/${mediaType}?tmdb=${id}`;
-            const iframe = document.getElementById('videoPlayerIframe');
-            if (iframe) {
-                iframe.src = playerUrl;
-            }
-            const playerModal = document.getElementById('playerModal');
-            if (playerModal) {
-                playerModal.classList.remove('hidden');
-            }
-        }
-
-        // Switch Search Tabs (Movies, Series, People)
         function switchSearchTab(tab) {
             currentState.searchTab = tab;
             if (tab === 'movie' || tab === 'tv') {
@@ -1182,7 +1227,6 @@
             }
         }
 
-        // Independent Search Engine for People Section
         async function executePeopleSearch(reset = false) {
             const grid = document.getElementById('movieGrid');
             if (!peopleState.query) {
@@ -1210,7 +1254,6 @@
             }
         }
 
-        // Render People Circle Avatar Cards
         function renderPeopleGrid(people) {
             const grid = document.getElementById('movieGrid');
             if (!people || people.length === 0) {
@@ -1231,7 +1274,6 @@
             }).join('');
         }
 
-        // Open Detailed Actor Profile Modal & Filmography
         async function openActorProfile(personId) {
             const modal = document.getElementById('actorModal');
             document.getElementById('actorModalAvatar').src = PLACEHOLDER_IMG;
@@ -1256,7 +1298,6 @@
                 document.getElementById('actorModalPlace').innerText = person.place_of_birth || 'N/A';
 
                 const castWorks = credits.cast || [];
-
                 const uniqueWorks = Array.from(new Set(castWorks.map(a => a.id)))
                     .map(id => castWorks.find(a => a.id === id));
 
