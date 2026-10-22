@@ -848,13 +848,12 @@
                             url += `&with_networks=213`;
                         }
                     } else if (currentState.network === '1024' || netObj?.name === 'Prime Video') {
-                        // Prime Video Provider ID: 119
-                        url += `&with_watch_providers=119&watch_region=US`;
+                        // Prime Video Robust Fix (Amazon Studios & MGM & Prime)
+                        url += `&with_companies=20580,21652,157973,4`;
                     } else if (currentState.network === '433' || netObj?.name === 'Paramount+') {
-                        // Paramount+ Provider ID: 531
-                        url += `&with_watch_providers=531&watch_region=US`;
+                        // Paramount+ Robust Fix (Paramount Pictures & CBS)
+                        url += `&with_companies=4,3324,7326,569`;
                     } else if (currentState.network === '2552' || netObj?.name === 'Apple TV+') {
-                        // Apple TV+ Provider ID: 350
                         url += `&with_watch_providers=350&watch_region=US`;
                     } else if (currentState.type === 'tv') {
                         url += `&with_networks=${currentState.network}`;
@@ -890,7 +889,7 @@
                 grid.innerHTML = `<div class="col-span-full text-center py-20 text-red-500 text-xs">Failed to load content from server.</div>`;
             }
         }
-
+        
         function handleLoadMore() {
             if (currentState.searchTab === 'person' && currentState.query) {
                 peopleState.page++;
