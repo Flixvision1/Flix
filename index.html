@@ -39,7 +39,6 @@
             transform: translateY(-4px);
             box-shadow: 0 10px 25px -5px rgba(6, 182, 212, 0.25);
         }
-        /* Custom Checkbox Toggle Slider */
         .switch {
             position: relative;
             display: inline-block;
@@ -76,11 +75,6 @@
         input:checked + .slider:before {
             transform: translateX(16px);
         }
-        .net-chip-svg svg {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-        }
     </style>
 </head>
 <body class="min-h-screen relative flex flex-col overflow-x-hidden">
@@ -108,7 +102,6 @@
             <button id="filterToggleBtn" class="hover:text-cyan-400 transition active:scale-95" title="Filter Panel"><i class="fa-solid fa-filter"></i></button>
             <div class="relative">
                 <button id="menu3DotsBtn" class="hover:text-cyan-400 transition active:scale-95 p-1" title="More Options"><i class="fa-solid fa-ellipsis-vertical"></i></button>
-                <!-- 3 Dots Dropdown Menu -->
                 <div id="dotsDropdown" class="hidden absolute right-0 mt-2 w-48 bg-[#111622] border border-gray-800 rounded-xl shadow-2xl z-50 py-1 text-xs">
                     <button onclick="openSettingsModal()" class="w-full text-left px-4 py-2 hover:bg-gray-800 text-gray-200 flex items-center space-x-2">
                         <i class="fa-solid fa-gear text-cyan-400 w-4"></i><span>Settings</span>
@@ -133,7 +126,6 @@
             <button id="clearSearchBtn" class="absolute right-3 text-gray-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
         </div>
         
-        <!-- Multi-tab Search Options (Movies, Series, People) -->
         <div id="searchTabsContainer" class="hidden flex justify-center space-x-3 text-xs font-bold">
             <button onclick="switchSearchTab('movie')" id="searchTabMovie" class="bg-cyan-600 text-white px-4 py-1.5 rounded-full shadow transition">Movies</button>
             <button onclick="switchSearchTab('tv')" id="searchTabTv" class="bg-[#111622] text-gray-400 border border-gray-700 px-4 py-1.5 rounded-full shadow transition">Series</button>
@@ -207,7 +199,6 @@
 
     <!-- Main Dynamic Content Grid -->
     <main class="max-w-7xl mx-auto px-3 py-4 space-y-6 flex-1 w-full">
-        <!-- Section Header for Live TV or Custom Views -->
         <div id="customViewHeader" class="hidden flex items-center justify-between border-b border-gray-800 pb-2">
             <h2 id="customViewTitle" class="text-sm font-extrabold text-cyan-400 uppercase tracking-wider">VIEW TITLE</h2>
             <button onclick="currentCustomView = null; renderGrid(cachedItems); document.getElementById('customViewHeader').classList.add('hidden')" class="text-xs text-gray-400 hover:text-white">
@@ -252,14 +243,19 @@
         </div>
 
         <div class="p-4 space-y-6 max-w-5xl mx-auto">
-            <div class="flex items-center space-x-3">
+            <!-- Play, Download, and Trailer Buttons -->
+            <div class="flex items-center space-x-2">
                 <button id="detailPlayBtn" class="flex-1 bg-white hover:bg-gray-200 text-black font-extrabold py-3 rounded-xl flex items-center justify-center space-x-2 shadow-lg transition active:scale-95">
                     <i class="fa-solid fa-play text-black text-sm"></i>
                     <span>PLAY SOURCE</span>
                 </button>
-                <button id="detailTrailerBtn" class="flex-1 bg-[#151c28] hover:bg-[#1e2738] text-white font-extrabold py-3 rounded-xl flex items-center justify-center space-x-2 border border-gray-700 transition active:scale-95">
-                    <i class="fa-solid fa-circle-play text-white text-sm"></i>
-                    <span>Trailer</span>
+                <button id="detailDownloadBtn" class="bg-cyan-600 hover:bg-cyan-500 text-white font-extrabold px-4 py-3 rounded-xl flex items-center justify-center space-x-1 shadow-lg transition active:scale-95">
+                    <i class="fa-solid fa-download text-sm"></i>
+                    <span class="hidden sm:inline">DOWNLOAD</span>
+                </button>
+                <button id="detailTrailerBtn" class="bg-[#151c28] hover:bg-[#1e2738] text-white font-extrabold px-4 py-3 rounded-xl flex items-center justify-center space-x-1 border border-gray-700 transition active:scale-95">
+                    <i class="fa-solid fa-circle-play text-sm"></i>
+                    <span class="hidden sm:inline">Trailer</span>
                 </button>
             </div>
 
@@ -317,7 +313,7 @@
         </div>
     </div>
 
-    <!-- Stream Servers & Download Links Modal -->
+    <!-- Stream Servers Modal -->
     <div id="streamLinksModal" class="hidden fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4 backdrop-blur-md">
         <div class="bg-[#111622] border border-gray-800 rounded-2xl max-w-md w-full p-5 space-y-4 shadow-2xl relative">
             <div class="flex items-center justify-between border-b border-gray-800 pb-3">
@@ -331,7 +327,21 @@
         </div>
     </div>
 
-    <!-- Chromecast Casting Status Modal -->
+    <!-- Download Links Modal (New Professional Download Manager) -->
+    <div id="downloadLinksModal" class="hidden fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4 backdrop-blur-md">
+        <div class="bg-[#111622] border border-gray-800 rounded-2xl max-w-md w-full p-5 space-y-4 shadow-2xl relative">
+            <div class="flex items-center justify-between border-b border-gray-800 pb-3">
+                <h3 class="text-sm font-bold text-white flex items-center space-x-2">
+                    <i class="fa-solid fa-download text-cyan-400 text-xs"></i>
+                    <span>Download Media Sources</span>
+                </h3>
+                <button id="closeDownloadLinksBtn" class="text-gray-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div id="downloadLinksContainer" class="space-y-2 max-h-80 overflow-y-auto hide-scrollbar text-xs"></div>
+        </div>
+    </div>
+
+    <!-- Chromecast Modal -->
     <div id="castModal" class="hidden fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4 backdrop-blur-md">
         <div class="bg-[#111622] border border-gray-800 rounded-2xl max-w-sm w-full p-5 space-y-4 text-center shadow-2xl">
             <i class="fa-solid fa-chromecast text-4xl text-cyan-400 animate-pulse"></i>
@@ -354,7 +364,6 @@
                 <button onclick="closeSettingsModal()" class="text-gray-400 hover:text-white text-lg"><i class="fa-solid fa-xmark"></i></button>
             </div>
 
-            <!-- GENERAL -->
             <div class="space-y-3">
                 <h3 class="text-cyan-400 font-bold border-b border-cyan-900/50 pb-1">GENERAL</h3>
                 <div class="space-y-3 text-gray-300">
@@ -373,7 +382,6 @@
                 </div>
             </div>
 
-            <!-- INTEGRATION (Debrid & Trakt) -->
             <div class="space-y-3">
                 <h3 class="text-cyan-400 font-bold border-b border-cyan-900/50 pb-1">INTEGRATION</h3>
                 <div class="space-y-2 text-gray-300">
@@ -392,9 +400,8 @@
                 </div>
             </div>
 
-            <!-- PLAYERS AND WEBPLAYER -->
             <div class="space-y-3">
-                <h3 class="text-cyan-400 font-bold border-b border-cyan-900/50 pb-1">PLAYERS & WEBPLAYER</h3>
+                <h3 class="text-cyan-400 font-bold border-b border-cyan-900/50 pb-1">PLAYERS AND WEBPLAYER</h3>
                 <div class="space-y-2 text-gray-300">
                     <div class="flex justify-between items-center p-2 bg-[#111622] rounded-lg border border-gray-800">
                         <span class="font-bold text-white">Default Internal WebPlayer</span>
@@ -410,7 +417,6 @@
                 </div>
             </div>
 
-            <!-- SUBTITLES -->
             <div class="space-y-3">
                 <h3 class="text-cyan-400 font-bold border-b border-cyan-900/50 pb-1">SUBTITLES</h3>
                 <div class="space-y-2 text-gray-300">
@@ -430,7 +436,6 @@
                 </div>
             </div>
 
-            <!-- SYSTEM & BACKUP -->
             <div class="space-y-3">
                 <h3 class="text-cyan-400 font-bold border-b border-cyan-900/50 pb-1">SYSTEM & DATA</h3>
                 <div class="space-y-2">
@@ -448,7 +453,7 @@
         </div>
     </div>
 
-    <!-- Full Flix Vision Interactive Sidebar Drawer -->
+    <!-- Sidebar Drawer -->
     <div id="sidebarOverlay" class="fixed inset-0 bg-black/70 z-40 hidden backdrop-blur-sm"></div>
     <aside id="sidebar" class="fixed top-0 left-0 bottom-0 w-64 bg-[#0a0d12] border-r border-gray-800 z-50 transform -translate-x-full transition-transform duration-300 overflow-y-auto hide-scrollbar text-xs">
         <div class="p-4 space-y-6">
@@ -502,7 +507,7 @@
         </div>
     </aside>
 
-    <!-- Actor Profile & Filmography Modal -->
+    <!-- Actor Modal -->
     <div id="actorModal" class="hidden fixed inset-0 bg-[#070b12] z-50 overflow-y-auto hide-scrollbar p-4 sm:p-6">
         <div class="max-w-5xl mx-auto space-y-6">
             <div class="flex items-center justify-between border-b border-gray-800 pb-3">
@@ -538,44 +543,17 @@
         const BACKDROP_URL = 'https://image.tmdb.org/t/p/original';
         const PLACEHOLDER_IMG = 'https://placehold.co/400x600/111622/ffffff?text=No+Image';
 
-        // Flix Vision Network Chips Configuration (Pure Unbreakable Vector SVGs)
         const NETWORKS = [
             { id: 'anime', name: 'Anime', isAnime: true },
             { id: 'all', name: 'All', isAll: true },
-            { 
-                id: 213, providerId: 8, companyId: 10181, name: 'Netflix', 
-                svg: `<span class="text-red-600 font-black tracking-tighter text-sm uppercase">NETFLIX</span>` 
-            },
-            { 
-                id: 2739, providerId: 337, companyId: 2, name: 'Disney+', 
-                svg: `<span class="text-cyan-400 font-black italic tracking-wide text-xs">Disney+</span>` 
-            },
-    
-            { 
-                id: 2552, providerId: 350, companyId: 130932, name: 'Apple TV+', 
-                svg: `<span class="text-black font-black tracking-tight text-xs flex items-center"><i class="fa-brands fa-apple mr-1"></i>tv+</span>` 
-            },
- 
-            { 
-                id: 67, providerId: 1899, companyId: 3268, name: 'HBO Max', 
-                svg: `<span class="text-purple-600 font-black text-xs uppercase">HBOMAX</span>` 
-            },
-            { 
-                id: 49, providerId: 15, companyId: 10163, name: 'Hulu', 
-                svg: `<span class="text-emerald-500 font-black text-xs tracking-wider">hulu</span>` 
-            },
-            { 
-                id: 318, providerId: 43, companyId: 318, name: 'Starz', 
-                svg: `<span class="text-black font-black text-xs tracking-widest uppercase">STARZ</span>` 
-            },
-            { 
-                id: 3353, providerId: 386, name: 'Peacock', 
-                svg: `<span class="text-black font-black text-xs tracking-wide">peacock</span>` 
-            },
-            { 
-                id: 42005, companyId: 42005, name: 'Marvel Studios', 
-                svg: `<span class="bg-red-600 text-white font-black px-1.5 py-0.5 rounded text-[10px] tracking-tighter uppercase">MARVEL</span>` 
-            }
+            { id: 213, providerId: 8, companyId: 10181, name: 'Netflix', svg: `<span class="text-red-600 font-black tracking-tighter text-sm uppercase">NETFLIX</span>` },
+            { id: 2739, providerId: 337, companyId: 2, name: 'Disney+', svg: `<span class="text-cyan-400 font-black italic tracking-wide text-xs">Disney+</span>` },
+            { id: 2552, providerId: 350, companyId: 130932, name: 'Apple TV+', svg: `<span class="text-black font-black tracking-tight text-xs flex items-center"><i class="fa-brands fa-apple mr-1"></i>tv+</span>` },
+            { id: 67, providerId: 1899, companyId: 3268, name: 'HBO Max', svg: `<span class="text-purple-600 font-black text-xs uppercase">HBOMAX</span>` },
+            { id: 49, providerId: 15, companyId: 10163, name: 'Hulu', svg: `<span class="text-emerald-500 font-black text-xs tracking-wider">hulu</span>` },
+            { id: 318, providerId: 43, companyId: 318, name: 'Starz', svg: `<span class="text-black font-black text-xs tracking-widest uppercase">STARZ</span>` },
+            { id: 3353, providerId: 386, name: 'Peacock', svg: `<span class="text-black font-black text-xs tracking-wide">peacock</span>` },
+            { id: 42005, companyId: 42005, name: 'Marvel Studios', svg: `<span class="bg-red-600 text-white font-black px-1.5 py-0.5 rounded text-[10px] tracking-tighter uppercase">MARVEL</span>` }
         ];
 
         const GENRES = [
@@ -785,6 +763,10 @@
                 document.getElementById('streamLinksModal').classList.add('hidden');
             });
 
+            document.getElementById('closeDownloadLinksBtn').addEventListener('click', () => {
+                document.getElementById('downloadLinksModal').classList.add('hidden');
+            });
+
             document.getElementById('closePlayerBtn').addEventListener('click', () => {
                 document.getElementById('playerModal').classList.add('hidden');
                 document.getElementById('videoIframe').src = '';
@@ -809,9 +791,7 @@
             document.getElementById('settingsModal').classList.add('hidden');
         }
 
-        // Optimized Full Flix Vision Fetch Engine (With Multi-Company Prime & Paramount Support)
-        
-                    async function fetchContent(reset = false) {
+        async function fetchContent(reset = false) {
             const grid = document.getElementById('movieGrid');
             if (reset) grid.innerHTML = `<div class="col-span-full text-center py-20 text-gray-500 text-xs">Loading content...</div>`;
 
@@ -819,7 +799,6 @@
             let url = `${BASE_URL}/trending/${fetchType}/day?api_key=${API_KEY}&page=${currentState.page}`;
 
             if (currentState.type === 'anime') {
-                // هێنانی تەنها ئەنیمێی ژاپۆنی بە بڕگەی with_original_language=ja
                 url = `${BASE_URL}/discover/tv?api_key=${API_KEY}&with_genres=16&with_original_language=ja&sort_by=${currentState.sort}&page=${currentState.page}`;
             } else if (currentState.category === 'theater') {
                 url = currentState.type === 'movie' 
@@ -934,9 +913,8 @@
             }).join('');
         }
 
-                async function openMovieDetails(id, type) {
+        async function openMovieDetails(id, type) {
             try {
-                // ئەگەر جۆرەکە anime بوو، بڕگەی tv بەکاربێنە بۆ APIەکە
                 let apiType = type === 'anime' ? 'tv' : type;
                 const res = await fetch(`${BASE_URL}/${apiType}/${id}?api_key=${API_KEY}&append_to_response=credits,recommendations,videos`);
                 const data = await res.json();
@@ -1007,6 +985,7 @@
                 };
 
                 document.getElementById('detailPlayBtn').onclick = () => openStreamLinks(data.id, apiType);
+                document.getElementById('detailDownloadBtn').onclick = () => openDownloadLinks(data.id, apiType);
                 document.getElementById('movieDetailModal').classList.remove('hidden');
 
                 addToWatched(data, apiType);
@@ -1061,6 +1040,37 @@
                     </div>
                     <i class="fa-solid fa-play text-cyan-400 text-xs"></i>
                 </div>
+            `).join('');
+
+            modal.classList.remove('hidden');
+        }
+
+        // New Professional Multi-Server Download Engine
+        function openDownloadLinks(id, type) {
+            const modal = document.getElementById('downloadLinksModal');
+            const container = document.getElementById('downloadLinksContainer');
+            
+            let season = 1, episode = 1;
+            if (type === 'tv') {
+                season = document.getElementById('seasonSelect')?.value || 1;
+                episode = document.getElementById('episodeSelect')?.value || 1;
+            }
+
+            const downloadSources = [
+                { name: 'DL-SERVER 1 (1080p Full HD)', quality: '1080p', url: type === 'tv' ? `https://vidsrc.me/embed/tv?tmdb=${id}&season=${season}&episode=${episode}` : `https://vidsrc.me/embed/movie?tmdb=${id}` },
+                { name: 'DL-SERVER 2 (720p HD Quality)', quality: '720p', url: type === 'tv' ? `https://vidlink.pro/tv/${id}/${season}/${episode}` : `https://vidlink.pro/movie/${id}` },
+                { name: 'VIDSRC DIRECT (Multi Quality)', quality: 'Auto', url: type === 'tv' ? `https://vidsrc.to/embed/tv/${id}/${season}/${episode}` : `https://vidsrc.to/embed/movie/${id}` },
+                { name: '2EMBED DL PORTAL', quality: 'Fast DL', url: type === 'tv' ? `https://2embed.cc/embedtv/${id}&s=${season}&e=${episode}` : `https://2embed.cc/embed/${id}` }
+            ];
+
+            container.innerHTML = downloadSources.map(src => `
+                <a href="${src.url}" target="_blank" class="w-full text-left p-3 rounded-xl bg-[#070b12] hover:bg-cyan-600/20 border border-gray-800 flex items-center justify-between cursor-pointer transition group decoration-none">
+                    <div>
+                        <span class="font-bold text-gray-200 group-hover:text-cyan-400 block">${src.name}</span>
+                        <span class="text-[9px] text-gray-500">Fast Download • Quality: ${src.quality}</span>
+                    </div>
+                    <i class="fa-solid fa-circle-down text-cyan-400 text-sm"></i>
+                </a>
             `).join('');
 
             modal.classList.remove('hidden');
@@ -1133,19 +1143,6 @@
             showToast('Anime filter applied successfully!');
         }
 
-        function playAnimeOrMovie(mediaType, id) {
-            const playerUrl = `https://vidsrc.me/embed/${mediaType}?tmdb=${id}`;
-            const iframe = document.getElementById('videoPlayerIframe');
-            if (iframe) {
-                iframe.src = playerUrl;
-            }
-            const playerModal = document.getElementById('playerModal');
-            if (playerModal) {
-                playerModal.classList.remove('hidden');
-            }
-        }
-
-        // Switch Search Tabs (Movies, Series, People)
         function switchSearchTab(tab) {
             currentState.searchTab = tab;
             if (tab === 'movie' || tab === 'tv') {
@@ -1169,7 +1166,6 @@
             }
         }
 
-        // Independent Search Engine for People Section
         async function executePeopleSearch(reset = false) {
             const grid = document.getElementById('movieGrid');
             if (!peopleState.query) {
@@ -1197,7 +1193,6 @@
             }
         }
 
-        // Render People Circle Avatar Cards
         function renderPeopleGrid(people) {
             const grid = document.getElementById('movieGrid');
             if (!people || people.length === 0) {
@@ -1218,7 +1213,6 @@
             }).join('');
         }
 
-        // Open Detailed Actor Profile Modal & Filmography
         async function openActorProfile(personId) {
             const modal = document.getElementById('actorModal');
             document.getElementById('actorModalAvatar').src = PLACEHOLDER_IMG;
