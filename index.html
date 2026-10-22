@@ -1050,11 +1050,7 @@
                 { name: 'VIDSRC.TO (High Compatibility)', url: type === 'tv' ? `https://vidsrc.to/embed/tv/${id}/${season}/${episode}` : `https://vidsrc.to/embed/movie/${id}` },
                 { name: 'SUPEREMBED 4K (Ultra Fast)', url: type === 'tv' ? `https://multiembed.mov/?video_id=${id}&tmdb=1&s=${season}&e=${episode}` : `https://multiembed.mov/?video_id=${id}&tmdb=1` },
                 { name: '2EMBED STREAM (Backup Player)', url: type === 'tv' ? `https://2embed.cc/embedtv/${id}&s=${season}&e=${episode}` : `https://2embed.cc/embed/${id}` },
-                { name: 'ANIKOTO (Anime Dedicated Server)', url: type === 'tv' ? `https://anikoto.cz/embed/tv/${id}/${season}/${episode}` : `https://anikoto.cz/embed/movie/${id}` },
-                { name: 'ANIWAVES (Anime High Quality)', url: type === 'tv' ? `https://aniwaves.ru/embed/tv/${id}/${season}/${episode}` : `https://aniwaves.ru/embed/movie/${id}` },
-                { name: 'REANIME (Anime Stream)', url: type === 'tv' ? `https://reanime.to/embed/tv/${id}/${season}/${episode}` : `https://reanime.to/embed/movie/${id}` },
-                { name: 'MKISSA (Anime Server)', url: type === 'tv' ? `https://mkissa.to/embed/tv/${id}/${season}/${episode}` : `https://mkissa.to/embed/movie/${id}` },
-                { name: 'MIRURO (HD Anime Player)', url: type === 'tv' ? `https://www.miruro.to/embed/tv/${id}/${season}/${episode}` : `https://www.miruro.to/embed/movie/${id}` }
+                { name: 'ATLANTIC (Clean Stream)', url: type === 'tv' ? `https://atlantic.st/embed/tv/${id}/${season}/${episode}` : `https://atlantic.st/embed/movie/${id}` },
             ];
           
             container.innerHTML = servers.map(srv => `
