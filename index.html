@@ -816,7 +816,7 @@
         }
 
         // Optimized Full Flix Vision Fetch Engine (With Multi-Company Prime & Paramount Support)
-        async function fetchContent(reset = false) {
+        Async function fetchContent(reset = false) {
             const grid = document.getElementById('movieGrid');
             if (reset) grid.innerHTML = `<div class="col-span-full text-center py-20 text-gray-500 text-xs">Loading content...</div>`;
 
@@ -839,14 +839,26 @@
                     const netObj = NETWORKS.find(n => String(n.id) === String(currentState.network));
                     
                     if (currentState.network === '42005' || netObj?.name === 'Marvel Studios') {
+                        // Marvel Studios Fix
                         url = `${BASE_URL}/discover/${currentState.type}?api_key=${API_KEY}&with_companies=42005&page=${currentState.page}`;
+                    } else if (currentState.network === '213' || netObj?.name === 'Netflix') {
+                        // Netflix Universal Fix (Movies & TV Shows)
+                        if (currentState.type === 'movie') {
+                            url = `${BASE_URL}/discover/movie?api_key=${API_KEY}&with_watch_providers=8&watch_region=US&page=${currentState.page}`;
+                        } else {
+                            url = `${BASE_URL}/discover/tv?api_key=${API_KEY}&with_networks=213&page=${currentState.page}`;
+                        }
+                    } else if (currentState.network === '1024' || netObj?.name === 'Prime Video') {
+                        // Prime Video Fix (Amazon Studios)
+                        url = `${BASE_URL}/discover/${currentState.type}?api_key=${API_KEY}&with_companies=20580|21652|157973&page=${currentState.page}`;
+                    } else if (currentState.network === '433' || netObj?.name === 'Paramount+') {
+                        // Paramount+ Fix (Paramount Pictures)
+                        url = `${BASE_URL}/discover/${currentState.type}?api_key=${API_KEY}&with_companies=4|3324|7326&page=${currentState.page}`;
                     } else if (currentState.type === 'tv') {
                         url += `&with_networks=${currentState.network}`;
                     } else {
                         if (netObj?.companyId) {
                             url += `&with_companies=${netObj.companyId}`;
-                        } else if (netObj?.providerId) {
-                            url += `&with_watch_providers=${netObj.providerId}&watch_region=US`;
                         } else {
                             url += `&with_companies=${currentState.network}`;
                         }
@@ -861,6 +873,7 @@
                 const res = await fetch(url);
                 let data = await res.json();
                 
+                // Fallback for Marvel if empty
                 if ((!data.results || data.results.length === 0) && currentState.network === '42005') {
                     const fallbackUrl = `${BASE_URL}/search/movie?api_key=${API_KEY}&query=Marvel&page=${currentState.page}`;
                     const fbRes = await fetch(fallbackUrl);
