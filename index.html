@@ -1050,13 +1050,11 @@
                 { name: 'VIDSRC.TO (High Compatibility)', url: type === 'tv' ? `https://vidsrc.to/embed/tv/${id}/${season}/${episode}` : `https://vidsrc.to/embed/movie/${id}` },
                 { name: 'SUPEREMBED 4K (Ultra Fast)', url: type === 'tv' ? `https://multiembed.mov/?video_id=${id}&tmdb=1&s=${season}&e=${episode}` : `https://multiembed.mov/?video_id=${id}&tmdb=1` },
                 { name: '2EMBED STREAM (Backup Player)', url: type === 'tv' ? `https://2embed.cc/embedtv/${id}&s=${season}&e=${episode}` : `https://2embed.cc/embed/${id}` },
-                { name: 'FILEDOWNLOADZ (Custom Server)', url: type === 'tv' ? `https://filedownloadz.my/vidsrc/embed/tv?tmdb=${id}&season=${season}&episode=${episode}` : `https://filedownloadz.my/vidsrc/embed/movie?tmdb=${id}` },
-                { name: 'VIDSRC.PK (Official Embed)', url: type === 'tv' ? `https://embed.vidsrc.pk/tv/${id}/${season}/${episode}` : `https://embed.vidsrc.pk/movie/${id}` },
-                { name: 'VIDSRC2 OFFICIAL (New Mirror)', url: type === 'tv' ? `https://vidsrc2-offcial.cyou/embed/tv/${id}/${season}/${episode}` : `https://vidsrc2-offcial.cyou/embed/movie/${id}` },
-                { name: 'VIDCORE (New Fast Server)', url: type === 'tv' ? `https://vidcore.org/embed/tv/${id}/${season}/${episode}` : `https://vidcore.org/embed/movie/${id}` },
-                { name: 'EMBEDWAVE (Alternative HD)', url: type === 'tv' ? `https://embedwave.cc/embed/tv/${id}/${season}/${episode}` : `https://embedwave.cc/embed/movie/${id}` },
-                { name: '2EMBED.ORG (Direct Mirror)', url: type === 'tv' ? `https://2embed.org/embed/tv?tmdb=${id}&s=${season}&e=${episode}` : `https://2embed.org/embed/movie/${id}` },
-                { name: 'SUPEREMBED.STREAM (Multi-Source)', url: type === 'tv' ? `https://superembed.stream/embed/tv/${id}/${season}/${episode}` : `https://superembed.stream/embed/movie/${id}` }
+                { name: 'ANIKOTO (Anime Dedicated Server)', url: type === 'tv' ? `https://anikoto.cz/embed/tv/${id}/${season}/${episode}` : `https://anikoto.cz/embed/movie/${id}` },
+                { name: 'ANIWAVES (Anime High Quality)', url: type === 'tv' ? `https://aniwaves.ru/embed/tv/${id}/${season}/${episode}` : `https://aniwaves.ru/embed/movie/${id}` },
+                { name: 'REANIME (Anime Stream)', url: type === 'tv' ? `https://reanime.to/embed/tv/${id}/${season}/${episode}` : `https://reanime.to/embed/movie/${id}` },
+                { name: 'MKISSA (Anime Server)', url: type === 'tv' ? `https://mkissa.to/embed/tv/${id}/${season}/${episode}` : `https://mkissa.to/embed/movie/${id}` },
+                { name: 'MIRURO (HD Anime Player)', url: type === 'tv' ? `https://www.miruro.to/embed/tv/${id}/${season}/${episode}` : `https://www.miruro.to/embed/movie/${id}` }
             ];
           
             container.innerHTML = servers.map(srv => `
