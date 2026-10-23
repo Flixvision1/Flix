@@ -1,0 +1,8 @@
+[{
+      "relation": ["delegate_permission/common.handle_all_urls"],
+      "target": {
+        "namespace": "android_app",
+        "package_name": "io.github.flixvision1.twa",
+        "sha256_cert_fingerprints": ["E6:77:53:05:4F:2B:7F:7F:F0:79:B5:99:5A:51:DE:30:DC:BB:59:08:E7:48:0E:34:1C:32:91:9D:E6:96:03:C9"]
+      }
+    }]
