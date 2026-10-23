@@ -1,6 +1,7 @@
 {
   "name": "Flix Vision",
   "short_name": "Flix",
+  "description": "A movie streaming app to watch your favorite movies and shows.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#000000",
