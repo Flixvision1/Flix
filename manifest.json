@@ -13,7 +13,7 @@
   "lang": "en",
   "dir": "ltr",
   "categories": ["entertainment", "movies"],
-  "iarc_rating_id": "",
+  "iarc_rating_id": "urn:icra:lang:en:r0",
   "prefer_related_applications": false,
   "related_applications": [],
   "scope_extensions": [],
@@ -57,6 +57,17 @@
   "note_taking": {
     "url": "./"
   },
+  "widgets": [
+    {
+      "name": "Flix Widget",
+      "short_name": "Widget",
+      "tag": "flix-widget",
+      "ms_ac_template": "./widget.json",
+      "data": "./widget-data.json",
+      "screenshots": [{ "src": "launchericon-512x512.png", "sizes": "512x512" }],
+      "icons": [{ "src": "launchericon-192x192.png", "sizes": "192x192" }]
+    }
+  ],
   "icons": [
     {
       "src": "launchericon-192x192.png",
