@@ -43,10 +43,19 @@ self.addEventListener('fetch', event => {
   );
 });
 
-// Background Sync Placeholder
+// Background Sync
 self.addEventListener('sync', event => {
   if (event.tag === 'sync-data') {
     console.log('Background syncing...');
+  }
+});
+
+// Periodic Background Sync
+self.addEventListener('periodicsync', event => {
+  if (event.tag === 'content-sync') {
+    event.waitUntil(
+      console.log('Periodic background syncing...')
+    );
   }
 });
 
