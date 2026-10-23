@@ -1280,58 +1280,7 @@
                 showToast('Failed to load actor profile');
             }
         }
-          // Netflix-style Intro Sound on Page Load
-        function playAppStartSound() {
-            try {
-                const AudioContext = window.AudioContext || window.webkitAudioContext;
-                if (!AudioContext) return;
-                
-                const ctx = new AudioContext();
-                const now = ctx.currentTime;
-
-                // Main Cinematic Boom
-                const osc1 = ctx.createOscillator();
-                const gain1 = ctx.createGain();
-                osc1.type = 'triangle';
-                osc1.frequency.setValueAtTime(70, now);
-                osc1.frequency.exponentialRampToValueAtTime(25, now + 1.0);
-                gain1.gain.setValueAtTime(0.9, now);
-                gain1.gain.exponentialRampToValueAtTime(0.001, now + 1.0);
-                osc1.connect(gain1);
-                gain1.connect(ctx.destination);
-                osc1.start(now);
-                osc1.stop(now + 1.0);
-
-                // Second Hit (Tudum)
-                setTimeout(() => {
-                    const osc2 = ctx.createOscillator();
-                    const gain2 = ctx.createGain();
-                    osc2.type = 'sine';
-                    osc2.frequency.setValueAtTime(110, ctx.currentTime);
-                    osc2.frequency.exponentialRampToValueAtTime(35, ctx.currentTime + 1.5);
-                    gain2.gain.setValueAtTime(0.7, ctx.currentTime);
-                    gain2.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 1.2);
-                    osc2.connect(gain2);
-                    gain2.connect(ctx.destination);
-                    osc2.start(ctx.currentTime);
-                    osc2.stop(ctx.currentTime + 1.2);
-                }, 200);
-            } catch(e) {
-                console.log('Audio autoplay blocked by browser policy');
-            }
-        }
-
-        // Trigger sound on first user interaction with the website
-        window.addEventListener('DOMContentLoaded', () => {
-            const triggerFirstInteraction = () => {
-                playAppStartSound();
-                window.removeEventListener('click', triggerFirstInteraction);
-                window.removeEventListener('keydown', triggerFirstInteraction);
-            };
-            window.addEventListener('click', triggerFirstInteraction);
-            window.addEventListener('keydown', triggerFirstInteraction);
-        });
-        
-    </script>
+          
+ </script>
 </body>
 </html>
