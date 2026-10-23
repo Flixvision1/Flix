@@ -71,8 +71,9 @@
       "name": "Flix Widget",
       "short_name": "Widget",
       "tag": "flix-widget",
-      "ms_ac_template": "./widget.json",
-      "data": "./widget-data.json",
+      "ms_ac_template": "./manifest.json",
+      "data": "./manifest.json",
+      "type": "application/json",
       "screenshots": [{ "src": "launchericon-512x512.png", "sizes": "512x512", "type": "image/png" }],
       "icons": [{ "src": "launchericon-192x192.png", "sizes": "192x192", "type": "image/png" }]
     }
