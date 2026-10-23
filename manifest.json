@@ -40,6 +40,23 @@
       "url": "url"
     }
   },
+  "file_handlers": [
+    {
+      "action": "./",
+      "accept": {
+        "video/*": [".mp4", ".mkv"]
+      }
+    }
+  ],
+  "protocol_handlers": [
+    {
+      "protocol": "web+flix",
+      "url": "./?flix=%s"
+    }
+  ],
+  "note_taking": {
+    "url": "./"
+  },
   "icons": [
     {
       "src": "launchericon-192x192.png",
