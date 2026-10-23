@@ -2,12 +2,15 @@
   "name": "Flix Vision",
   "short_name": "Flix",
   "description": "A movie streaming app to watch your favorite movies and shows.",
-  "start_url": "/",
+  "start_url": "./",
   "display": "standalone",
   "background_color": "#000000",
   "theme_color": "#000000",
   "orientation": "any",
   "id": "/?source=pwa",
+  "categories": ["entertainment", "movies"],
+  "prefer_related_applications": false,
+  "related_applications": [],
   "icons": [
     {
       "src": "launchericon-192x192.png",
