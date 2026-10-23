@@ -13,8 +13,10 @@
   "lang": "en",
   "dir": "ltr",
   "categories": ["entertainment", "movies"],
+  "iarc_rating_id": "",
   "prefer_related_applications": false,
   "related_applications": [],
+  "scope_extensions": [],
   "icons": [
     {
       "src": "launchericon-192x192.png",
