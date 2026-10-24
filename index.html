@@ -549,42 +549,45 @@
         const BACKDROP_URL = 'https://image.tmdb.org/t/p/original';
         const PLACEHOLDER_IMG = 'https://placehold.co/400x600/111622/ffffff?text=No+Image';
 
-        // Flix Vision Network Chips Configuration - Exact Sizing to Eliminate White Space
-        // Flix Vision Network Chips Configuration - Perfectly Scaled & Enlarged
+        // Flix Vision Network Chips Configuration - Exact Original Styling & Weight
         const NETWORKS = [
             { id: 'anime', name: 'Anime', isAnime: true },
             { id: 'all', name: 'All', isAll: true },
             { 
                 id: 213, providerId: 8, companyId: 10181, name: 'Netflix', 
-                svg: `<span class="text-red-600 font-black tracking-tighter text-2xl uppercase scale-125 inline-block">NETFLIX</span>` 
+                svg: `<span class="text-red-600 font-bold tracking-tight text-xl uppercase">NETFLIX</span>` 
             },
             { 
                 id: 2739, providerId: 337, companyId: 2, name: 'Disney+', 
-                svg: `<span class="text-cyan-500 font-black italic tracking-wide text-xl scale-125 inline-block">Disney+</span>` 
+                svg: `<span class="text-cyan-500 font-bold italic tracking-normal text-lg">Disney+</span>` 
+            },
+            { 
+                id: 119, providerId: 9, companyId: 1024, name: 'Prime Video', 
+                svg: `<span class="text-black font-semibold text-xs tracking-tight flex flex-col items-start leading-none"><span>prime</span><span class="text-cyan-500 font-bold">video</span></span>` 
             },
             { 
                 id: 2552, providerId: 350, companyId: 130932, name: 'Apple TV+', 
-                svg: `<span class="text-black font-black tracking-tight text-lg flex items-center scale-150 inline-block"><i class="fa-brands fa-apple mr-1 text-xl"></i>tv+</span>` 
+                svg: `<span class="text-black font-semibold tracking-tight text-base flex items-center"><i class="fa-brands fa-apple mr-1 text-xl"></i>tv+</span>` 
             },
             { 
                 id: 67, providerId: 1899, companyId: 3268, name: 'HBO Max', 
-                svg: `<span class="text-purple-600 font-black text-lg uppercase scale-125 inline-block">HBOMAX</span>` 
+                svg: `<span class="text-purple-600 font-bold text-sm tracking-widest uppercase">HBOMAX</span>` 
             },
             { 
                 id: 49, providerId: 15, companyId: 10163, name: 'Hulu', 
-                svg: `<span class="text-emerald-500 font-black text-xl tracking-wider scale-125 inline-block">hulu</span>` 
+                svg: `<span class="text-emerald-500 font-bold text-lg tracking-normal">hulu</span>` 
             },
             { 
                 id: 318, providerId: 43, companyId: 318, name: 'Starz', 
-                svg: `<span class="text-black font-black text-lg tracking-widest uppercase scale-125 inline-block">STARZ</span>` 
+                svg: `<span class="text-black font-bold text-sm tracking-widest uppercase">STARZ</span>` 
             },
             { 
                 id: 3353, providerId: 386, name: 'Peacock', 
-                svg: `<span class="text-black font-black text-lg tracking-wide scale-125 inline-block">peacock</span>` 
+                svg: `<span class="text-black font-medium text-xs tracking-tight">peacock</span>` 
             },
             { 
                 id: 42005, companyId: 42005, name: 'Marvel Studios', 
-                svg: `<span class="bg-red-600 text-white font-black px-2.5 py-1.5 rounded text-sm tracking-tighter uppercase scale-135 inline-block shadow-sm">MARVEL</span>` 
+                svg: `<span class="text-red-600 font-black tracking-tighter text-sm uppercase">MARVEL STUDIOS</span>` 
             }
         ];
 
