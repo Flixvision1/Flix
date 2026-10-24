@@ -96,29 +96,30 @@
         <span id="toastMsg">Notification message</span>
     </div>
 
-    <!-- Header Navigation Bar - Exact Flix Vision UI -->
-    <header class="sticky top-0 z-30 bg-[#0e131d] border-b border-gray-800/85 px-4 py-3.5 flex items-center justify-between shadow-xl">
-        <div class="flex items-center space-x-3.5">
-            <button id="openSidebarBtn" class="text-gray-200 hover:text-white text-xl p-1.5 focus:outline-none active:scale-95 transition">
-                <i class="fa-solid fa-bars text-xl"></i>
+            <!-- Header Navigation Bar - Exact Flix Vision UI with Ellipsis (...) -->
+    <header class="sticky top-0 z-30 bg-[#0e131d] border-b border-gray-800/85 px-4 py-4 flex items-center justify-between shadow-xl">
+        <div class="flex items-center space-x-4 min-w-0">
+            <button id="openSidebarBtn" class="text-gray-200 hover:text-white text-2xl p-1.5 focus:outline-none active:scale-95 transition shrink-0">
+                <i class="fa-solid fa-bars text-2xl"></i>
             </button>
-            <h1 id="pageTitle" class="text-sm sm:text-base font-extrabold text-white tracking-wider truncate max-w-[190px] sm:max-w-none uppercase">
+            <!-- لێرەدا truncate و max-w دادەنێین تاوەکو سێ نقطەی (...) تێدا دەرکەوێت وەک ئەپی ڕەسەن -->
+            <h1 id="pageTitle" class="text-xs sm:text-base font-extrabold text-white tracking-wider truncate max-w-[170px] sm:max-w-none uppercase">
                 MOVIES: TRENDING
             </h1>
         </div>
 
-        <div class="flex items-center space-x-4 text-gray-200 text-lg">
+        <div class="flex items-center space-x-5 text-gray-200 text-xl shrink-0">
             <!-- Exact Flix Vision Chromecast Icon -->
-            <button id="castBtn" class="hover:text-cyan-400 transition active:scale-95 p-1.5 flex items-center justify-center" title="Chromecast">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <button id="castBtn" class="hover:text-cyan-400 transition active:scale-95 p-1 flex items-center justify-center" title="Chromecast">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M2 16.1A5 5 0 0 1 5.9 20M2 12.05A9 9 0 0 1 9.95 20M2 8V6a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-6"></path>
                     <line x1="2" y1="20" x2="2.01" y2="20"></line>
                 </svg>
             </button>
-            <button id="searchToggleBtn" class="hover:text-cyan-400 transition active:scale-95 p-1.5" title="Search"><i class="fa-solid fa-magnifying-glass text-lg"></i></button>
-            <button id="filterToggleBtn" class="hover:text-cyan-400 transition active:scale-95 p-1.5" title="Filter Panel"><i class="fa-solid fa-filter text-lg"></i></button>
+            <button id="searchToggleBtn" class="hover:text-cyan-400 transition active:scale-95 p-1" title="Search"><i class="fa-solid fa-magnifying-glass text-xl"></i></button>
+            <button id="filterToggleBtn" class="hover:text-cyan-400 transition active:scale-95 p-1" title="Filter Panel"><i class="fa-solid fa-filter text-xl"></i></button>
             <div class="relative">
-                <button id="menu3DotsBtn" class="hover:text-cyan-400 transition active:scale-95 p-1.5" title="More Options"><i class="fa-solid fa-ellipsis-vertical text-lg"></i></button>
+                <button id="menu3DotsBtn" class="hover:text-cyan-400 transition active:scale-95 p-1" title="More Options"><i class="fa-solid fa-ellipsis-vertical text-xl"></i></button>
                 <div id="dotsDropdown" class="hidden absolute right-0 mt-2 w-48 bg-[#111622] border border-gray-800 rounded-xl shadow-2xl z-50 py-1 text-xs">
                     <button onclick="openSettingsModal()" class="w-full text-left px-4 py-2 hover:bg-gray-800 text-gray-200 flex items-center space-x-2">
                         <i class="fa-solid fa-gear text-cyan-400 w-4"></i><span>Settings</span>
@@ -130,7 +131,6 @@
             </div>
         </div>
     </header>
-
     <!-- Search Input Bar & Multi-Type Tabs -->
     <div id="searchBarContainer" class="hidden bg-[#111723] px-4 py-3 border-b border-gray-800 transition-all space-y-3">
         <div class="relative max-w-xl mx-auto flex items-center">
@@ -685,16 +685,25 @@
             const genreSelect = document.getElementById('filterGenreSelect');
             if (genreSelect) genreSelect.value = 'all';
 
-            ['trending', 'theater', 'popular'].forEach(c => {
-                const btn = document.getElementById(`tab${c.charAt(0).toUpperCase() + c.slice(1)}`);
+            // چارەسەری تەواوی تابەکان: تەنها هێڵی شین و دەقی سپی بۆ تابی چالاک، بێ گۆڕانی ڕەنگی باکگراوندی دوگمە
+            const tabs = {
+                trending: document.getElementById('tabTrending'),
+                theater: document.getElementById('tabInTheater'),
+                popular: document.getElementById('tabPopular')
+            };
+
+            Object.keys(tabs).forEach(key => {
+                const btn = tabs[key];
                 if (btn) {
-                    btn.className = c === cat 
-                        ? 'py-2.5 text-cyan-400 border-b-2 border-cyan-400 transition whitespace-nowrap' 
-                        : 'py-2.5 text-gray-400 hover:text-gray-200 transition whitespace-nowrap';
+                    if (key === cat) {
+                        btn.className = 'py-3 text-white border-b-2 border-cyan-400 transition whitespace-nowrap';
+                    } else {
+                        btn.className = 'py-3 text-gray-400 hover:text-white border-b-2 border-transparent transition whitespace-nowrap';
+                    }
                 }
             });
 
-            document.getElementById('pageTitle').innerText = `${currentState.type.toUpperCase()}S: ${cat.toUpperCase()}`;
+            document.getElementById('pageTitle').innerText = `${currentState.type.toUpperCase()}S: ${cat === 'theater' ? 'IN THEATER' : cat.toUpperCase()}`;
             document.getElementById('customViewHeader').classList.add('hidden');
             fetchContent(true);
         }
