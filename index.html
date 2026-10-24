@@ -96,19 +96,23 @@
         <span id="toastMsg">Notification message</span>
     </div>
 
-            <!-- Header Navigation Bar - Exact Flix Vision UI with Ellipsis (...) -->
+                <!-- Header Navigation Bar - Exact Flix Vision UI with Ellipsis -->
     <header class="sticky top-0 z-30 bg-[#0e131d] border-b border-gray-800/85 px-4 py-4 flex items-center justify-between shadow-xl">
-        <div class="flex items-center space-x-4 min-w-0">
-            <button id="openSidebarBtn" class="text-gray-200 hover:text-white text-2xl p-1.5 focus:outline-none active:scale-95 transition shrink-0">
-                <i class="fa-solid fa-bars text-2xl"></i>
+        <div class="flex items-center space-x-3.5 min-w-0 flex-1 mr-2">
+            <button id="openSidebarBtn" class="text-gray-200 hover:text-white p-1.5 focus:outline-none active:scale-95 transition flex items-center justify-center" title="Menu">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="4" y1="6" x2="16" y2="6"></line>
+        <line x1="4" y1="12" x2="20" y2="12"></line>
+        <line x1="4" y1="18" x2="14" y2="18"></line>
+    </svg>
             </button>
-            <!-- لێرەدا truncate و max-w دادەنێین تاوەکو سێ نقطەی (...) تێدا دەرکەوێت وەک ئەپی ڕەسەن -->
-            <h1 id="pageTitle" class="text-xs sm:text-base font-extrabold text-white tracking-wider truncate max-w-[170px] sm:max-w-none uppercase">
+            <!-- لێرەدا max-w-[140px] کەم دەکەینەوە تاوەکو زووتر سێ نقطەی (...) وەک Flix Vision دەربکەوێت -->
+            <h1 id="pageTitle" class="text-xs sm:text-base font-extrabold text-white tracking-wider truncate max-w-[140px] sm:max-w-none uppercase">
                 MOVIES: TRENDING
             </h1>
         </div>
 
-        <div class="flex items-center space-x-5 text-gray-200 text-xl shrink-0">
+        <div class="flex items-center space-x-4 text-gray-200 text-xl shrink-0">
             <!-- Exact Flix Vision Chromecast Icon -->
             <button id="castBtn" class="hover:text-cyan-400 transition active:scale-95 p-1 flex items-center justify-center" title="Chromecast">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
@@ -131,7 +135,8 @@
             </div>
         </div>
     </header>
-    <!-- Search Input Bar & Multi-Type Tabs -->
+  
+   <!-- Search Input Bar & Multi-Type Tabs -->
     <div id="searchBarContainer" class="hidden bg-[#111723] px-4 py-3 border-b border-gray-800 transition-all space-y-3">
         <div class="relative max-w-xl mx-auto flex items-center">
             <input type="text" id="searchInput" placeholder="Search Movies, TV Shows, People..." 
@@ -148,10 +153,10 @@
         </div>
     </div>
 
-       <!-- Category Tabs Navigation - Exact Flix Vision Style (Only Bottom Blue Line, Shortened Name) -->
+           <!-- Category Tabs Navigation - Default Active on Trending -->
     <nav id="mainCategoryNav" class="bg-[#0e131d] border-b border-gray-800/70 px-4 text-xs font-bold uppercase tracking-wider">
         <div class="flex space-x-6 overflow-x-auto hide-scrollbar">
-            <button onclick="switchCategory('trending')" id="tabTrending" class="py-3 text-gray-400 hover:text-white border-b-2 border-transparent transition whitespace-nowrap">TRENDING</button>
+            <button onclick="switchCategory('trending')" id="tabTrending" class="py-3 text-white border-b-2 border-cyan-400 transition whitespace-nowrap">TRENDING</button>
             <button onclick="switchCategory('theater')" id="tabInTheater" class="py-3 text-gray-400 hover:text-white border-b-2 border-transparent transition whitespace-nowrap">IN THEATER</button>
             <button onclick="switchCategory('popular')" id="tabPopular" class="py-3 text-gray-400 hover:text-white border-b-2 border-transparent transition whitespace-nowrap">POPULAR</button>
         </div>
@@ -618,10 +623,12 @@
         let watchedHistory = JSON.parse(localStorage.getItem('fv_watched') || '[]');
         let currentCustomView = null;
 
-        document.addEventListener('DOMContentLoaded', () => {
+                document.addEventListener('DOMContentLoaded', () => {
             setupFilterDropdowns();
             setupEventListeners();
-            fetchContent(true);
+            
+            // دڵنیابوون لەوەی لە سەرەتادا ڕاستەوخۆ Trending چالاکە و هێڵی شینی لەژێرە
+            switchCategory('trending');
         });
 
         function showToast(message) {
