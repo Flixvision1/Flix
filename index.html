@@ -108,7 +108,7 @@
                 </svg>
             </button>
             <!-- ناونیشان کە لە کاتی درێژبوونەوەدا دەبێتە سێ نقطە (...) وەک IN... -->
-            <h1 id="pageTitle" class="text-xs sm:text-base font-extrabold text-white tracking-wider truncate max-w-[140px] sm:max-w-none uppercase">
+            <h1 id="pageTitle" class="text-xs sm:text-base font-extrabold text-white tracking-wider truncate max-w-[100px] sm:max-w-none uppercase">
                 MOVIES: TRENDING
             </h1>
         </div>
@@ -135,8 +135,7 @@
                 </div>
             </div>
         </div>
-      </header>
-  
+    </header>
    <!-- Search Input Bar & Multi-Type Tabs -->
     <div id="searchBarContainer" class="hidden bg-[#111723] px-4 py-3 border-b border-gray-800 transition-all space-y-3">
         <div class="relative max-w-xl mx-auto flex items-center">
@@ -154,17 +153,17 @@
         </div>
     </div>
 
-    <!-- Category Tabs Navigation - Exact Flix Vision (IN THEATER / ON AIR) -->
+    <!-- Category Tabs Navigation - Exact Flix Vision (IN THEATER بێ / ON AIR) -->
     <nav id="mainCategoryNav" class="bg-[#0e131d] px-4 text-xs font-bold uppercase tracking-wider">
         <div class="flex space-x-6 overflow-x-auto hide-scrollbar">
             <button onclick="switchCategory('trending')" id="tabTrending" class="py-3 text-white border-b-2 border-cyan-400 transition whitespace-nowrap">TRENDING</button>
-            <button onclick="switchCategory('theater')" id="tabInTheater" class="py-3 text-gray-400 hover:text-white border-b-2 border-transparent transition whitespace-nowrap">IN THEATER / ON AIR</button>
+            <button onclick="switchCategory('theater')" id="tabInTheater" class="py-3 text-gray-400 hover:text-white border-b-2 border-transparent transition whitespace-nowrap">IN THEATER</button>
             <button onclick="switchCategory('popular')" id="tabPopular" class="py-3 text-gray-400 hover:text-white border-b-2 border-transparent transition whitespace-nowrap">POPULAR</button>
         </div>
     </nav>
 
-    <!-- Studio / Network Logo Chips Carousel - Enriched Sizing matching Original -->
-    <section id="networkChipsSection" class="bg-[#070b12] py-3 px-3 border-b border-gray-800/30">
+    <!-- Studio / Network Logo Chips Carousel - Large & Exact to Original -->
+    <section id="networkChipsSection" class="bg-[#070b12] py-2.5 px-3 border-b border-gray-800/30">
         <div id="networkChipsContainer" class="flex items-center space-x-3 overflow-x-auto hide-scrollbar"></div>
     </section>
     <!-- Modal Filter Overlay -->
@@ -641,30 +640,16 @@
         }
 
         function setupFilterDropdowns() {
-            document.getElementById('networkChipsContainer').innerHTML = NETWORKS.map(net => {
-                if (net.isAnime) {
-                    return `
-                        <button onclick="showAnimeSection()" class="px-3.5 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap bg-cyan-600/20 border border-cyan-500 text-cyan-400 transition shrink-0">
-                            <i class="fa-solid fa-wand-magic-sparkles mr-1"></i> Anime
-                        </button>
-                    `;
-                }
-                if (net.isAll) {
-                    return `
-                        <button onclick="selectNetwork('${net.id}')" class="px-4 py-2 rounded-xl text-xs font-bold whitespace-nowrap bg-[#111622] border border-gray-800 text-gray-300 hover:border-cyan-500 transition shrink-0">
-                            All
-                        </button>
-                    `;
-                }
+            // تەنها نێوۆرکەکان دەهێڵینەوە بێ Anime و All تاوەکو ڕێک وەک وێنە ڕەسەنەکە بێت
+            document.getElementById('networkChipsContainer').innerHTML = NETWORKS.filter(net => !net.isAnime && !net.isAll).map(net => {
                 return `
-    <button onclick="selectNetwork('${net.id}')" class="px-4 py-2 rounded-xl bg-white border border-gray-200 hover:border-cyan-500 transition shrink-0 flex items-center justify-center h-9 sm:h-10 shadow-sm min-w-[75px]">
-        ${net.svg}
-    </button>
-`;
-
+                    <button onclick="selectNetwork('${net.id}')" class="px-5 py-2.5 rounded-xl bg-white border border-gray-200 hover:border-cyan-500 transition shrink-0 flex items-center justify-center h-10 shadow-md">
+                        ${net.svg}
+                    </button>
+                `;
             }).join('');
 
-            document.getElementById('filterNetworkSelect').innerHTML = NETWORKS.filter(n => !n.isAnime).map(n => `<option value="${n.id}">${n.name}</option>`).join('');
+            document.getElementById('filterNetworkSelect').innerHTML = NETWORKS.filter(n => !n.isAnime && !n.isAll).map(n => `<option value="${n.id}">${n.name}</option>`).join('');
             document.getElementById('filterGenreSelect').innerHTML = GENRES.map(g => `<option value="${g.id}">${g.name}</option>`).join('');
             
             let yearOpts = '<option value="all">All Years</option>';
