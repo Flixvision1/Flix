@@ -96,9 +96,9 @@
         <span id="toastMsg">Notification message</span>
     </div>
 
-    <!-- Header Navigation Bar - Exact Flix Vision UI Size & Spacing -->
-    <header class="sticky top-0 z-30 bg-[#0e131d] border-b border-gray-800/80 px-4 py-3.5 flex items-center justify-between shadow-lg">
-        <div class="flex items-center space-x-3.5">
+    <!-- Header Navigation Bar - 100% Exact Flix Vision UI -->
+    <header class="sticky top-0 z-30 bg-[#0e131d] border-b border-gray-800/80 px-4 py-3 flex items-center justify-between shadow-lg">
+        <div class="flex items-center space-x-3">
             <button id="openSidebarBtn" class="text-gray-300 hover:text-white text-xl p-1 focus:outline-none active:scale-95 transition">
                 <i class="fa-solid fa-bars"></i>
             </button>
@@ -107,10 +107,10 @@
             </h1>
         </div>
 
-        <div class="flex items-center space-x-5 text-gray-300 text-lg">
+        <div class="flex items-center space-x-4 text-gray-300 text-base">
             <!-- Exact Flix Vision Chromecast Icon -->
             <button id="castBtn" class="hover:text-cyan-400 transition active:scale-95 p-1 flex items-center justify-center" title="Chromecast">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M2 16.1A5 5 0 0 1 5.9 20M2 12.05A9 9 0 0 1 9.95 20M2 8V6a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-6"></path>
                     <line x1="2" y1="20" x2="2.01" y2="20"></line>
                 </svg>
@@ -151,12 +151,12 @@
         </div>
     </div>
 
-    <!-- Category Tabs Navigation - 100% Exact Flix Vision UI -->
-    <nav id="mainCategoryNav" class="bg-[#0e131d] border-b border-gray-800/60 px-4 text-xs font-extrabold uppercase tracking-wider">
-        <div class="flex space-x-7 overflow-x-auto hide-scrollbar">
-            <button onclick="switchCategory('trending')" id="tabTrending" class="py-3 text-cyan-400 border-b-2 border-cyan-400 transition whitespace-nowrap">TRENDING</button>
-            <button onclick="switchCategory('theater')" id="tabInTheater" class="py-3 text-gray-400 hover:text-gray-200 transition whitespace-nowrap">IN THEATER / ON AIR</button>
-            <button onclick="switchCategory('popular')" id="tabPopular" class="py-3 text-gray-400 hover:text-gray-200 transition whitespace-nowrap">POPULAR</button>
+    <!-- Category Tabs Navigation - Exact Flix Vision Spacing -->
+    <nav id="mainCategoryNav" class="bg-[#0e131d] border-b border-gray-800/60 px-4 text-xs font-bold uppercase tracking-wider">
+        <div class="flex space-x-6 overflow-x-auto hide-scrollbar">
+            <button onclick="switchCategory('trending')" id="tabTrending" class="py-2.5 text-cyan-400 border-b-2 border-cyan-400 transition whitespace-nowrap">TRENDING</button>
+            <button onclick="switchCategory('theater')" id="tabInTheater" class="py-2.5 text-gray-400 hover:text-gray-200 transition whitespace-nowrap">IN THEATER</button>
+            <button onclick="switchCategory('popular')" id="tabPopular" class="py-2.5 text-gray-400 hover:text-gray-200 transition whitespace-nowrap">POPULAR</button>
         </div>
     </nav>
 
