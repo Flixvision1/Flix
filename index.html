@@ -643,7 +643,7 @@
                 function setupFilterDropdowns() {
             document.getElementById('networkChipsContainer').innerHTML = NETWORKS.filter(net => !net.isAnime && !net.isAll).map(net => {
                 return `
-                    <button onclick="selectNetwork('${net.id}')" class="h-11 px-5 min-w-[90px] rounded-xl bg-white border border-gray-200 hover:border-cyan-500 transition shrink-0 flex items-center justify-center shadow-md">
+                    <button onclick="selectNetwork('${net.id}')" class="h-9 px-5 min-w-[90px] rounded-xl bg-white border border-gray-200 hover:border-cyan-500 transition shrink-0 flex items-center justify-center shadow-md">
                         ${net.svg}
                     </button>
                 `;
