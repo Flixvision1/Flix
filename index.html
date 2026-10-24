@@ -549,43 +549,41 @@
         const BACKDROP_URL = 'https://image.tmdb.org/t/p/original';
         const PLACEHOLDER_IMG = 'https://placehold.co/400x600/111622/ffffff?text=No+Image';
 
-        // Flix Vision Network Chips Configuration (Pure Unbreakable Vector SVGs)
+                // Flix Vision Network Chips Configuration - Enriched Sizing to Fill Space
         const NETWORKS = [
             { id: 'anime', name: 'Anime', isAnime: true },
             { id: 'all', name: 'All', isAll: true },
             { 
                 id: 213, providerId: 8, companyId: 10181, name: 'Netflix', 
-                svg: `<span class="text-red-600 font-black tracking-tighter text-sm uppercase">NETFLIX</span>` 
+                svg: `<span class="text-red-600 font-black tracking-tighter text-base sm:text-lg uppercase">NETFLIX</span>` 
             },
             { 
                 id: 2739, providerId: 337, companyId: 2, name: 'Disney+', 
-                svg: `<span class="text-cyan-400 font-black italic tracking-wide text-xs">Disney+</span>` 
+                svg: `<span class="text-cyan-500 font-black italic tracking-wide text-sm sm:text-base">Disney+</span>` 
             },
-    
             { 
                 id: 2552, providerId: 350, companyId: 130932, name: 'Apple TV+', 
-                svg: `<span class="text-black font-black tracking-tight text-xs flex items-center"><i class="fa-brands fa-apple mr-1"></i>tv+</span>` 
+                svg: `<span class="text-black font-black tracking-tight text-sm sm:text-base flex items-center"><i class="fa-brands fa-apple mr-1 text-base sm:text-lg"></i>tv+</span>` 
             },
- 
             { 
                 id: 67, providerId: 1899, companyId: 3268, name: 'HBO Max', 
-                svg: `<span class="text-purple-600 font-black text-xs uppercase">HBOMAX</span>` 
+                svg: `<span class="text-purple-600 font-black text-sm sm:text-base uppercase">HBOMAX</span>` 
             },
             { 
                 id: 49, providerId: 15, companyId: 10163, name: 'Hulu', 
-                svg: `<span class="text-emerald-500 font-black text-xs tracking-wider">hulu</span>` 
+                svg: `<span class="text-emerald-500 font-black text-sm sm:text-base tracking-wider">hulu</span>` 
             },
             { 
                 id: 318, providerId: 43, companyId: 318, name: 'Starz', 
-                svg: `<span class="text-black font-black text-xs tracking-widest uppercase">STARZ</span>` 
+                svg: `<span class="text-black font-black text-sm sm:text-base tracking-widest uppercase">STARZ</span>` 
             },
             { 
                 id: 3353, providerId: 386, name: 'Peacock', 
-                svg: `<span class="text-black font-black text-xs tracking-wide">peacock</span>` 
+                svg: `<span class="text-black font-black text-sm sm:text-base tracking-wide">peacock</span>` 
             },
             { 
                 id: 42005, companyId: 42005, name: 'Marvel Studios', 
-                svg: `<span class="bg-red-600 text-white font-black px-1.5 py-0.5 rounded text-[10px] tracking-tighter uppercase">MARVEL</span>` 
+                svg: `<span class="bg-red-600 text-white font-black px-2 py-1 rounded text-xs tracking-tighter uppercase">MARVEL</span>` 
             }
         ];
 
@@ -639,11 +637,10 @@
             }, 3000);
         }
 
-        function setupFilterDropdowns() {
-            // تەنها نێوۆرکەکان دەهێڵینەوە بێ Anime و All تاوەکو ڕێک وەک وێنە ڕەسەنەکە بێت
+                function setupFilterDropdowns() {
             document.getElementById('networkChipsContainer').innerHTML = NETWORKS.filter(net => !net.isAnime && !net.isAll).map(net => {
                 return `
-                    <button onclick="selectNetwork('${net.id}')" class="px-5 py-2.5 rounded-xl bg-white border border-gray-200 hover:border-cyan-500 transition shrink-0 flex items-center justify-center h-10 shadow-md">
+                    <button onclick="selectNetwork('${net.id}')" class="h-11 px-5 min-w-[90px] rounded-xl bg-white border border-gray-200 hover:border-cyan-500 transition shrink-0 flex items-center justify-center shadow-md">
                         ${net.svg}
                     </button>
                 `;
