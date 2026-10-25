@@ -1408,6 +1408,47 @@
                         <!-- Options populated dynamically -->
                     </select>
                 </div>
+    <!-- پەنجەرەی فلتەر (تەنها یەک جار و بە ڕێکی) -->
+    <div id="filterModal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
+        <div class="bg-[#12141c] border border-gray-800 w-full max-w-md rounded-2xl p-6 shadow-2xl relative flex flex-col space-y-5">
+            
+            <!-- Header -->
+            <div class="flex items-center justify-between border-b border-gray-800 pb-4">
+                <div class="flex items-center space-x-2 text-cyan-400 font-bold text-lg">
+                    <i class="fa-solid fa-filter"></i>
+                    <span>FILTER CATALOG</span>
+                </div>
+                <button onclick="closeFilterModal()" class="text-gray-400 hover:text-white text-xl">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <!-- Filter Options -->
+            <div class="flex flex-col space-y-4">
+                <!-- Network -->
+                <div class="flex flex-col space-y-1.5">
+                    <label class="text-cyan-400 text-sm font-semibold">Network</label>
+                    <select id="filterNetworkSelect" class="bg-[#1a1d29] border border-gray-800 text-white rounded-xl px-4 py-3 outline-none focus:border-cyan-400 transition">
+                        <!-- Options populated dynamically -->
+                    </select>
+                </div>
+
+                <!-- Type -->
+                <div class="flex flex-col space-y-1.5">
+                    <label class="text-cyan-400 text-sm font-semibold">Type</label>
+                    <select id="filterTypeSelect" class="bg-[#1a1d29] border border-gray-800 text-white rounded-xl px-4 py-3 outline-none focus:border-cyan-400 transition">
+                        <option value="movie">Movies</option>
+                        <option value="tv">TV Shows</option>
+                    </select>
+                </div>
+
+                <!-- Genre -->
+                <div class="flex flex-col space-y-1.5">
+                    <label class="text-cyan-400 text-sm font-semibold">Genre</label>
+                    <select id="filterGenreSelect" class="bg-[#1a1d29] border border-gray-800 text-white rounded-xl px-4 py-3 outline-none focus:border-cyan-400 transition">
+                        <!-- Options populated dynamically -->
+                    </select>
+                </div>
 
                 <!-- Year -->
                 <div class="flex flex-col space-y-1.5">
@@ -1448,13 +1489,10 @@
            currentState.type = document.getElementById('filterTypeSelect').value;
            currentState.genre = document.getElementById('filterGenreSelect').value;
            currentState.year = document.getElementById('filterYearSelect').value;
-           currentState.sortBy = document.getElementById('filterSortSelect').value;
+           currentState.sort = document.getElementById('filterSortSelect').value; // گۆڕا بۆ currentState.sort بۆ ڕێکخستن لەگەڵ سیستەمی سەرەکی
            closeFilterModal();
-           fetchContent();
-       } // لێرە کەوانەی داخستنی فەنکشنەکە زیاد کرا
-    </script>
-</body>
-</html>
+           fetchContent(true);
+       }
     </script>
 </body>
 </html>
