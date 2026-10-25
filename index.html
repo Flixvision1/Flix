@@ -7,11 +7,8 @@
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Google Fonts -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
 
     <style>
@@ -39,7 +36,7 @@
         }
     </style>
 </head>
-<body class="min-h-screen relative flex flex-col overflow-x-hidden">
+<body class="min-h-screen relative flex flex-col overflow-x-hidden bg-gradient-to-b from-[#1a0505] via-[#070b12] to-[#070b12]">
 
     <!-- Toast Notification -->
     <div id="toastNotification" class="fixed top-16 right-4 z-50 bg-cyan-600 text-white text-xs font-bold px-4 py-2.5 rounded-xl shadow-2xl transition-all duration-300 opacity-0 pointer-events-none transform translate-y-[-10px] flex items-center space-x-2">
@@ -48,7 +45,7 @@
     </div>
 
     <!-- Header -->
-    <header class="sticky top-0 z-30 bg-[#0e131d] border-b border-gray-800/40 px-4 py-3.5 flex items-center justify-between shadow-xl">
+    <header class="sticky top-0 z-30 bg-[#0e131d]/95 backdrop-blur-md border-b border-gray-800/40 px-4 py-3.5 flex items-center justify-between shadow-xl">
         <div class="flex items-center space-x-3.5 min-w-0 flex-1 mr-2">
             <button id="openSidebarBtn" class="text-gray-200 hover:text-white p-1 focus:outline-none transition shrink-0" title="Menu">
                 <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
@@ -71,7 +68,6 @@
             </button>
             <button id="searchToggleBtn" class="hover:text-cyan-400 transition p-1" title="Search"><i class="fa-solid fa-magnifying-glass"></i></button>
             <button onclick="openFilterModal()" class="hover:text-cyan-400 transition p-1" title="Filter"><i class="fa-solid fa-filter"></i></button>
-            <button id="menu3DotsBtn" class="hover:text-cyan-400 transition p-1" title="More"><i class="fa-solid fa-ellipsis-vertical"></i></button>
         </div>
     </header>
 
@@ -99,8 +95,8 @@
         </div>
     </nav>
 
-    <!-- Network Logos & Top Bar Filters (Exact like Flix Vision) -->
-    <section class="bg-[#070b12] py-2.5 px-3 border-b border-gray-800/30">
+    <!-- Network Logos & Top Bar Carousel -->
+    <section class="bg-[#070b12]/80 py-2.5 px-3 border-b border-gray-800/30">
         <div id="networkChipsContainer" class="flex items-center space-x-3 overflow-x-auto hide-scrollbar"></div>
     </section>
 
@@ -122,7 +118,7 @@
         </div>
     </main>
 
-    <!-- Sidebar Drawer (Exact like Image 1000179507.jpg) -->
+    <!-- Sidebar Drawer -->
     <div id="sidebarOverlay" class="fixed inset-0 bg-black/70 z-40 hidden backdrop-blur-sm"></div>
     <aside id="sidebar" class="fixed top-0 left-0 bottom-0 w-64 bg-[#0a0d12] border-r border-gray-800 z-50 transform -translate-x-full transition-transform duration-300 overflow-y-auto hide-scrollbar text-xs">
         <div class="p-4 space-y-6">
@@ -153,7 +149,7 @@
         </div>
     </aside>
 
-    <!-- Chromecast Casting Modal (Exact like Image 1000179508.jpg) -->
+    <!-- Chromecast Casting Modal -->
     <div id="castModal" class="hidden fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4 backdrop-blur-md">
         <div class="bg-[#111622] border border-gray-800 rounded-2xl max-w-sm w-full p-5 space-y-4 text-center shadow-2xl">
             <i class="fa-solid fa-chromecast text-4xl text-cyan-400 animate-pulse"></i>
@@ -324,7 +320,7 @@
         </div>
     </div>
 
-    <!-- JavaScript Application Core -->
+    <!-- JavaScript Core Script -->
     <script>
         const API_KEY = 'cd193c4897ae4e519cca3734ef116a7e';
         const BASE_URL = 'https://api.themoviedb.org/3';
@@ -334,7 +330,7 @@
 
         const NETWORKS = [
             { id: 'all', name: 'All' },
-            { id: 42005, name: 'Marvel Studios', svg: `<span class="text-red-600 font-black text-sm uppercase">MARVEL</span>` },
+            { id: 42005, name: 'Marvel Studios', svg: `<span class="text-red-600 font-black text-xs uppercase">MARVEL</span>` },
             { id: 213, name: 'Netflix', svg: `<span class="text-red-600 font-bold text-lg uppercase">NETFLIX</span>` },
             { id: 2739, name: 'Disney+', svg: `<span class="text-cyan-500 font-bold italic text-base">Disney+</span>` },
             { id: 119, name: 'Prime Video', svg: `<span class="text-black font-semibold text-xs flex items-center space-x-1"><span>prime</span><span class="text-cyan-500 font-bold">video</span></span>` },
@@ -342,15 +338,21 @@
             { id: 67, name: 'HBO Max', svg: `<span class="text-purple-600 font-bold text-sm uppercase">HBOMAX</span>` },
             { id: 49, name: 'Hulu', svg: `<span class="text-emerald-500 font-bold text-base">hulu</span>` },
             { id: 318, name: 'Starz', svg: `<span class="text-black font-bold text-sm uppercase">STARZ</span>` },
-            { id: 100, name: 'Bollywood', svg: `<span class="text-amber-500 font-bold text-xs uppercase">BOLLYWOOD</span>` }
+            { id: 100, name: 'Bollywood', svg: `<span class="text-amber-500 font-bold text-xs uppercase">BOLLYWOOD</span>` },
+            { id: 2, name: 'CBS', svg: `<span class="text-blue-600 font-extrabold text-sm uppercase">CBS</span>` },
+            { id: 174, name: 'AMC', svg: `<span class="text-white font-extrabold text-sm uppercase">AMC</span>` },
+            { id: 3353, name: 'Peacock', svg: `<span class="text-cyan-400 font-bold text-xs uppercase">Peacock</span>` },
+            { id: 339, name: 'MGM+', svg: `<span class="text-amber-400 font-bold text-xs uppercase">MGM+</span>` }
         ];
 
         const GENRES = [
             { id: 'all', name: 'All Genres' },
             { id: 28, name: 'Action' }, { id: 12, name: 'Adventure' }, { id: 16, name: 'Animation' },
-            { id: 35, name: 'Comedy' }, { id: 80, name: 'Crime' }, { id: 18, name: 'Drama' },
-            { id: 27, name: 'Horror' }, { id: 9648, name: 'Mystery' }, { id: 10749, name: 'Romance' },
-            { id: 878, name: 'Science Fiction' }, { id: 53, name: 'Thriller' }
+            { id: 35, name: 'Comedy' }, { id: 80, name: 'Crime' }, { id: 99, name: 'Documentary' },
+            { id: 18, name: 'Drama' }, { id: 10751, name: 'Family' }, { id: 14, name: 'Fantasy' },
+            { id: 36, name: 'History' }, { id: 27, name: 'Horror' }, { id: 10402, name: 'Music' },
+            { id: 9648, name: 'Mystery' }, { id: 10749, name: 'Romance' }, { id: 878, name: 'Science Fiction' },
+            { id: 53, name: 'Thriller' }, { id: 10752, name: 'War' }, { id: 37, name: 'Western' }
         ];
 
         let currentState = { type: 'movie', category: 'trending', network: 'all', genre: 'all', year: 'all', sort: 'popularity.desc', query: '', page: 1 };
@@ -485,7 +487,10 @@
                 url = `${BASE_URL}/search/${currentState.type}?api_key=${API_KEY}&query=${encodeURIComponent(currentState.query)}&page=${currentState.page}`;
             } else if (currentState.network !== 'all' || currentState.genre !== 'all' || currentState.year !== 'all') {
                 url = `${BASE_URL}/discover/${currentState.type}?api_key=${API_KEY}&sort_by=${currentState.sort}&page=${currentState.page}`;
-                if (currentState.network !== 'all') url += `&with_companies=${currentState.network}`;
+                if (currentState.network !== 'all') {
+                    if (currentState.type === 'tv') url += `&with_networks=${currentState.network}`;
+                    else url += `&with_companies=${currentState.network}`;
+                }
                 if (currentState.genre !== 'all') url += `&with_genres=${currentState.genre}`;
                 if (currentState.year !== 'all') url += currentState.type === 'tv' ? `&first_air_date_year=${currentState.year}` : `&primary_release_year=${currentState.year}`;
             }
@@ -616,8 +621,8 @@
             const modal = document.getElementById('streamLinksModal');
             const container = document.getElementById('streamLinksContainer');
             const servers = [
-                { name: 'FLIXVISION SERVER 1', url: `https://vidsrc.me/embed/movie?tmdb=${id}` },
-                { name: 'VIDLINK PRO', url: `https://vidlink.pro/movie/${id}` }
+                { name: 'FLIXVISION SERVER 1', url: type === 'tv' ? `https://vidsrc.me/embed/tv?tmdb=${id}&season=1&episode=1` : `https://vidsrc.me/embed/movie?tmdb=${id}` },
+                { name: 'VIDLINK PRO', url: type === 'tv' ? `https://vidlink.pro/tv/${id}/1/1` : `https://vidlink.pro/movie/${id}` }
             ];
             container.innerHTML = servers.map(s => `
                 <div onclick="playStream('${s.url}', '${s.name}')" class="p-3 bg-[#070b12] hover:bg-cyan-600/20 border border-gray-800 rounded-xl flex items-center justify-between cursor-pointer transition">
