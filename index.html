@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Flix Vision Ultimate Pro - Full Enterprise Edition</title>
+    <title>Flix Vision Ultimate Pro - Enterprise Master Edition v5.0 (Full All-Inclusive)</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
@@ -13,6 +13,7 @@
             --bg-main: #070b12;
             --bg-card: #111622;
             --accent-cyan: #06b6d4;
+            --accent-red: #dc2626;
         }
         body {
             font-family: 'Plus Jakarta Sans', sans-serif;
@@ -30,8 +31,15 @@
             box-shadow: 0 20px 35px -5px rgba(6, 182, 212, 0.5);
         }
         .glass-panel {
-            background: rgba(17, 22, 34, 0.95);
-            backdrop-filter: blur(20px);
+            background: rgba(17, 22, 34, 0.96);
+            backdrop-filter: blur(24px);
+        }
+        .animate-fadeIn {
+            animation: fadeIn 0.3s ease-in-out forwards;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
         }
     </style>
 </head>
@@ -43,7 +51,7 @@
         <span id="toastMsg">Action Successful</span>
     </div>
 
-    <!-- Top Header Navigation -->
+    <!-- Top Header Navigation Bar -->
     <header class="sticky top-0 z-30 bg-[#0e131d]/95 backdrop-blur-md border-b border-gray-800/40 px-4 py-3.5 flex items-center justify-between shadow-xl">
         <div class="flex items-center space-x-3.5 min-w-0 flex-1 mr-2">
             <button id="openSidebarBtn" class="text-gray-200 hover:text-white p-1 transition shrink-0" title="Menu">
@@ -69,7 +77,7 @@
     <!-- Search Overlay Box -->
     <div id="searchBarContainer" class="hidden bg-[#111723] px-4 py-3 border-b border-gray-800 space-y-3 shadow-2xl transition-all">
         <div class="relative max-w-xl mx-auto flex items-center">
-            <input type="text" id="searchInput" placeholder="Search movies, TV shows, people..." 
+            <input type="text" id="searchInput" placeholder="Search movies, TV shows, people, anime..." 
                 class="w-full bg-[#070b12] text-sm text-gray-100 placeholder-gray-500 rounded-xl pl-10 pr-8 py-2.5 border border-gray-700 focus:outline-none focus:border-cyan-500 shadow-inner">
             <i class="fa-solid fa-magnifying-glass absolute left-3.5 text-xs text-gray-400"></i>
             <button id="clearSearchBtn" class="absolute right-3 text-gray-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
@@ -95,7 +103,7 @@
         <div id="networkChipsContainer" class="flex items-center space-x-3 overflow-x-auto hide-scrollbar"></div>
     </section>
 
-    <!-- Main Grid Content -->
+    <!-- Main Grid Content Area -->
     <main class="max-w-7xl mx-auto px-3 py-4 space-y-6 flex-1 w-full">
         <div id="customViewHeader" class="hidden flex items-center justify-between border-b border-gray-800 pb-2">
             <h2 id="customViewTitle" class="text-sm font-extrabold text-cyan-400 uppercase tracking-wider">VIEW TITLE</h2>
@@ -111,7 +119,7 @@
         </div>
     </main>
 
-    <!-- Sidebar Drawer Menu (Flix Vision Full Navigation) -->
+    <!-- Sidebar Drawer Menu -->
     <div id="sidebarOverlay" class="fixed inset-0 bg-black/70 z-40 hidden backdrop-blur-sm"></div>
     <aside id="sidebar" class="fixed top-0 left-0 bottom-0 w-64 bg-[#0a0d12] border-r border-gray-800 z-50 transform -translate-x-full transition-transform duration-300 overflow-y-auto hide-scrollbar text-xs">
         <div class="p-4 space-y-5">
@@ -158,13 +166,13 @@
                 <button onclick="openSettingsModal()" class="w-full flex items-center space-x-3 text-gray-200 hover:text-white hover:bg-gray-800/50 px-3 py-2 rounded-lg transition">
                     <i class="fa-solid fa-gear w-5 text-cyan-400 text-sm"></i><span>Settings</span>
                 </button>
-                <button onclick="showToast('Redirecting to Discord community...')" class="w-full flex items-center space-x-3 text-gray-200 hover:text-white hover:bg-gray-800/50 px-3 py-2 rounded-lg transition">
+                <button onclick="showToast('Redirecting to Discord...')" class="w-full flex items-center space-x-3 text-gray-200 hover:text-white hover:bg-gray-800/50 px-3 py-2 rounded-lg transition">
                     <i class="fa-brands fa-discord w-5 text-indigo-400 text-sm"></i><span>Discord</span>
                 </button>
-                <button onclick="showToast('Redirecting to Twitter updates...')" class="w-full flex items-center space-x-3 text-gray-200 hover:text-white hover:bg-gray-800/50 px-3 py-2 rounded-lg transition">
+                <button onclick="showToast('Redirecting to Twitter...')" class="w-full flex items-center space-x-3 text-gray-200 hover:text-white hover:bg-gray-800/50 px-3 py-2 rounded-lg transition">
                     <i class="fa-brands fa-twitter w-5 text-sky-400 text-sm"></i><span>Twitter</span>
                 </button>
-                <button onclick="showToast('Opening support ticket system...')" class="w-full flex items-center space-x-3 text-gray-200 hover:text-white hover:bg-gray-800/50 px-3 py-2 rounded-lg transition">
+                <button onclick="showToast('Opening support ticket...')" class="w-full flex items-center space-x-3 text-gray-200 hover:text-white hover:bg-gray-800/50 px-3 py-2 rounded-lg transition">
                     <i class="fa-solid fa-envelope w-5 text-emerald-400 text-sm"></i><span>Report issue</span>
                 </button>
                 <button onclick="location.reload()" class="w-full flex items-center space-x-3 text-red-400 hover:bg-red-500/10 px-3 py-2 rounded-lg transition">
@@ -174,7 +182,7 @@
         </div>
     </aside>
 
-    <!-- Chromecast Connection Modal -->
+    <!-- Chromecast Modal -->
     <div id="castModal" class="hidden fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4 backdrop-blur-md">
         <div class="bg-[#111622] border border-gray-800 rounded-2xl max-w-sm w-full p-6 space-y-4 text-center shadow-2xl">
             <i class="fa-solid fa-cast text-4xl text-cyan-400 animate-pulse"></i>
@@ -216,10 +224,21 @@
         </div>
 
         <div class="p-4 sm:p-6 space-y-6 max-w-5xl mx-auto">
+            <!-- Season & Episodes Selector Container -->
+            <div id="seasonsSection" class="hidden space-y-3 bg-[#111622] p-4 rounded-2xl border border-gray-800 shadow-xl">
+                <div class="flex items-center justify-between">
+                    <h3 class="text-xs font-bold uppercase text-cyan-400 tracking-wider"><i class="fa-solid fa-list mr-1.5"></i> Select Season & Episode</h3>
+                </div>
+                <div class="flex space-x-3">
+                    <select id="seasonSelect" onchange="onSeasonChange()" class="bg-[#070b12] text-xs text-white border border-gray-700 rounded-xl px-3 py-2.5 outline-none flex-1 font-semibold"></select>
+                    <select id="episodeSelect" class="bg-[#070b12] text-xs text-white border border-gray-700 rounded-xl px-3 py-2.5 outline-none flex-1 font-semibold"></select>
+                </div>
+            </div>
+
             <div class="flex items-center space-x-3">
                 <button id="detailPlayBtn" class="flex-1 bg-white hover:bg-gray-200 text-black font-extrabold py-3.5 rounded-xl flex items-center justify-center space-x-2 shadow-2xl transition">
                     <i class="fa-solid fa-play text-black text-sm"></i>
-                    <span>PLAY</span>
+                    <span>PLAY STREAM</span>
                 </button>
                 <button id="detailTrailerBtn" class="flex-1 bg-[#1a1d29] hover:bg-gray-800 text-white font-extrabold py-3.5 rounded-xl flex items-center justify-center space-x-2 border border-gray-700 shadow-2xl transition">
                     <i class="fa-solid fa-film text-cyan-400 text-sm"></i>
@@ -313,32 +332,32 @@
             </div>
 
             <div class="space-y-4">
-                <h3 class="text-cyan-400 font-extrabold uppercase tracking-wider text-[11px] border-b border-gray-800 pb-1">General</h3>
+                <h3 class="text-cyan-400 font-extrabold uppercase tracking-wider text-[11px] border-b border-gray-800 pb-1">General Options</h3>
                 <div class="flex items-center justify-between">
                     <div>
-                        <p class="font-bold text-gray-200">HD Posters</p>
-                        <p class="text-[10px] text-gray-500">When enabled, FV will display all images in higher resolution</p>
+                        <p class="font-bold text-gray-200">HD Posters & Backdrops</p>
+                        <p class="text-[10px] text-gray-500">Display all imagery in maximum HD resolution</p>
                     </div>
                     <input type="checkbox" checked class="w-4 h-4 accent-cyan-500">
                 </div>
                 <div class="flex items-center justify-between">
                     <div>
-                        <p class="font-bold text-gray-200">Show Hindi Direct Links</p>
-                        <p class="text-[10px] text-gray-500">Check this to see Hindi, Tamil, Telugu direct links</p>
+                        <p class="font-bold text-gray-200">Show Hindi & Dubbed Links</p>
+                        <p class="text-[10px] text-gray-500">Include regional alternative audio links</p>
                     </div>
                     <input type="checkbox" checked class="w-4 h-4 accent-cyan-500">
                 </div>
             </div>
 
             <div class="space-y-4 pt-2">
-                <h3 class="text-cyan-400 font-extrabold uppercase tracking-wider text-[11px] border-b border-gray-800 pb-1">System</h3>
+                <h3 class="text-cyan-400 font-extrabold uppercase tracking-wider text-[11px] border-b border-gray-800 pb-1">System Management</h3>
                 <button onclick="clearLocalStorageData()" class="w-full bg-red-600 text-white font-bold py-3 rounded-xl hover:bg-red-700 transition shadow-lg mt-2">
-                    Reset All App Data & Favorites
+                    Reset All App Data & Cache Store
                 </button>
             </div>
             
             <div class="text-center text-gray-500 text-[10px] pt-4 border-t border-gray-800">
-                Version: 3.9.0 Ultimate Pro Edition
+                Version: 5.0.0 Enterprise Master Complete Edition
             </div>
         </div>
     </div>
@@ -346,7 +365,14 @@
     <!-- Video Player Modal -->
     <div id="playerModal" class="hidden fixed inset-0 bg-black z-50 flex flex-col">
         <div class="bg-[#0e131d] px-4 py-3 flex items-center justify-between border-b border-gray-800">
-            <span id="playerTitle" class="text-xs font-bold text-white truncate max-w-md">Playing Media</span>
+            <div class="flex items-center space-x-3">
+                <span id="playerTitle" class="text-xs font-bold text-white truncate max-w-sm">Playing Media</span>
+                <select id="serverSourceSelect" onchange="onServerSourceChange()" class="bg-[#1a1d29] text-xs text-cyan-400 border border-gray-700 rounded-lg px-2.5 py-1 outline-none font-bold">
+                    <option value="vidsrc">Server 1 (VidSrc)</option>
+                    <option value="vidsrc_cc">Server 2 (VidSrc.cc)</option>
+                    <option value="embedsu">Server 3 (Embed.su)</option>
+                </select>
+            </div>
             <button onclick="document.getElementById('playerModal').classList.add('hidden'); document.getElementById('videoIframe').src='';" class="text-gray-400 hover:text-white text-lg px-2"><i class="fa-solid fa-xmark"></i></button>
         </div>
         <div class="flex-1 w-full h-full bg-black">
@@ -354,7 +380,7 @@
         </div>
     </div>
 
-    <!-- JavaScript Enterprise Core Engine -->
+    <!-- JavaScript Master Engine -->
     <script>
         const API_KEY = 'cd193c4897ae4e519cca3734ef116a7e';
         const BASE_URL = 'https://api.themoviedb.org/3';
@@ -382,6 +408,7 @@
         let cachedItems = [];
         let favorites = JSON.parse(localStorage.getItem('fv_favorites') || '[]');
         let historyList = JSON.parse(localStorage.getItem('fv_history') || '[]');
+        let currentDetailData = null;
 
         document.addEventListener('DOMContentLoaded', () => {
             setupFilters();
@@ -525,7 +552,8 @@
             renderGrid([
                 { title: 'BEIN SPORTS 1 HD', poster_path: null, id: 9001 },
                 { title: 'HBO EAST HD', poster_path: null, id: 9002 },
-                { title: 'SKY SPORTS MAIN EVENT', poster_path: null, id: 9003 }
+                { title: 'SKY SPORTS MAIN EVENT', poster_path: null, id: 9003 },
+                { title: 'DISCOVERY CHANNEL HD', poster_path: null, id: 9004 }
             ]);
         }
 
@@ -538,13 +566,13 @@
         function showImportPlaylistView() {
             document.getElementById('sidebar').classList.add('-translate-x-full');
             document.getElementById('sidebarOverlay').classList.add('hidden');
-            showToast('Import Playlist module active');
+            showToast('Import Playlist modal opened');
         }
 
         function showTraktView() {
             document.getElementById('sidebar').classList.add('-translate-x-full');
             document.getElementById('sidebarOverlay').classList.add('hidden');
-            showToast('Trakt TV account synced successfully');
+            showToast('Trakt TV account synchronization active');
         }
 
         function showTorrentsView() {
@@ -552,14 +580,17 @@
             document.getElementById('sidebarOverlay').classList.add('hidden');
             document.getElementById('customViewHeader').classList.remove('hidden');
             document.getElementById('customViewTitle').innerText = 'USER TORRENTS';
-            renderGrid([{ title: 'Sample 4K HDR Torrent Stream', poster_path: null, id: 9101 }]);
+            renderGrid([
+                { title: 'Sample 4K HDR Torrent Stream', poster_path: null, id: 9101 },
+                { title: 'Blockbuster Remux 1080p', poster_path: null, id: 9102 }
+            ]);
         }
 
         function clearLocalStorageData() {
             localStorage.clear();
             favorites = [];
             historyList = [];
-            showToast('All application data and cache reset.');
+            showToast('All application cache and local databases reset.');
             closeSettingsModal();
             resetMainView();
         }
@@ -618,7 +649,7 @@
                     const name = item.name || 'Unknown';
                     const profile = item.profile_path ? `${IMAGE_URL}${item.profile_path}` : PLACEHOLDER_IMG;
                     return `
-                        <div onclick="openPersonDetails(${item.id})" class="poster-card bg-[#111622] border border-gray-800/80 rounded-xl overflow-hidden flex flex-col cursor-pointer text-center p-3">
+                        <div onclick="openPersonDetails(${item.id})" class="poster-card bg-[#111622] border border-gray-800/80 rounded-xl overflow-hidden flex flex-col cursor-pointer text-center p-3 animate-fadeIn">
                             <img src="${profile}" class="w-20 h-20 mx-auto rounded-full object-cover border border-cyan-500 shadow">
                             <h3 class="text-xs font-bold text-gray-100 truncate mt-2">${name}</h3>
                             <span class="text-[10px] text-gray-400">Actor / Creator</span>
@@ -632,7 +663,7 @@
                 const itemType = item.media_type || currentState.type;
 
                 return `
-                    <div onclick="openMovieDetails(${item.id}, '${itemType}')" class="poster-card bg-[#111622] border border-gray-800/80 rounded-xl overflow-hidden flex flex-col cursor-pointer">
+                    <div onclick="openMovieDetails(${item.id}, '${itemType}')" class="poster-card bg-[#111622] border border-gray-800/80 rounded-xl overflow-hidden flex flex-col cursor-pointer animate-fadeIn">
                         <div class="aspect-[2/3] w-full bg-gray-900 relative">
                             <img src="${poster}" class="w-full h-full object-cover" loading="lazy">
                         </div>
@@ -656,11 +687,12 @@
             try {
                 const res = await fetch(`${BASE_URL}/${type}/${id}?api_key=${API_KEY}&append_to_response=credits,videos,recommendations`);
                 const data = await res.json();
+                currentDetailData = { ...data, media_type: type };
 
                 document.getElementById('detailBackdrop').src = data.backdrop_path ? BACKDROP_URL + data.backdrop_path : PLACEHOLDER_IMG;
                 document.getElementById('detailTitle').innerText = data.title || data.name;
                 document.getElementById('detailYear').innerText = (data.release_date || data.first_air_date || '2026').split('-')[0];
-                document.getElementById('detailRuntime').innerText = data.runtime ? `${Math.floor(data.runtime/60)}h ${data.runtime%60}m` : '1h 45m';
+                document.getElementById('detailRuntime').innerText = data.runtime ? `${Math.floor(data.runtime/60)}h ${data.runtime%60}m` : (data.episode_run_time?.[0] ? `${data.episode_run_time[0]}m` : '45m');
                 document.getElementById('detailGenres').innerText = (data.genres || []).map(g => g.name).join(', ');
                 document.getElementById('detailOverview').innerText = data.overview || 'No description available for this content.';
 
@@ -669,6 +701,16 @@
                 
                 const writer = (data.credits?.crew || []).find(c => c.job === 'Screenplay' || c.job === 'Writer');
                 document.getElementById('detailWriter').innerText = writer ? writer.name : 'N/A';
+
+                const seasonsSection = document.getElementById('seasonsSection');
+                if (type === 'tv' && data.seasons) {
+                    seasonsSection.classList.remove('hidden');
+                    const validSeasons = data.seasons.filter(s => s.season_number > 0);
+                    document.getElementById('seasonSelect').innerHTML = validSeasons.map(s => `<option value="${s.season_number}">Season ${s.season_number} (${s.episode_count} Episodes)</option>`).join('');
+                    loadEpisodesForSeason(id, validSeasons[0]?.season_number || 1);
+                } else {
+                    seasonsSection.classList.add('hidden');
+                }
 
                 const castContainer = document.getElementById('detailCastContainer');
                 castContainer.innerHTML = (data.credits?.cast || []).slice(0, 15).map(actor => `
@@ -691,8 +733,7 @@
                 };
 
                 const recs = data.recommendations?.results || [];
-                const recGrid = document.getElementById('recommendationsGrid');
-                recGrid.innerHTML = recs.slice(0, 5).map(item => `
+                document.getElementById('recommendationsGrid').innerHTML = recs.slice(0, 5).map(item => `
                     <div onclick="openMovieDetails(${item.id}, '${type}')" class="poster-card bg-[#111622] rounded-xl overflow-hidden cursor-pointer">
                         <div class="aspect-[2/3]"><img src="${item.poster_path ? IMAGE_URL + item.poster_path : PLACEHOLDER_IMG}" class="w-full h-full object-cover"></div>
                     </div>
@@ -705,13 +746,53 @@
 
                 document.getElementById('detailPlayBtn').onclick = () => {
                     addToHistory(data);
-                    document.getElementById('playerTitle').innerText = data.title || data.name;
-                    document.getElementById('videoIframe').src = type === 'tv' ? `https://vidsrc.me/embed/tv?tmdb=${id}&season=1&episode=1` : `https://vidsrc.me/embed/movie?tmdb=${id}`;
-                    document.getElementById('playerModal').classList.remove('hidden');
+                    playCurrentMedia();
                 };
 
                 document.getElementById('movieDetailModal').classList.remove('hidden');
             } catch (e) {}
+        }
+
+        async function loadEpisodesForSeason(tvId, seasonNumber) {
+            try {
+                const res = await fetch(`${BASE_URL}/tv/${tvId}/season/${seasonNumber}?api_key=${API_KEY}`);
+                const data = await res.json();
+                const episodes = data.episodes || [];
+                document.getElementById('episodeSelect').innerHTML = episodes.map(ep => `<option value="${ep.episode_number}">Episode ${ep.episode_number}: ${ep.name}</option>`).join('');
+            } catch(e) {}
+        }
+
+        async function onSeasonChange() {
+            const seasonNum = document.getElementById('seasonSelect').value;
+            if (currentDetailData) {
+                await loadEpisodesForSeason(currentDetailData.id, seasonNum);
+            }
+        }
+
+        function playCurrentMedia() {
+            if (!currentDetailData) return;
+            const title = currentDetailData.title || currentDetailData.name;
+            document.getElementById('playerTitle').innerText = title;
+            const serverType = document.getElementById('serverSourceSelect').value;
+            let embedUrl = `https://vidsrc.me/embed/movie?tmdb=${currentDetailData.id}`;
+            
+            if (currentDetailData.media_type === 'tv') {
+                const sNum = document.getElementById('seasonSelect').value || 1;
+                const eNum = document.getElementById('episodeSelect').value || 1;
+                embedUrl = `https://vidsrc.me/embed/tv?tmdb=${currentDetailData.id}&season=${sNum}&episode=${eNum}`;
+                if (serverType === 'vidsrc_cc') embedUrl = `https://vidsrc.cc/v2/embed/tv/${currentDetailData.id}/${sNum}/${eNum}`;
+                if (serverType === 'embedsu') embedUrl = `https://embed.su/embed/tv/${currentDetailData.id}/${sNum}/${eNum}`;
+            } else {
+                if (serverType === 'vidsrc_cc') embedUrl = `https://vidsrc.cc/v2/embed/movie/${currentDetailData.id}`;
+                if (serverType === 'embedsu') embedUrl = `https://embed.su/embed/movie/${currentDetailData.id}`;
+            }
+
+            document.getElementById('videoIframe').src = embedUrl;
+            document.getElementById('playerModal').classList.remove('hidden');
+        }
+
+        function onServerSourceChange() {
+            playCurrentMedia();
         }
 
         async function openPersonDetails(personId) {
@@ -733,7 +814,7 @@
                     const title = item.title || item.name || 'Untitled';
                     const poster = item.poster_path ? IMAGE_URL + item.poster_path : PLACEHOLDER_IMG;
                     return `
-                        <div onclick="openMovieDetails(${item.id}, '${item.media_type || 'movie'}')" class="poster-card bg-[#111622] rounded-xl overflow-hidden cursor-pointer">
+                        <div onclick="openMovieDetails(${item.id}, '${item.media_type || 'movie'}')" class="poster-card bg-[#111622] rounded-xl overflow-hidden cursor-pointer animate-fadeIn">
                             <div class="aspect-[2/3]"><img src="${poster}" class="w-full h-full object-cover"></div>
                             <div class="p-1.5"><h4 class="text-[10px] font-bold truncate text-white">${title}</h4></div>
                         </div>
