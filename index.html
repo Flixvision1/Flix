@@ -1367,6 +1367,70 @@
             <!-- Apply Filters Button -->
             <button onclick="applyFiltersFromModal()" class="w-full bg-cyan-500 hover:bg-cyan-600 text-white font-bold py-3.5 rounded-xl transition shadow-lg uppercase tracking-wide">
                 Apply Filters
+            </button>    <!-- ئەم کۆدەی خوارەوە بۆ پەنجەرەی فلتەر (Filter Catalog) لە کۆتایی body دابنە -->
+    <div id="filterModal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
+        <div class="bg-[#12141c] border border-gray-800 w-full max-w-md rounded-2xl p-6 shadow-2xl relative flex flex-col space-y-5">
+            
+            <!-- Header -->
+            <div class="flex items-center justify-between border-b border-gray-800 pb-4">
+                <div class="flex items-center space-x-2 text-cyan-400 font-bold text-lg">
+                    <i class="fa-solid fa-filter"></i>
+                    <span>FILTER CATALOG</span>
+                </div>
+                <button onclick="closeFilterModal()" class="text-gray-400 hover:text-white text-xl">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <!-- Filter Options -->
+            <div class="flex flex-col space-y-4">
+                <!-- Network -->
+                <div class="flex flex-col space-y-1.5">
+                    <label class="text-cyan-400 text-sm font-semibold">Network</label>
+                    <select id="filterNetworkSelect" class="bg-[#1a1d29] border border-gray-800 text-white rounded-xl px-4 py-3 outline-none focus:border-cyan-400 transition">
+                        <!-- Options populated dynamically -->
+                    </select>
+                </div>
+
+                <!-- Type -->
+                <div class="flex flex-col space-y-1.5">
+                    <label class="text-cyan-400 text-sm font-semibold">Type</label>
+                    <select id="filterTypeSelect" class="bg-[#1a1d29] border border-gray-800 text-white rounded-xl px-4 py-3 outline-none focus:border-cyan-400 transition">
+                        <option value="movie">Movies</option>
+                        <option value="tv">TV Shows</option>
+                    </select>
+                </div>
+
+                <!-- Genre -->
+                <div class="flex flex-col space-y-1.5">
+                    <label class="text-cyan-400 text-sm font-semibold">Genre</label>
+                    <select id="filterGenreSelect" class="bg-[#1a1d29] border border-gray-800 text-white rounded-xl px-4 py-3 outline-none focus:border-cyan-400 transition">
+                        <!-- Options populated dynamically -->
+                    </select>
+                </div>
+
+                <!-- Year -->
+                <div class="flex flex-col space-y-1.5">
+                    <label class="text-cyan-400 text-sm font-semibold">Year</label>
+                    <select id="filterYearSelect" class="bg-[#1a1d29] border border-gray-800 text-white rounded-xl px-4 py-3 outline-none focus:border-cyan-400 transition">
+                        <!-- Options populated dynamically -->
+                    </select>
+                </div>
+
+                <!-- Sort By -->
+                <div class="flex flex-col space-y-1.5">
+                    <label class="text-cyan-400 text-sm font-semibold">Sort By</label>
+                    <select id="filterSortSelect" class="bg-[#1a1d29] border border-gray-800 text-white rounded-xl px-4 py-3 outline-none focus:border-cyan-400 transition">
+                        <option value="popularity.desc">Popularity</option>
+                        <option value="vote_average.desc">Rating</option>
+                        <option value="release_date.desc">Latest</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Apply Filters Button -->
+            <button onclick="applyFiltersFromModal()" class="w-full bg-cyan-500 hover:bg-cyan-600 text-white font-bold py-3.5 rounded-xl transition shadow-lg uppercase tracking-wide">
+                Apply Filters
             </button>
         </div>
     </div>
@@ -1387,8 +1451,10 @@
            currentState.sortBy = document.getElementById('filterSortSelect').value;
            closeFilterModal();
            fetchContent();
-       }
+       } // لێرە کەوانەی داخستنی فەنکشنەکە زیاد کرا
     </script>
+</body>
+</html>
     </script>
 </body>
 </html>
