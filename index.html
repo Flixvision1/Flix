@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Flix Vision Ultimate Pro</title>
+    <title>Flix Vision Ultimate Pro - Full Edition</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
@@ -26,13 +26,17 @@
         }
         .poster-card:hover {
             transform: translateY(-6px) scale(1.02);
-            box-shadow: 0 15px 30px -5px rgba(6, 182, 212, 0.4);
+            box-shadow: 0 20px 35px -5px rgba(6, 182, 212, 0.5);
+        }
+        .glass-panel {
+            background: rgba(17, 22, 34, 0.92);
+            backdrop-filter: blur(16px);
         }
     </style>
 </head>
 <body class="min-h-screen relative flex flex-col overflow-x-hidden bg-gradient-to-b from-[#1c0303] via-[#070b12] to-[#070b12]">
 
-    <!-- Toast Notification -->
+    <!-- Toast Notification System -->
     <div id="toastNotification" class="fixed top-20 right-4 z-50 bg-cyan-600 text-white text-xs font-bold px-5 py-3 rounded-xl shadow-2xl transition-all duration-300 opacity-0 pointer-events-none transform translate-y-[-10px] flex items-center space-x-2">
         <i class="fa-solid fa-circle-check"></i>
         <span id="toastMsg">Action Successful</span>
@@ -54,7 +58,7 @@
         </div>
 
         <div class="flex items-center space-x-4 text-gray-200 text-xl shrink-0">
-            <button id="castBtn" class="hover:text-cyan-400 transition p-1" title="Chromecast"><i class="fa-solid fa-cast"></i></button>
+            <button onclick="openCastModal()" class="hover:text-cyan-400 transition p-1" title="Chromecast"><i class="fa-solid fa-cast"></i></button>
             <button id="searchToggleBtn" class="hover:text-cyan-400 transition p-1" title="Search"><i class="fa-solid fa-magnifying-glass"></i></button>
             <button onclick="openFilterModal()" class="hover:text-cyan-400 transition p-1" title="Filter"><i class="fa-solid fa-filter"></i></button>
             <button onclick="openSettingsModal()" class="hover:text-cyan-400 transition p-1" title="Settings"><i class="fa-solid fa-ellipsis-vertical"></i></button>
@@ -106,7 +110,7 @@
         </div>
     </main>
 
-    <!-- Sidebar Drawer Menu -->
+    <!-- Sidebar Drawer Menu (Exact Flix Vision Menu Layout) -->
     <div id="sidebarOverlay" class="fixed inset-0 bg-black/70 z-40 hidden backdrop-blur-sm"></div>
     <aside id="sidebar" class="fixed top-0 left-0 bottom-0 w-64 bg-[#0a0d12] border-r border-gray-800 z-50 transform -translate-x-full transition-transform duration-300 overflow-y-auto hide-scrollbar text-xs">
         <div class="p-4 space-y-5">
@@ -179,12 +183,12 @@
                 <div class="bg-cyan-500 h-full w-1/2 animate-pulse"></div>
             </div>
             <div class="pt-2 border-t border-gray-800 flex justify-end">
-                <button onclick="document.getElementById('castModal').classList.add('hidden')" class="bg-gray-800 text-white font-bold px-4 py-2 rounded-lg text-xs">Close</button>
+                <button onclick="closeCastModal()" class="bg-gray-800 text-white font-bold px-4 py-2 rounded-lg text-xs">Close</button>
             </div>
         </div>
     </div>
 
-    <!-- Movie Details Modal -->
+    <!-- Movie & Series Details Modal (Ultimate Professional Layout) -->
     <div id="movieDetailModal" class="hidden fixed inset-0 bg-[#070b12] z-50 overflow-y-auto hide-scrollbar">
         <div class="relative w-full h-80 sm:h-96 bg-gray-900">
             <img id="detailBackdrop" src="" class="w-full h-full object-cover opacity-80">
@@ -316,6 +320,12 @@
                     </div>
                     <input type="checkbox" checked class="w-4 h-4 accent-cyan-500">
                 </div>
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="font-bold text-gray-200">Show Hindi Direct Links</p>
+                    </div>
+                    <input type="checkbox" checked class="w-4 h-4 accent-cyan-500">
+                </div>
             </div>
 
             <div class="space-y-4 pt-2">
@@ -326,7 +336,7 @@
             </div>
             
             <div class="text-center text-gray-500 text-[10px] pt-4 border-t border-gray-800">
-                Version: 3.9.0
+                Version: 3.9.0 Ultimate Pro
             </div>
         </div>
     </div>
@@ -342,7 +352,7 @@
         </div>
     </div>
 
-    <!-- JavaScript Engine -->
+    <!-- JavaScript Core Professional Engine -->
     <script>
         const API_KEY = 'cd193c4897ae4e519cca3734ef116a7e';
         const BASE_URL = 'https://api.themoviedb.org/3';
@@ -469,6 +479,9 @@
         }
         function closeSettingsModal() { document.getElementById('settingsModal').classList.add('hidden'); }
 
+        function openCastModal() { document.getElementById('castModal').classList.remove('hidden'); }
+        function closeCastModal() { document.getElementById('castModal').classList.add('hidden'); }
+
         function applyFiltersFromModal() {
             currentState.networkId = document.getElementById('filterNetworkSelect').value;
             currentState.genre = document.getElementById('filterGenreSelect').value;
@@ -509,7 +522,8 @@
             document.getElementById('customViewTitle').innerText = 'LIVE TV EXTRA';
             renderGrid([
                 { title: 'BEIN SPORTS 1 HD', poster_path: null, id: 9001 },
-                { title: 'HBO EAST HD', poster_path: null, id: 9002 }
+                { title: 'HBO EAST HD', poster_path: null, id: 9002 },
+                { title: 'SKY SPORTS MAIN EVENT', poster_path: null, id: 9003 }
             ]);
         }
 
@@ -528,7 +542,7 @@
         function showTraktView() {
             document.getElementById('sidebar').classList.add('-translate-x-full');
             document.getElementById('sidebarOverlay').classList.add('hidden');
-            showToast('Trakt TV synced');
+            showToast('Trakt TV synced successfully');
         }
 
         function showTorrentsView() {
@@ -536,14 +550,14 @@
             document.getElementById('sidebarOverlay').classList.add('hidden');
             document.getElementById('customViewHeader').classList.remove('hidden');
             document.getElementById('customViewTitle').innerText = 'USER TORRENTS';
-            renderGrid([{ title: 'Sample 4K Stream', poster_path: null, id: 9101 }]);
+            renderGrid([{ title: 'Sample 4K HDR Torrent Stream', poster_path: null, id: 9101 }]);
         }
 
         function clearLocalStorageData() {
             localStorage.clear();
             favorites = [];
             historyList = [];
-            showToast('All app data and favorites reset.');
+            showToast('All application data and history reset.');
             closeSettingsModal();
             resetMainView();
         }
@@ -553,8 +567,27 @@
             if (reset) grid.innerHTML = `<div class="col-span-full text-center py-20 text-gray-500 text-xs">Loading contents...</div>`;
 
             let url = `${BASE_URL}/trending/${currentState.type}/day?api_key=${API_KEY}&page=${currentState.page}`;
+            if (currentState.category === 'theater') {
+                url = currentState.type === 'movie' ? `${BASE_URL}/movie/now_playing?api_key=${API_KEY}&page=${currentState.page}` : `${BASE_URL}/tv/on_the_air?api_key=${API_KEY}&page=${currentState.page}`;
+            } else if (currentState.category === 'popular') {
+                url = `${BASE_URL}/${currentState.type}/popular?api_key=${API_KEY}&page=${currentState.page}`;
+            }
+
             if (currentState.query) {
                 url = `${BASE_URL}/search/${currentState.type}?api_key=${API_KEY}&query=${encodeURIComponent(currentState.query)}&page=${currentState.page}`;
+            } else if (currentState.networkId !== 'all' || currentState.genre !== 'all' || currentState.year !== 'all') {
+                url = `${BASE_URL}/discover/${currentState.type}?api_key=${API_KEY}&page=${currentState.page}`;
+                if (currentState.networkId !== 'all') {
+                    const netObj = NETWORKS.find(n => n.id == currentState.networkId);
+                    if (netObj) {
+                        if (currentState.type === 'tv' && netObj.networkId) url += `&with_networks=${netObj.networkId}`;
+                        else if (netObj.companyId) url += `&with_companies=${netObj.companyId}`;
+                    }
+                }
+                if (currentState.genre !== 'all') url += `&with_genres=${currentState.genre}`;
+                if (currentState.year !== 'all') {
+                    url += currentState.type === 'tv' ? `&first_air_date_year=${currentState.year}` : `&primary_release_year=${currentState.year}`;
+                }
             }
 
             try {
@@ -563,7 +596,7 @@
                 cachedItems = reset ? (data.results || []) : [...cachedItems, ...(data.results || [])];
                 renderGrid(cachedItems);
             } catch (e) {
-                grid.innerHTML = `<div class="col-span-full text-center py-20 text-red-500 text-xs">Failed to load stream server data.</div>`;
+                grid.innerHTML = `<div class="col-span-full text-center py-20 text-red-500 text-xs">Failed to load server stream data.</div>`;
             }
         }
 
@@ -586,7 +619,7 @@
                         <div onclick="openPersonDetails(${item.id})" class="poster-card bg-[#111622] border border-gray-800/80 rounded-xl overflow-hidden flex flex-col cursor-pointer text-center p-3">
                             <img src="${profile}" class="w-20 h-20 mx-auto rounded-full object-cover border border-cyan-500 shadow">
                             <h3 class="text-xs font-bold text-gray-100 truncate mt-2">${name}</h3>
-                            <span class="text-[10px] text-gray-400">Actor / Director</span>
+                            <span class="text-[10px] text-gray-400">Actor / Creator</span>
                         </div>
                     `;
                 }
@@ -612,7 +645,10 @@
 
         async function openMovieDetails(id, type) {
             if (id > 9000) {
-                showToast('Playing stream channel...');
+                showToast('Connecting to IPTV stream channel...');
+                document.getElementById('playerTitle').innerText = 'Live Stream Connection';
+                document.getElementById('videoIframe').src = `https://vidsrc.me/embed/movie?tmdb=550`;
+                document.getElementById('playerModal').classList.remove('hidden');
                 return;
             }
             try {
@@ -624,7 +660,7 @@
                 document.getElementById('detailYear').innerText = (data.release_date || data.first_air_date || '2026').split('-')[0];
                 document.getElementById('detailRuntime').innerText = data.runtime ? `${Math.floor(data.runtime/60)}h ${data.runtime%60}m` : '1h 45m';
                 document.getElementById('detailGenres').innerText = (data.genres || []).map(g => g.name).join(', ');
-                document.getElementById('detailOverview').innerText = data.overview || 'No description available.';
+                document.getElementById('detailOverview').innerText = data.overview || 'No description available for this content.';
 
                 const director = (data.credits?.crew || []).find(c => c.job === 'Director');
                 document.getElementById('detailDirector').innerText = director ? director.name : 'N/A';
@@ -648,7 +684,7 @@
                         document.getElementById('videoIframe').src = `https://www.youtube.com/embed/${trailerObj.key}?autoplay=1`;
                         document.getElementById('playerModal').classList.remove('hidden');
                     } else {
-                        showToast('Trailer not available');
+                        showToast('Trailer preview not available');
                     }
                 };
 
