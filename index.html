@@ -332,13 +332,13 @@
         </div>
     </div>
 
-    <!-- Stream Servers Modal (All 25+ Mega Sources Included) -->
+    <!-- Stream Servers Modal (Optimized & Clean Working Embeds) -->
     <div id="streamLinksModal" class="hidden fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4 backdrop-blur-md">
         <div class="bg-[#111622] border border-gray-800 rounded-2xl max-w-md w-full p-5 space-y-4 shadow-2xl relative">
             <div class="flex items-center justify-between border-b border-gray-800 pb-3">
                 <h3 class="text-sm font-bold text-white flex items-center space-x-2">
                     <i class="fa-solid fa-film text-cyan-400 text-xs"></i>
-                    <span>Select Mega Working Server</span>
+                    <span>Select Active Stream Server</span>
                 </h3>
                 <button id="closeStreamLinksBtn" class="text-gray-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
             </div>
@@ -1049,46 +1049,26 @@
                 episode = document.getElementById('episodeSelect')?.value || 1;
             }
 
-            // هەموو سێرڤەرە سەرەکی و تێکەڵەکان (زیاتر لە ۲٥ سەرچاوەی پۆڵایین)
+            // پاکتاوکردن و ڕێکخستنی سێرڤەرە چالاکەکان بە پێشکەوتووترین شێواز
             const servers = [
-                { name: 'FLIXVISION SERVER 1 (Full HD 1080p)', url: type === 'tv' ? `https://vidsrc.me/embed/tv?tmdb=${id}&season=${season}&episode=${episode}` : `https://vidsrc.me/embed/movie?tmdb=${id}` },
-                { name: 'VIDLINK PRO (Fast & Clean)', url: type === 'tv' ? `https://vidlink.pro/tv/${id}/${season}/${episode}` : `https://vidlink.pro/movie/${id}` },
-                { name: 'VIDSRC.TO (High Compatibility)', url: type === 'tv' ? `https://vidsrc.to/embed/tv/${id}/${season}/${episode}` : `https://vidsrc.to/embed/movie/${id}` },
+                { name: 'VIDSRC.VIP (Ultra Fast HD)', url: type === 'tv' ? `https://vidsrc.vip/embed/tv/${id}/${season}/${episode}` : `https://vidsrc.vip/embed/movie/${id}` },
+                { name: 'VIDLINK PRO (Clean & Stable)', url: type === 'tv' ? `https://vidlink.pro/tv/${id}/${season}/${episode}` : `https://vidlink.pro/movie/${id}` },
+                { name: 'STREAMWISH (Fast HD)', url: type === 'tv' ? `https://streamwish.to/embed-${id}-${season}x${episode}.html` : `https://streamwish.to/embed-${id}.html` },
+                { name: 'VIDMOLY (Stable Server)', url: type === 'tv' ? `https://vidmoly.to/embed-${id}-${season}x${episode}.html` : `https://vidmoly.to/embed-${id}.html` },
+                { name: 'VIDSRC.ME (Official Hub)', url: type === 'tv' ? `https://vidsrc.me/embed/tv?tmdb=${id}&season=${season}&episode=${episode}` : `https://vidsrc.me/embed/movie?tmdb=${id}` },
                 { name: 'SUPEREMBED 4K (Ultra Fast)', url: type === 'tv' ? `https://multiembed.mov/?video_id=${id}&tmdb=1&s=${season}&e=${episode}` : `https://multiembed.mov/?video_id=${id}&tmdb=1` },
-                { name: '2EMBED STREAM (Backup Player)', url: type === 'tv' ? `https://2embed.cc/embedtv/${id}&s=${season}&e=${episode}` : `https://2embed.cc/embed/${id}` },
                 { name: 'RIVESTREAM VIP (Fast App Player)', url: type === 'tv' ? `https://www.rivestream.app/embed/tv/${id}/${season}/${episode}` : `https://www.rivestream.app/embed/movie/${id}` },
                 { name: 'FLIXER GD (Ultra Clean)', url: type === 'tv' ? `https://flixer.gd/embed/tv/${id}/${season}/${episode}` : `https://flixer.gd/embed/movie/${id}` },
-                { name: 'MOVY SX (Full HD Stream)', url: type === 'tv' ? `https://www.movy.sx/embed/tv/${id}/${season}/${episode}` : `https://www.movy.sx/embed/movie/${id}` },
-                { name: 'SHUTTLE TV (Ultra Speed)', url: type === 'tv' ? `https://shuttletv.su/embed/tv/${id}/${season}/${episode}` : `https://shuttletv.su/embed/movie/${id}` },
-                { name: 'FLYSTREAM (High Quality)', url: type === 'tv' ? `https://flystream.net/embed/tv/${id}/${season}/${episode}` : `https://flystream.net/embed/movie/${id}` },
-                { name: 'STREAMO ST (Stable Server)', url: type === 'tv' ? `https://streamo.st/embed/tv/${id}/${season}/${episode}` : `https://streamo.st/embed/movie/${id}` },
-                { name: 'CINEJOY (HD Sources)', url: type === 'tv' ? `https://cinejoy.pk/embed/tv/${id}/${season}/${episode}` : `https://cinejoy.pk/embed/movie/${id}` },
-                { name: '7MOVIES (Classic & New Movies)', url: type === 'tv' ? `https://7movies.ac/embed/tv/${id}/${season}/${episode}` : `https://7movies.ac/embed/movie/${id}` },
-                { name: 'ANICINE SBS (Anime Dedicated)', url: type === 'tv' ? `https://anicine.sbs/embed/tv/${id}/${season}/${episode}` : `https://anicine.sbs/embed/movie/${id}` },
-                { name: 'SPACEDOM LIVE (Fast Backup)', url: type === 'tv' ? `https://spacedom.live/embed/tv/${id}/${season}/${episode}` : `https://spacedom.live/embed/movie/${id}` },
-                { name: 'MEOWTV RU (HD Player)', url: type === 'tv' ? `https://meowtv.ru/embed/tv/${id}/${season}/${episode}` : `https://meowtv.ru/embed/movie/${id}` },
-                { name: 'WAY2MOVIES (Direct Stream)', url: type === 'tv' ? `https://beta.way2movies.live/embed/tv/${id}/${season}/${episode}` : `https://beta.way2movies.live/embed/movie/${id}` },
-                { name: 'MOVIENIGHT (Fast Player)', url: type === 'tv' ? `https://movienig.ht/embed/tv/${id}/${season}/${episode}` : `https://movienig.ht/embed/movie/${id}` },
-                { name: 'ATLANTIC ST (Multi Source)', url: type === 'tv' ? `https://atlantic.st/embed/tv/${id}/${season}/${episode}` : `https://atlantic.st/embed/movie/${id}` },
-                { name: 'ZETMOON LIVE (Stream Server)', url: type === 'tv' ? `https://zetmoon.live/embed/tv/${id}/${season}/${episode}` : `https://zetmoon.live/embed/movie/${id}` },
-                { name: 'PRIMESHOWS (HD Movies)', url: type === 'tv' ? `https://primeshows.org/embed/tv/${id}/${season}/${episode}` : `https://primeshows.org/embed/movie/${id}` },
-                { name: '1SHOWS ORG (TV & Movies)', url: type === 'tv' ? `https://www.1shows.org/embed/tv/${id}/${season}/${episode}` : `https://www.1shows.org/embed/movie/${id}` },
-                { name: '67MOVIES (Alternative Server)', url: type === 'tv' ? `https://67movies.st/embed/tv/${id}/${season}/${episode}` : `https://67movies.st/embed/movie/${id}` },
-                { name: 'BASEMENTX LOL (Fast Direct)', url: type === 'tv' ? `https://basementx.lol/embed/tv/${id}/${season}/${episode}` : `https://basementx.lol/embed/movie/${id}` },
-                { name: 'CNO TO (Fast Stream)', url: type === 'tv' ? `https://cno.to/embed/tv/${id}/${season}/${episode}` : `https://cno.to/embed/movie/${id}` },
-                { name: 'AETHER IST (VIP Server)', url: type === 'tv' ? `https://aether.ist/embed/tv/${id}/${season}/${episode}` : `https://aether.ist/embed/movie/${id}` },
                 { name: 'GAIAFLIX (New Server)', url: type === 'tv' ? `https://gaiaflix.live/embed/tv/${id}/${season}/${episode}` : `https://gaiaflix.live/embed/movie/${id}` },
                 { name: 'SSFLIX (Alternative)', url: type === 'tv' ? `https://ssflix.pro/tv/${id}/${season}/${episode}` : `https://ssflix.pro/movie/${id}` },
                 { name: 'VIDSRC.WIN (Mirror Server)', url: type === 'tv' ? `https://vidsrc.win/embed/tv/${id}/${season}/${episode}` : `https://vidsrc.win/embed/movie/${id}` },
                 { name: 'BRAFLIX (HD Stream)', url: type === 'tv' ? `https://braflix.uk/tv/${id}/${season}/${episode}` : `https://braflix.uk/movie/${id}` },
-                { name: 'CINEHD (Fast Player)', url: type === 'tv' ? `https://cinehd.vc/tv/${id}/${season}/${episode}` : `https://cinehd.vc/movie/${id}` },
-                { name: 'PLEX TV (Official Free Stream)', url: `https://watch.plex.tv/` },
-                { name: 'PLUTO TV (Official Live Stream)', url: `https://pluto.tv/` }
+                { name: '2EMBED.CC (Ultimate Mirror)', url: type === 'tv' ? `https://2embed.cc/embedtv/${id}&s=${season}&e=${episode}` : `https://2embed.cc/embed/${id}` }
             ];
 
             container.innerHTML = servers.map((srv) => `
                 <div onclick="playStreamInCustomPlayer('${srv.url}', '${srv.name}')" class="p-3 rounded-xl bg-[#070b12] hover:bg-cyan-600/20 border border-gray-800 flex items-center justify-between cursor-pointer transition">
-                    <div><span class="font-bold text-cyan-400 block">${srv.name}</span><span class="text-[9px] text-gray-500">Verified stream mirror</span></div>
+                    <div><span class="font-bold text-cyan-400 block">${srv.name}</span><span class="text-[9px] text-gray-500">Active embed stream</span></div>
                     <i class="fa-solid fa-play text-cyan-400 text-xs"></i>
                 </div>
             `).join('');
@@ -1122,7 +1102,7 @@
                 iframeElem.src = url;
             }
 
-            document.getElementById('playerModal').classList.add('hidden');
+            document.getElementById('playerModal').classList.remove('hidden');
             showToast('Loading Player Source...');
         }
 
@@ -1249,7 +1229,7 @@
 
         async function openActorProfile(personId) {
             const modal = document.getElementById('actorModal');
-            modal.classList.remove('hidden');
+            modal.classList.add('hidden');
             try {
                 const [personRes, creditsRes] = await Promise.all([
                     fetch(`${BASE_URL}/person/${personId}?api_key=${API_KEY}`),
