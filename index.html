@@ -148,7 +148,7 @@
                 <i class="fa-solid fa-bars"></i>
             </button>
             <h1 id="pageTitle" class="text-sm sm:text-base font-extrabold text-white tracking-wide truncate max-w-[180px] sm:max-w-none uppercase">
-                MOVIES: POPULAR
+                MOVIES: TRENDING
             </h1>
         </div>
 
@@ -176,7 +176,7 @@
         </div>
     </header>
 
-    <!-- Search Modal / Fullscreen Popup with Ultra Fast Automatic Search & Infinite Scroll -->
+    <!-- Search Modal -->
     <div id="searchModal" class="hidden fixed inset-0 bg-[#070b12] z-50 flex flex-col overflow-y-auto hide-scrollbar native-scroll">
         <div class="bg-[#0e131d]/95 backdrop-blur-md px-4 py-3 border-b border-gray-800 sticky top-0 z-20 flex items-center space-x-3 shadow-lg">
             <button onclick="closeSearchModal()" class="text-gray-300 hover:text-white text-lg p-1 active:scale-90 transition">
@@ -214,15 +214,16 @@
         </div>
     </div>
 
-    <!-- Category Tabs Navigation -->
+    <!-- Category / Filter Sub-Header (TRENDING, IN THEATER, POPULAR) -->
     <nav id="mainCategoryNav" class="bg-[#0e131d] border-b border-gray-800/60 px-4 text-xs font-bold uppercase tracking-wider">
-        <div class="flex space-x-6">
-            <button onclick="switchContentType('movie')" id="tabMovieType" class="py-3 text-white border-b-2 border-cyan-400 transition whitespace-nowrap">MOVIES</button>
-            <button onclick="switchContentType('tv')" id="tabTvType" class="py-3 text-gray-400 hover:text-white border-b-2 border-transparent transition whitespace-nowrap">TV SHOWS / SERIES</button>
+        <div class="flex space-x-6 overflow-x-auto hide-scrollbar native-scroll">
+            <button onclick="switchCategoryTab('trending')" id="tabTrending" class="py-3 text-cyan-400 border-b-2 border-cyan-400 transition whitespace-nowrap cursor-pointer">TRENDING</button>
+            <button onclick="switchCategoryTab('theater')" id="tabTheater" class="py-3 text-gray-400 hover:text-white border-b-2 border-transparent transition whitespace-nowrap cursor-pointer">IN THEATER</button>
+            <button onclick="switchCategoryTab('popular')" id="tabPopular" class="py-3 text-gray-400 hover:text-white border-b-2 border-transparent transition whitespace-nowrap cursor-pointer">POPULAR</button>
         </div>
     </nav>
 
-    <!-- Studio / Network Logo Chips Carousel -->
+    <!-- Studio / Network Logo Chips Carousel (NETFLIX, DISNEY+, PRIME VIDEO, APPLE TV+, etc.) -->
     <section id="networkChipsSection" class="bg-[#090d14] py-2.5 px-3 border-b border-gray-800/50">
         <div id="networkChipsContainer" class="flex items-center space-x-2.5 overflow-x-auto hide-scrollbar native-scroll"></div>
     </section>
@@ -624,6 +625,7 @@
 
         let currentState = {
             type: 'movie',
+            category: 'trending', // 'trending', 'theater', 'popular'
             network: 'all',
             genre: 'all',
             year: 'all',
@@ -635,11 +637,7 @@
             hasMore: true
         };
 
-        let searchState = {
-            page: 1,
-            isLoading: false,
-            hasMore: true
-        };
+        let searchState = { page: 1, isLoading: false, hasMore: true };
         let cachedSearchItems = [];
 
         let appSettings = JSON.parse(localStorage.getItem('fv_settings') || '{"hdPosters": true, "hindiLinks": true}');
@@ -651,11 +649,7 @@
         let currentCustomView = null;
         let hlsInstance = null;
 
-        let filterState = {
-            page: 1,
-            isLoading: false,
-            hasMore: true
-        };
+        let filterState = { page: 1, isLoading: false, hasMore: true };
         let cachedFilterItems = [];
         let currentAbortController = null;
         let searchDebounceTimer = null;
@@ -729,7 +723,6 @@
         function selectNetworkAndOpenFilter(id) {
             currentState.network = id;
             document.getElementById('filterNetworkSelect').value = id;
-            
             document.getElementById('filterSection').classList.remove('hidden');
             history.pushState({view: 'filter'}, '', '#filter');
             applyQuickFilters(true);
@@ -740,21 +733,31 @@
             currentState.page = 1;
             currentCustomView = null;
             document.getElementById('filterTypeSelect').value = type;
-
-            const movieBtn = document.getElementById('tabMovieType');
-            const tvBtn = document.getElementById('tabTvType');
-
-            if (type === 'movie') {
-                movieBtn.className = 'py-3 text-white border-b-2 border-cyan-400 transition whitespace-nowrap';
-                tvBtn.className = 'py-3 text-gray-400 hover:text-white border-b-2 border-transparent transition whitespace-nowrap';
-            } else {
-                tvBtn.className = 'py-3 text-white border-b-2 border-cyan-400 transition whitespace-nowrap';
-                movieBtn.className = 'py-3 text-gray-400 hover:text-white border-b-2 border-transparent transition whitespace-nowrap';
-            }
-
-            document.getElementById('pageTitle').innerText = `${type === 'movie' ? 'MOVIES' : 'SERIES'}: POPULAR`;
-            document.getElementById('customViewHeader').classList.add('hidden');
+            updatePageTitleHeader();
             fetchContent(true);
+        }
+
+        function switchCategoryTab(cat) {
+            currentState.category = cat;
+            currentState.page = 1;
+            currentCustomView = null;
+
+            ['trending', 'theater', 'popular'].forEach(c => {
+                const btn = document.getElementById(`tab${c.charAt(0).toUpperCase() + c.slice(1)}`);
+                if (btn) {
+                    btn.className = c === cat ? 'py-3 text-cyan-400 border-b-2 border-cyan-400 transition whitespace-nowrap cursor-pointer' : 'py-3 text-gray-400 hover:text-white border-b-2 border-transparent transition whitespace-nowrap cursor-pointer';
+                }
+            });
+
+            updatePageTitleHeader();
+            fetchContent(true);
+        }
+
+        function updatePageTitleHeader() {
+            const typeStr = currentState.type === 'movie' ? 'MOVIES' : 'SERIES';
+            let catStr = currentState.category.toUpperCase();
+            if (catStr === 'THEATER') catStr = 'IN THEATER';
+            document.getElementById('pageTitle').innerText = `${typeStr}: ${catStr}`;
         }
 
         function setupEventListeners() {
@@ -979,7 +982,12 @@
 
             loader.classList.remove('hidden');
 
-            let url = `${BASE_URL}/${currentState.type}/popular?api_key=${API_KEY}&page=${currentState.page}`;
+            let endpoint = 'popular';
+            if (currentState.category === 'trending') endpoint = currentState.type === 'movie' ? 'trending/movie/day' : 'trending/tv/day';
+            else if (currentState.category === 'theater') endpoint = currentState.type === 'movie' ? 'movie/now_playing' : 'tv/on_the_air';
+            else endpoint = `${currentState.type}/popular`;
+
+            let url = `${BASE_URL}/${endpoint}?api_key=${API_KEY}&page=${currentState.page}`;
 
             try {
                 const data = await fetchWithCache(url);
@@ -1120,13 +1128,14 @@
             }
         }
 
-        async function openActorProfile(personId) {
+                async function openActorProfile(personId) {
             const modal = document.getElementById('actorModal');
             modal.classList.remove('hidden');
             setLoaderActive(true);
 
             try {
-                const url = `${BASE_URL}/person/${personId}?api_key=${API_KEY}&append_to_response=combined_credits`;
+                // هێنانی زانیاری تەواوی ئەکتەر لەگەڵ فیلم و زنجیرەکانی وەک Cast و Crew بۆ ئەوەی هیچی لێ ون نەبێت
+                const url = `${BASE_URL}/person/${personId}?api_key=${API_KEY}&append_to_response=movie_credits,tv_credits,combined_credits`;
                 const data = await fetchWithCache(url);
 
                 const avatar = data.profile_path ? IMAGE_URL + data.profile_path : PLACEHOLDER_IMG;
@@ -1140,28 +1149,57 @@
                 document.getElementById('actorModalBirthday').innerText = data.birthday || 'N/A';
                 document.getElementById('actorModalPlace').innerText = data.place_of_birth || 'N/A';
 
-                const castCredits = data.combined_credits?.cast || [];
-                const movies = castCredits.filter(c => c.media_type === 'movie');
-                const series = castCredits.filter(c => c.media_type === 'tv');
+                // کۆکردنەوەی گشت فیلم و زنجیرەکان بێ جیاوازی (کاست و کروو) بە بێ دووبارەبوونەوەی ID
+                const movieMap = new Map();
+                const tvMap = new Map();
 
-                document.getElementById('actorMoviesCount').innerText = movies.length;
-                document.getElementById('actorSeriesCount').innerText = series.length;
+                const addItems = (list, type) => {
+                    if (!list) return;
+                    list.forEach(item => {
+                        if (type === 'movie') movieMap.set(item.id, item);
+                        else tvMap.set(item.id, item);
+                    });
+                };
+
+                addItems(data.movie_credits?.cast, 'movie');
+                addItems(data.movie_credits?.crew, 'movie');
+                addItems(data.tv_credits?.cast, 'tv');
+                addItems(data.tv_credits?.crew, 'tv');
+
+                const allMovies = Array.from(movieMap.values());
+                const allSeries = Array.from(tvMap.values());
+
+                document.getElementById('actorMoviesCount').innerText = allMovies.length;
+                document.getElementById('actorSeriesCount').innerText = allSeries.length;
 
                 document.getElementById('actorAlsoKnownAs').innerHTML = (data.also_known_as || []).slice(0, 5).map(alias => `
                     <span class="bg-[#151c28] border border-gray-800 px-2.5 py-1 rounded-lg text-gray-300 font-semibold">${alias}</span>
                 `).join('') || '<span class="text-gray-500">None</span>';
 
-                document.getElementById('actorFilmographyGrid').innerHTML = castCredits.slice(0, 18).map(item => {
+                // تێکەڵکردن و نیشاندانی هەموو بەرهەمەکان
+                const combinedList = [...allMovies.map(m => ({...m, media_type: 'movie'})), ...allSeries.map(s => ({...s, media_type: 'tv'}))];
+                
+                // ڕیزکردن بەپێی بەناوبانگترین یان نوێترین ساڵ
+                combinedList.sort((a, b) => (b.popularity || 0) - (a.popularity || 0));
+
+                document.getElementById('actorFilmographyGrid').innerHTML = combinedList.map(item => {
                     const itemPoster = item.poster_path ? IMAGE_URL + item.poster_path : PLACEHOLDER_IMG;
                     preloadImage(itemPoster);
                     const itType = item.media_type || 'movie';
+                    const year = (item.release_date || item.first_air_date || '').split('-')[0];
                     return `
-                        <div onclick="openMovieDetails(${item.id}, '${itType}')" class="bg-[#111622] border border-gray-800 rounded-lg overflow-hidden cursor-pointer active:scale-95">
-                            <div class="aspect-[2/3] w-full bg-gray-900"><img src="${itemPoster}" class="w-full h-full object-cover" loading="eager"></div>
-                            <div class="p-1.5"><p class="text-[10px] font-bold text-white truncate">${item.title || item.name}</p></div>
+                        <div onclick="openMovieDetails(${item.id}, '${itType}')" class="bg-[#111622] border border-gray-800 rounded-lg overflow-hidden cursor-pointer active:scale-95 flex flex-col justify-between">
+                            <div class="aspect-[2/3] w-full bg-gray-900 relative">
+                                <img src="${itemPoster}" class="w-full h-full object-cover" loading="eager">
+                                <span class="absolute top-1 right-1 bg-black/70 text-cyan-400 text-[8px] font-bold px-1 rounded">${itType === 'tv' ? 'TV' : 'Film'}</span>
+                            </div>
+                            <div class="p-1.5">
+                                <p class="text-[10px] font-bold text-white truncate">${item.title || item.name}</p>
+                                <p class="text-[9px] text-gray-400">${year}</p>
+                            </div>
                         </div>
                     `;
-                }).join('');
+                }).join('') || '<div class="col-span-full text-center text-gray-500 text-xs">No filmography found.</div>';
 
                 history.pushState({view: 'actor'}, '', '#actor');
             } catch (e) {
@@ -1226,7 +1264,6 @@
                 let data = await fetchWithCache(url);
                 let results = data.results || [];
 
-                // حیکەمەتی دڵنیابوونەوە (Fallback mechanism بۆ ڕێگریکردن لە Failed to load content)
                 if (results.length === 0) {
                     let fallbackUrl = `${BASE_URL}/${targetType}/popular?api_key=${API_KEY}&page=${filterState.page}`;
                     const dataPop = await fetchWithCache(fallbackUrl);
