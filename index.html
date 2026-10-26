@@ -4,7 +4,7 @@
     <link rel="apple-touch-icon" href="./180.png">
     <link rel="manifest" href="./manifest.json">
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Flix Vision</title>
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -24,12 +24,17 @@
             --bg-card: #111622;
             --accent-cyan: #06b6d4;
         }
+        * {
+            -webkit-tap-highlight-color: transparent;
+            -webkit-touch-callout: none;
+        }
         body {
             font-family: 'Plus Jakarta Sans', sans-serif;
             background-color: var(--bg-main);
             color: #e2e8f0;
-            -webkit-tap-highlight-color: transparent;
             user-select: none;
+            overscroll-behavior-y: none;
+            -webkit-font-smoothing: antialiased;
         }
         .hide-scrollbar::-webkit-scrollbar {
             display: none;
@@ -38,13 +43,54 @@
             -ms-overflow-style: none;
             scrollbar-width: none;
         }
+        .native-scroll {
+            -webkit-overflow-scrolling: touch;
+        }
         .poster-card {
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            transition: transform 0.12s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.12s ease;
             will-change: transform;
         }
-        .poster-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 10px 25px -5px rgba(6, 182, 212, 0.25);
+        .poster-card:active {
+            transform: scale(0.96);
+        }
+        .fv-pill {
+            background-color: #151a26;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            color: #ffffff;
+            font-weight: 700;
+            font-size: 11px;
+            padding: 8px 14px;
+            border-radius: 9999px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            outline: none;
+            transition: all 0.15s ease;
+        }
+        .fv-pill:hover, .fv-pill:active {
+            border-color: #06b6d4;
+        }
+        #appLoaderBar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            height: 3px;
+            width: 0%;
+            background: linear-gradient(90deg, #06b6d4, #3b82f6, #06b6d4);
+            z-index: 100;
+            transition: width 0.03s ease;
+        }
+        .loading-animation {
+            animation: indeterminate 0.2s infinite linear;
+            transform-origin: 0% 50%;
+        }
+        @keyframes indeterminate {
+            0% { transform: translateX(0) scaleX(0); }
+            50% { transform: translateX(40%) scaleX(0.6); }
+            100% { transform: translateX(100%) scaleX(0.3); }
         }
         .switch {
             position: relative;
@@ -86,29 +132,30 @@
 </head>
 <body class="min-h-screen relative flex flex-col overflow-x-hidden">
 
-    <!-- Toast Notification Banner -->
+    <div id="appLoaderBar"></div>
+
     <div id="toastNotification" class="fixed top-16 right-4 z-50 bg-cyan-600 text-white text-xs font-bold px-4 py-2.5 rounded-xl shadow-2xl transition-all duration-300 opacity-0 pointer-events-none transform translate-y-[-10px] flex items-center space-x-2">
         <i class="fa-solid fa-circle-check"></i>
         <span id="toastMsg">Notification message</span>
     </div>
 
     <!-- Header Navigation Bar -->
-    <header class="sticky top-0 z-30 bg-[#0e131d] border-b border-gray-800/80 px-4 py-3 flex items-center justify-between shadow-lg">
+    <header class="sticky top-0 z-30 bg-[#0e131d]/95 backdrop-blur-md border-b border-gray-800/80 px-4 py-3 flex items-center justify-between shadow-lg">
         <div class="flex items-center space-x-3">
-            <button id="openSidebarBtn" class="text-gray-300 hover:text-white text-xl p-1 focus:outline-none active:scale-95 transition">
+            <button id="openSidebarBtn" class="text-gray-300 hover:text-white text-xl p-1 focus:outline-none active:scale-90 transition">
                 <i class="fa-solid fa-bars"></i>
             </button>
             <h1 id="pageTitle" class="text-sm sm:text-base font-extrabold text-white tracking-wide truncate max-w-[180px] sm:max-w-none uppercase">
-                MOVIES: TRENDING
+                MOVIES: POPULAR
             </h1>
         </div>
 
         <div class="flex items-center space-x-4 text-gray-300 text-base sm:text-lg">
-            <button id="castBtn" class="hover:text-cyan-400 transition active:scale-95" title="Chromecast"><i class="fa-solid fa-chromecast"></i></button>
-            <button id="searchToggleBtn" class="hover:text-cyan-400 transition active:scale-95" title="Search"><i class="fa-solid fa-magnifying-glass"></i></button>
-            <button id="filterToggleBtn" class="hover:text-cyan-400 transition active:scale-95" title="Filter Panel"><i class="fa-solid fa-filter"></i></button>
+            <button id="castBtn" class="hover:text-cyan-400 transition active:scale-90" title="Chromecast"><i class="fa-solid fa-chromecast"></i></button>
+            <button id="searchToggleBtn" class="hover:text-cyan-400 transition active:scale-90" title="Search"><i class="fa-solid fa-magnifying-glass"></i></button>
+            <button id="filterToggleBtn" class="hover:text-cyan-400 transition active:scale-90" title="Filter Panel"><i class="fa-solid fa-filter"></i></button>
             <div class="relative">
-                <button id="menu3DotsBtn" class="hover:text-cyan-400 transition active:scale-95 p-1" title="More Options"><i class="fa-solid fa-ellipsis-vertical"></i></button>
+                <button id="menu3DotsBtn" class="hover:text-cyan-400 transition active:scale-90 p-1" title="More Options"><i class="fa-solid fa-ellipsis-vertical"></i></button>
                 <div id="dotsDropdown" class="hidden absolute right-0 mt-2 w-48 bg-[#111622] border border-gray-800 rounded-xl shadow-2xl z-50 py-1 text-xs">
                     <button onclick="openSettingsModal()" class="w-full text-left px-4 py-2 hover:bg-gray-800 text-gray-200 flex items-center space-x-2">
                         <i class="fa-solid fa-gear text-cyan-400 w-4"></i><span>Settings</span>
@@ -131,7 +178,7 @@
     <div id="searchBarContainer" class="hidden bg-[#111723] px-4 py-3 border-b border-gray-800 transition-all space-y-3 relative z-20">
         <div class="relative max-w-xl mx-auto flex items-center">
             <input type="text" id="searchInput" placeholder="Search Movies, TV Shows, People..." 
-                class="w-full bg-[#070b12] text-sm text-gray-100 placeholder-gray-500 rounded-lg pl-9 pr-16 py-2 border border-gray-700 focus:outline-none focus:border-cyan-500">
+                class="w-full bg-[#070b12] text-sm text-gray-100 placeholder-gray-500 rounded-lg pl-9 pr-16 py-2.5 border border-gray-700 focus:outline-none focus:border-cyan-500">
             <i class="fa-solid fa-magnifying-glass absolute left-3 text-xs text-gray-400"></i>
             <div class="absolute right-3 flex items-center space-x-2">
                 <button id="clearSearchBtn" class="text-gray-400 hover:text-white hidden"><i class="fa-solid fa-xmark"></i></button>
@@ -144,109 +191,113 @@
                 <span>Recent Searches</span>
                 <span onclick="clearSearchHistory()" class="text-cyan-400 cursor-pointer hover:underline">Clear</span>
             </div>
-            <div id="searchHistoryList" class="divide-y divide-gray-800/50 max-h-48 overflow-y-auto text-xs"></div>
+            <div id="searchHistoryList" class="divide-y divide-gray-800/50 max-h-48 overflow-y-auto text-xs native-scroll"></div>
         </div>
 
         <div id="searchTabsContainer" class="hidden flex justify-center space-x-3 text-xs font-bold">
-            <button onclick="switchSearchTab('movie')" id="searchTabMovie" class="bg-cyan-600 text-white px-4 py-1.5 rounded-full shadow transition">Movies</button>
-            <button onclick="switchSearchTab('tv')" id="searchTabTv" class="bg-[#111622] text-gray-400 border border-gray-700 px-4 py-1.5 rounded-full shadow transition">Series</button>
-            <button onclick="switchSearchTab('person')" id="searchTabPerson" class="bg-[#111622] text-gray-400 border border-gray-700 px-4 py-1.5 rounded-full shadow transition">People</button>
+            <button onclick="switchSearchTab('movie')" id="searchTabMovie" class="bg-cyan-600 text-white px-4 py-1.5 rounded-full shadow transition active:scale-95">Movies</button>
+            <button onclick="switchSearchTab('tv')" id="searchTabTv" class="bg-[#111622] text-gray-400 border border-gray-700 px-4 py-1.5 rounded-full shadow transition active:scale-95">Series</button>
+            <button onclick="switchSearchTab('person')" id="searchTabPerson" class="bg-[#111622] text-gray-400 border border-gray-700 px-4 py-1.5 rounded-full shadow transition active:scale-95">People</button>
         </div>
     </div>
 
     <!-- Category Tabs Navigation -->
     <nav id="mainCategoryNav" class="bg-[#0e131d] border-b border-gray-800/60 px-4 text-xs font-bold uppercase tracking-wider">
-        <div class="flex space-x-6 overflow-x-auto hide-scrollbar">
-            <button onclick="switchCategory('trending')" id="tabTrending" class="py-3 text-white border-b-2 border-cyan-400 transition whitespace-nowrap">TRENDING</button>
-            <button onclick="switchCategory('theater')" id="tabInTheater" class="py-3 text-gray-400 hover:text-white border-b-2 border-transparent transition whitespace-nowrap">IN THEATER / ON AIR</button>
-            <button onclick="switchCategory('popular')" id="tabPopular" class="py-3 text-gray-400 hover:text-white border-b-2 border-transparent transition whitespace-nowrap">POPULAR</button>
+        <div class="flex space-x-6">
+            <button onclick="switchContentType('movie')" id="tabMovieType" class="py-3 text-white border-b-2 border-cyan-400 transition whitespace-nowrap">MOVIES</button>
+            <button onclick="switchContentType('tv')" id="tabTvType" class="py-3 text-gray-400 hover:text-white border-b-2 border-transparent transition whitespace-nowrap">TV SHOWS / SERIES</button>
         </div>
     </nav>
 
     <!-- Studio / Network Logo Chips Carousel -->
     <section id="networkChipsSection" class="bg-[#090d14] py-2.5 px-3 border-b border-gray-800/50">
-        <div id="networkChipsContainer" class="flex items-center space-x-2.5 overflow-x-auto hide-scrollbar"></div>
+        <div id="networkChipsContainer" class="flex items-center space-x-2.5 overflow-x-auto hide-scrollbar native-scroll"></div>
     </section>
 
-    <!-- Modal Filter Overlay -->
-    <div id="filterSection" class="hidden fixed inset-0 bg-[#070b12]/95 z-50 p-5 backdrop-blur-md overflow-y-auto">
-        <div class="max-w-md mx-auto space-y-5 pt-8">
-            <div class="flex items-center justify-between border-b border-gray-800 pb-3">
-                <h2 class="text-sm font-extrabold text-cyan-400 uppercase tracking-wider flex items-center space-x-2">
-                    <i class="fa-solid fa-filter"></i>
-                    <span>FILTER CATALOG</span>
-                </h2>
-                <button onclick="document.getElementById('filterSection').classList.add('hidden')" class="text-gray-400 hover:text-white text-lg"><i class="fa-solid fa-xmark"></i></button>
-            </div>
-
-            <div class="space-y-3 text-xs font-semibold">
-                <div class="bg-[#111622] border border-gray-800 rounded-xl p-3 flex items-center justify-between">
-                    <span class="text-cyan-400 font-bold">Network</span>
-                    <select id="filterNetworkSelect" class="bg-[#070b12] text-white border border-gray-700 p-1.5 rounded-lg focus:outline-none text-right truncate w-44"></select>
+    <!-- Full Screen Filter View -->
+    <div id="filterSection" class="hidden fixed inset-0 bg-[#070b12] z-50 flex flex-col overflow-y-auto hide-scrollbar native-scroll">
+        <div class="bg-[#070b12]/95 backdrop-blur-md p-3 border-b border-gray-800/80 space-y-2.5 sticky top-0 z-20 shadow-2xl">
+            <div class="flex items-center justify-center gap-3 flex-wrap">
+                <div class="flex items-center space-x-2">
+                    <span class="text-[10px] font-black uppercase text-cyan-400">Network</span>
+                    <div class="relative">
+                        <select id="filterNetworkSelect" onchange="applyQuickFilters(true)" class="fv-pill appearance-none pr-8 cursor-pointer">
+                            <option value="all" class="bg-[#111622] text-white">All Networks</option>
+                        </select>
+                        <i class="fa-solid fa-chevron-down absolute right-3 top-1/2 -translate-y-1/2 text-[10px] text-cyan-400 pointer-events-none"></i>
+                    </div>
                 </div>
 
-                <div class="bg-[#111622] border border-gray-800 rounded-xl p-3 flex items-center justify-between">
-                    <span class="text-cyan-400 font-bold">Type</span>
-                    <select id="filterTypeSelect" class="bg-[#070b12] text-white border border-gray-700 p-1.5 rounded-lg focus:outline-none text-right w-44">
-                        <option value="movie">Movies</option>
-                        <option value="tv">Series</option>
-                    </select>
-                </div>
-
-                <div class="bg-[#111622] border border-gray-800 rounded-xl p-3 flex items-center justify-between">
-                    <span class="text-cyan-400 font-bold">Genre</span>
-                    <select id="filterGenreSelect" class="bg-[#070b12] text-white border border-gray-700 p-1.5 rounded-lg focus:outline-none text-right w-44"></select>
-                </div>
-
-                <div class="bg-[#111622] border border-gray-800 rounded-xl p-3 flex items-center justify-between">
-                    <span class="text-cyan-400 font-bold">Year</span>
-                    <select id="filterYearSelect" class="bg-[#070b12] text-white border border-gray-700 p-1.5 rounded-lg focus:outline-none text-right w-44"></select>
-                </div>
-
-                <div class="bg-[#111622] border border-gray-800 rounded-xl p-3 flex items-center justify-between">
-                    <span class="text-cyan-400 font-bold">Sort By</span>
-                    <select id="filterSortSelect" class="bg-[#070b12] text-white border border-gray-700 p-1.5 rounded-lg focus:outline-none text-right w-44">
-                        <option value="popularity.desc">Popularity</option>
-                        <option value="release_date.desc">Release Date</option>
-                    </select>
+                <div class="flex items-center space-x-2">
+                    <span class="text-[10px] font-black uppercase text-cyan-400">Type</span>
+                    <div class="relative">
+                        <select id="filterTypeSelect" onchange="applyQuickFilters(true)" class="fv-pill appearance-none pr-8 cursor-pointer">
+                            <option value="movie" class="bg-[#111622] text-white">Movies</option>
+                            <option value="tv" class="bg-[#111622] text-white">Series</option>
+                            <option value="anime" class="bg-[#111622] text-white">Anime</option>
+                        </select>
+                        <i class="fa-solid fa-chevron-down absolute right-3 top-1/2 -translate-y-1/2 text-[10px] text-cyan-400 pointer-events-none"></i>
+                    </div>
                 </div>
             </div>
 
-            <button onclick="applyFiltersModal()" class="w-full bg-cyan-600 hover:bg-cyan-500 text-white font-extrabold py-3 rounded-xl shadow-xl transition active:scale-95">
-                APPLY FILTERS
-            </button>
+            <div class="flex items-center justify-center gap-2 overflow-x-auto hide-scrollbar py-1 native-scroll">
+                <div class="relative shrink-0">
+                    <select id="filterGenreSelect" onchange="applyQuickFilters(true)" class="fv-pill appearance-none pr-8 cursor-pointer">
+                        <option value="all" class="bg-[#111622] text-white">All Genres</option>
+                    </select>
+                    <i class="fa-solid fa-chevron-down absolute right-3 top-1/2 -translate-y-1/2 text-[10px] text-cyan-400 pointer-events-none"></i>
+                </div>
+
+                <div class="relative shrink-0">
+                    <select id="filterYearSelect" onchange="applyQuickFilters(true)" class="fv-pill appearance-none pr-8 cursor-pointer">
+                        <option value="all" class="bg-[#111622] text-white">All Years</option>
+                    </select>
+                    <i class="fa-solid fa-chevron-down absolute right-3 top-1/2 -translate-y-1/2 text-[10px] text-cyan-400 pointer-events-none"></i>
+                </div>
+
+                <div class="relative shrink-0">
+                    <select id="filterSortSelect" onchange="applyQuickFilters(true)" class="fv-pill appearance-none pr-8 cursor-pointer">
+                        <option value="popularity.desc" class="bg-[#111622] text-white">by Popularity</option>
+                        <option value="release_date.desc" class="bg-[#111622] text-white">by Release Date</option>
+                    </select>
+                    <i class="fa-solid fa-chevron-down absolute right-3 top-1/2 -translate-y-1/2 text-[10px] text-cyan-400 pointer-events-none"></i>
+                </div>
+            </div>
+            
+            <div class="w-full h-[1px] bg-cyan-500/30 mt-1"></div>
         </div>
+
+        <main class="flex-1 p-3 max-w-7xl mx-auto w-full space-y-6">
+            <div id="filterMovieGrid" class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-2.5 sm:gap-4"></div>
+            <div id="filterLoader" class="text-center py-6 text-cyan-400 text-xs hidden font-bold">Loading more items...</div>
+        </main>
     </div>
 
     <!-- Main Dynamic Content Grid -->
     <main class="max-w-7xl mx-auto px-3 py-4 space-y-6 flex-1 w-full">
         <div id="customViewHeader" class="hidden flex items-center justify-between border-b border-gray-800 pb-2">
             <h2 id="customViewTitle" class="text-sm font-extrabold text-cyan-400 uppercase tracking-wider">VIEW TITLE</h2>
-            <button onclick="currentCustomView = null; renderGrid(cachedItems); document.getElementById('customViewHeader').classList.add('hidden')" class="text-xs text-gray-400 hover:text-white">
+            <button onclick="currentCustomView = null; renderGrid(cachedItems); document.getElementById('customViewHeader').classList.add('hidden')" class="text-xs text-gray-400 hover:text-white active:scale-95">
                 <i class="fa-solid fa-arrow-left mr-1"></i> Back to Main
             </button>
         </div>
 
         <div id="movieGrid" class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-2.5 sm:gap-4"></div>
-        
-        <div class="text-center py-4">
-            <button onclick="handleLoadMore()" id="loadMoreBtn" class="bg-[#111622] hover:bg-cyan-600 hover:text-white border border-gray-800 text-gray-200 font-extrabold px-8 py-3 rounded-xl text-xs transition shadow-xl active:scale-95">
-                LOAD MORE CONTENT...
-            </button>
-        </div>
+        <div id="mainLoader" class="text-center py-6 text-cyan-400 text-xs hidden font-bold">Loading content...</div>
     </main>
 
     <!-- Movie & TV Show Details Full Modal -->
-    <div id="movieDetailModal" class="hidden fixed inset-0 bg-[#070b12] z-50 overflow-y-auto hide-scrollbar">
+    <div id="movieDetailModal" class="hidden fixed inset-0 bg-[#070b12] z-50 overflow-y-auto hide-scrollbar native-scroll">
         <div class="relative w-full h-72 sm:h-96 bg-gray-900">
             <img id="detailBackdrop" src="" class="w-full h-full object-cover opacity-80">
             <div class="absolute inset-0 bg-gradient-to-t from-[#070b12] via-[#070b12]/40 to-transparent"></div>
             
             <div class="absolute top-4 left-4 right-4 flex items-center justify-between z-10 text-white text-lg">
-                <button id="closeDetailModalBtn" class="bg-black/50 backdrop-blur-md p-2 rounded-full hover:bg-black/70 active:scale-95"><i class="fa-solid fa-arrow-left"></i></button>
+                <button id="closeDetailModalBtn" class="bg-black/50 backdrop-blur-md p-2.5 rounded-full hover:bg-black/70 active:scale-90 transition"><i class="fa-solid fa-arrow-left"></i></button>
                 <div class="flex items-center space-x-3 bg-black/50 backdrop-blur-md px-3 py-1.5 rounded-full">
-                    <button id="detailFavoriteBtn" class="hover:text-red-500 transition active:scale-95"><i class="fa-regular fa-heart"></i></button>
-                    <button onclick="openSettingsModal()" class="hover:text-cyan-400 transition active:scale-95"><i class="fa-solid fa-gear"></i></button>
+                    <button id="detailFavoriteBtn" class="hover:text-red-500 transition active:scale-90"><i class="fa-regular fa-heart"></i></button>
+                    <button onclick="openSettingsModal()" class="hover:text-cyan-400 transition active:scale-90"><i class="fa-solid fa-gear"></i></button>
                 </div>
             </div>
 
@@ -265,11 +316,11 @@
 
         <div class="p-4 space-y-6 max-w-5xl mx-auto">
             <div class="flex items-center space-x-3">
-                <button id="detailPlayBtn" class="flex-1 bg-white hover:bg-gray-200 text-black font-extrabold py-3 rounded-xl flex items-center justify-center space-x-2 shadow-lg transition active:scale-95">
+                <button id="detailPlayBtn" class="flex-1 bg-white hover:bg-gray-200 text-black font-extrabold py-3.5 rounded-xl flex items-center justify-center space-x-2 shadow-lg transition active:scale-95">
                     <i class="fa-solid fa-play text-black text-sm"></i>
                     <span>PLAY SOURCE</span>
                 </button>
-                <button id="detailTrailerBtn" class="flex-1 bg-[#151c28] hover:bg-[#1e2738] text-white font-extrabold py-3 rounded-xl flex items-center justify-center space-x-2 border border-gray-700 transition active:scale-95">
+                <button id="detailTrailerBtn" class="flex-1 bg-[#151c28] hover:bg-[#1e2738] text-white font-extrabold py-3.5 rounded-xl flex items-center justify-center space-x-2 border border-gray-700 transition active:scale-95">
                     <i class="fa-solid fa-circle-play text-white text-sm"></i>
                     <span>Trailer</span>
                 </button>
@@ -280,8 +331,8 @@
                     <span><i class="fa-solid fa-list-ol mr-1"></i> SELECT SEASON & EPISODE</span>
                 </div>
                 <div class="grid grid-cols-2 gap-2 text-xs">
-                    <select id="seasonSelect" class="bg-[#070b12] text-white border border-gray-700 p-2 rounded-lg focus:outline-none"></select>
-                    <select id="episodeSelect" class="bg-[#070b12] text-white border border-gray-700 p-2 rounded-lg focus:outline-none"></select>
+                    <select id="seasonSelect" class="bg-[#070b12] text-white border border-gray-700 p-2.5 rounded-lg focus:outline-none"></select>
+                    <select id="episodeSelect" class="bg-[#070b12] text-white border border-gray-700 p-2.5 rounded-lg focus:outline-none"></select>
                 </div>
             </div>
 
@@ -294,7 +345,7 @@
 
             <div class="space-y-3">
                 <h3 class="text-xs font-bold uppercase text-gray-400 tracking-wider">TOP CAST</h3>
-                <div id="detailCastContainer" class="flex items-center space-x-4 overflow-x-auto hide-scrollbar py-1"></div>
+                <div id="detailCastContainer" class="flex items-center space-x-4 overflow-x-auto hide-scrollbar py-1 native-scroll"></div>
             </div>
 
             <div class="space-y-3">
@@ -306,11 +357,11 @@
 
     <!-- Custom Advanced Stable Video Player Dialog -->
     <div id="playerModal" class="hidden fixed inset-0 bg-black z-50 flex flex-col">
-        <div class="bg-[#0e131d] px-4 py-2.5 flex items-center justify-between border-b border-gray-800">
+        <div class="bg-[#0e131d] px-4 py-3 flex items-center justify-between border-b border-gray-800">
             <span id="playerTitle" class="text-xs font-bold text-white truncate max-w-md">Playing Media</span>
-            <div class="flex items-center space-x-3">
-                <button onclick="togglePlayerFullscreen()" class="text-gray-300 hover:text-cyan-400 text-sm"><i class="fa-solid fa-expand"></i></button>
-                <button id="closePlayerBtn" class="text-gray-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+            <div class="flex items-center space-x-4">
+                <button onclick="togglePlayerFullscreen()" class="text-gray-300 hover:text-cyan-400 text-sm active:scale-90"><i class="fa-solid fa-expand"></i></button>
+                <button id="closePlayerBtn" class="text-gray-400 hover:text-white text-lg active:scale-90"><i class="fa-solid fa-xmark"></i></button>
             </div>
         </div>
         <div class="flex-1 w-full h-full bg-black relative flex items-center justify-center">
@@ -321,10 +372,10 @@
 
     <!-- YouTube Trailer Modal -->
     <div id="trailerModal" class="hidden fixed inset-0 bg-black/90 z-50 flex items-center justify-center p-4 backdrop-blur-md">
-        <div class="bg-[#111622] border border-gray-800 rounded-2xl max-w-3xl w-full p-3 space-y-3 relative">
+        <div class="bg-[#111622] border border-gray-800 rounded-2xl max-w-3xl w-full p-3 space-y-3 relative shadow-2xl">
             <div class="flex items-center justify-between border-b border-gray-800 pb-2">
                 <h3 class="text-xs font-bold text-white">Official Trailer</h3>
-                <button id="closeTrailerBtn" class="text-gray-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+                <button id="closeTrailerBtn" class="text-gray-400 hover:text-white active:scale-90"><i class="fa-solid fa-xmark"></i></button>
             </div>
             <div class="aspect-video w-full">
                 <iframe id="trailerIframe" src="" class="w-full h-full rounded-xl" allowfullscreen></iframe>
@@ -332,7 +383,7 @@
         </div>
     </div>
 
-    <!-- Stream Servers Modal (Optimized & Clean Working Embeds) -->
+    <!-- Stream Servers Modal -->
     <div id="streamLinksModal" class="hidden fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4 backdrop-blur-md">
         <div class="bg-[#111622] border border-gray-800 rounded-2xl max-w-md w-full p-5 space-y-4 shadow-2xl relative">
             <div class="flex items-center justify-between border-b border-gray-800 pb-3">
@@ -340,9 +391,9 @@
                     <i class="fa-solid fa-film text-cyan-400 text-xs"></i>
                     <span>Select Active Stream Server</span>
                 </h3>
-                <button id="closeStreamLinksBtn" class="text-gray-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+                <button id="closeStreamLinksBtn" class="text-gray-400 hover:text-white active:scale-90"><i class="fa-solid fa-xmark"></i></button>
             </div>
-            <div id="streamLinksContainer" class="space-y-2 max-h-80 overflow-y-auto hide-scrollbar text-xs"></div>
+            <div id="streamLinksContainer" class="space-y-2 max-h-80 overflow-y-auto hide-scrollbar text-xs native-scroll"></div>
         </div>
     </div>
 
@@ -353,20 +404,20 @@
             <h3 class="text-sm font-bold text-white">Searching for Cast Devices</h3>
             <p class="text-xs text-gray-400">Make sure your Smart TV or Chromecast is connected to the same Wi-Fi network.</p>
             <div class="pt-2 border-t border-gray-800 flex justify-end">
-                <button id="closeCastModalBtn" class="bg-gray-800 text-white font-bold px-4 py-2 rounded-lg text-xs">Cancel</button>
+                <button id="closeCastModalBtn" class="bg-gray-800 text-white font-bold px-4 py-2 rounded-lg text-xs active:scale-95">Cancel</button>
             </div>
         </div>
     </div>
 
     <!-- Settings Panel -->
-    <div id="settingsModal" class="hidden fixed inset-0 bg-[#070b12] z-50 overflow-y-auto hide-scrollbar p-4 text-xs">
+    <div id="settingsModal" class="hidden fixed inset-0 bg-[#070b12] z-50 overflow-y-auto hide-scrollbar p-4 text-xs native-scroll">
         <div class="max-w-2xl mx-auto space-y-6">
-            <div class="flex items-center justify-between border-b border-gray-800 pb-3 sticky top-0 bg-[#070b12] py-2 z-10">
+            <div class="flex items-center justify-between border-b border-gray-800 pb-3 sticky top-0 bg-[#070b12]/95 backdrop-blur-md py-2 z-10">
                 <h2 class="text-base font-bold text-cyan-400 uppercase tracking-wider flex items-center space-x-2">
                     <i class="fa-solid fa-gear"></i>
                     <span>SETTINGS</span>
                 </h2>
-                <button onclick="closeSettingsModal()" class="text-gray-400 hover:text-white text-lg"><i class="fa-solid fa-xmark"></i></button>
+                <button onclick="closeSettingsModal()" class="text-gray-400 hover:text-white text-lg active:scale-90"><i class="fa-solid fa-xmark"></i></button>
             </div>
 
             <div class="space-y-3">
@@ -383,22 +434,8 @@
                 </div>
             </div>
 
-            <div class="space-y-3">
-                <h3 class="text-cyan-400 font-bold border-b border-cyan-900/50 pb-1">INTEGRATION</h3>
-                <div class="space-y-2 text-gray-300">
-                    <div class="p-3 bg-[#111622] rounded-xl border border-gray-800 flex justify-between items-center">
-                        <div><p class="font-bold text-white">Real Debrid</p><p class="text-[10px] text-gray-500">Premium high-speed torrent streams</p></div>
-                        <button onclick="linkRealDebrid()" class="bg-cyan-600 hover:bg-cyan-500 text-white font-bold px-3 py-1.5 rounded-lg text-[10px]">Link Account</button>
-                    </div>
-                    <div class="p-3 bg-[#111622] rounded-xl border border-gray-800 flex justify-between items-center">
-                        <div><p class="font-bold text-white">Trakt.tv</p><p class="text-[10px] text-gray-500">Sync watched history across devices</p></div>
-                        <button onclick="authorizeTrakt()" class="bg-cyan-600 hover:bg-cyan-500 text-white font-bold px-3 py-1.5 rounded-lg text-[10px]">Authorize</button>
-                    </div>
-                </div>
-            </div>
-
             <div class="space-y-3 pt-2 border-t border-gray-800">
-                <button onclick="clearAppCache()" class="w-full bg-red-600/20 text-red-400 border border-red-500/50 font-bold py-2.5 rounded-xl transition hover:bg-red-600/30">Clear App Cache & Reset</button>
+                <button onclick="clearAppCache()" class="w-full bg-red-600/20 text-red-400 border border-red-500/50 font-bold py-2.5 rounded-xl transition hover:bg-red-600/30 active:scale-95">Clear App Cache & Reset</button>
             </div>
             
             <div class="text-center text-[10px] text-gray-600 pt-2">Flix Vision Version 3.9.0 (Build 2026)</div>
@@ -406,47 +443,44 @@
     </div>
 
     <!-- Sidebar Drawer -->
-    <div id="sidebarOverlay" class="fixed inset-0 bg-black/70 z-40 hidden backdrop-blur-sm"></div>
-    <aside id="sidebar" class="fixed top-0 left-0 bottom-0 w-64 bg-[#0a0d12] border-r border-gray-800 z-50 transform -translate-x-full transition-transform duration-300 overflow-y-auto hide-scrollbar text-xs">
+    <div id="sidebarOverlay" class="fixed inset-0 bg-black/70 z-40 hidden backdrop-blur-sm transition-opacity"></div>
+    <aside id="sidebar" class="fixed top-0 left-0 bottom-0 w-64 bg-[#0a0d12] border-r border-gray-800 z-50 transform -translate-x-full transition-transform duration-300 ease-out overflow-y-auto hide-scrollbar native-scroll text-xs">
         <div class="p-4 space-y-6">
             <div class="space-y-1">
-                <button onclick="switchContentType('movie')" class="w-full flex items-center space-x-3 text-gray-200 hover:text-white hover:bg-gray-800/50 px-2 py-2 rounded-lg font-semibold transition">
+                <button onclick="switchContentType('movie')" class="w-full flex items-center space-x-3 text-gray-200 hover:text-white hover:bg-gray-800/50 px-2 py-2.5 rounded-lg font-semibold transition active:scale-95">
                     <i class="fa-solid fa-film w-5 text-cyan-400 text-sm"></i><span>Movies</span>
                 </button>
-                <button onclick="switchContentType('tv')" class="w-full flex items-center space-x-3 text-gray-200 hover:text-white hover:bg-gray-800/50 px-2 py-2 rounded-lg transition">
+                <button onclick="switchContentType('tv')" class="w-full flex items-center space-x-3 text-gray-200 hover:text-white hover:bg-gray-800/50 px-2 py-2.5 rounded-lg transition active:scale-95">
                     <i class="fa-solid fa-tv w-5 text-cyan-400 text-sm"></i><span>TV Shows</span>
                 </button>
             </div>
 
             <div class="space-y-1 border-t border-gray-800/80 pt-4">
                 <span class="text-[10px] uppercase tracking-wider text-gray-500 font-extrabold block mb-1 px-2">LIVE TV</span>
-                <button onclick="showLiveTVView()" class="w-full flex items-center space-x-3 text-gray-200 hover:text-white hover:bg-gray-800/50 px-2 py-2 rounded-lg transition">
+                <button onclick="showLiveTVView()" class="w-full flex items-center space-x-3 text-gray-200 hover:text-white hover:bg-gray-800/50 px-2 py-2.5 rounded-lg transition active:scale-95">
                     <i class="fa-solid fa-satellite-dish w-5 text-gray-400 text-sm"></i><span>Live TV Extra</span>
                 </button>
-                <button onclick="showPlaylistsView()" class="w-full flex items-center space-x-3 text-gray-200 hover:text-white hover:bg-gray-800/50 px-2 py-2 rounded-lg transition">
+                <button onclick="showPlaylistsView()" class="w-full flex items-center space-x-3 text-gray-200 hover:text-white hover:bg-gray-800/50 px-2 py-2.5 rounded-lg transition active:scale-95">
                     <i class="fa-solid fa-bars-staggered w-5 text-gray-400 text-sm"></i><span>My Playlists</span>
-                </button>
-                <button onclick="showToast('Import Playlist clicked')" class="w-full flex items-center space-x-3 text-gray-200 hover:text-white hover:bg-gray-800/50 px-2 py-2 rounded-lg transition">
-                    <i class="fa-solid fa-cloud-arrow-down w-5 text-gray-400 text-sm"></i><span>Import Playlist</span>
                 </button>
             </div>
 
             <div class="space-y-1 border-t border-gray-800/80 pt-4">
                 <span class="text-[10px] uppercase tracking-wider text-gray-500 font-extrabold block mb-1 px-2">ME</span>
-                <button onclick="showWatchedView()" class="w-full flex items-center space-x-3 text-gray-200 hover:text-white hover:bg-gray-800/50 px-2 py-2 rounded-lg transition">
+                <button onclick="showWatchedView()" class="w-full flex items-center space-x-3 text-gray-200 hover:text-white hover:bg-gray-800/50 px-2 py-2.5 rounded-lg transition active:scale-95">
                     <i class="fa-solid fa-clock-rotate-left w-5 text-gray-400 text-sm"></i><span>Watched History</span>
                 </button>
-                <button onclick="showFavoritesView()" class="w-full flex items-center space-x-3 text-gray-200 hover:text-white hover:bg-gray-800/50 px-2 py-2 rounded-lg transition">
+                <button onclick="showFavoritesView()" class="w-full flex items-center space-x-3 text-gray-200 hover:text-white hover:bg-gray-800/50 px-2 py-2.5 rounded-lg transition active:scale-95">
                     <i class="fa-solid fa-heart w-5 text-gray-400 text-sm"></i><span>Favorites</span>
                 </button>
             </div>
 
             <div class="space-y-1 border-t border-gray-800/80 pt-4">
                 <span class="text-[10px] uppercase tracking-wider text-gray-500 font-extrabold block mb-1 px-2">MISC</span>
-                <button onclick="openSettingsModal()" class="w-full flex items-center space-x-3 text-gray-200 hover:text-white hover:bg-gray-800/50 px-2 py-2 rounded-lg transition">
+                <button onclick="openSettingsModal()" class="w-full flex items-center space-x-3 text-gray-200 hover:text-white hover:bg-gray-800/50 px-2 py-2.5 rounded-lg transition active:scale-95">
                     <i class="fa-solid fa-gear w-5 text-gray-400 text-sm"></i><span>Settings</span>
                 </button>
-                <button onclick="location.reload()" class="w-full flex items-center space-x-3 text-red-400 hover:text-red-300 hover:bg-red-500/10 px-2 py-2 rounded-lg transition">
+                <button onclick="location.reload()" class="w-full flex items-center space-x-3 text-red-400 hover:text-red-300 hover:bg-red-500/10 px-2 py-2.5 rounded-lg transition active:scale-95">
                     <i class="fa-solid fa-right-from-bracket w-5 text-sm"></i><span>Exit App</span>
                 </button>
             </div>
@@ -454,24 +488,51 @@
     </aside>
 
     <!-- Actor Profile Modal -->
-    <div id="actorModal" class="hidden fixed inset-0 bg-[#070b12] z-50 overflow-y-auto hide-scrollbar p-4 sm:p-6">
+    <div id="actorModal" class="hidden fixed inset-0 bg-[#070b12] z-50 overflow-y-auto hide-scrollbar native-scroll p-4 sm:p-6">
         <div class="max-w-5xl mx-auto space-y-6">
             <div class="flex items-center justify-between border-b border-gray-800 pb-3">
-                <button onclick="document.getElementById('actorModal').classList.add('hidden')" class="bg-gray-800/80 p-2 rounded-full text-white hover:bg-gray-700 active:scale-95 transition"><i class="fa-solid fa-arrow-left"></i></button>
+                <button onclick="document.getElementById('actorModal').classList.add('hidden')" class="bg-gray-800/80 p-2.5 rounded-full text-white hover:bg-gray-700 active:scale-90 transition"><i class="fa-solid fa-arrow-left"></i></button>
                 <h3 id="actorModalHeaderTitle" class="text-sm font-bold text-gray-300 uppercase">Actor Profile</h3>
                 <div class="w-8"></div>
             </div>
 
-            <div class="flex flex-col items-center text-center space-y-3">
-                <img id="actorModalAvatar" src="" class="w-28 h-28 sm:w-36 sm:h-36 rounded-full object-cover border-2 border-cyan-500 shadow-2xl">
-                <h2 id="actorModalName" class="text-xl sm:text-2xl font-extrabold text-white"></h2>
-                <p id="actorModalBio" class="text-xs text-gray-400 max-w-2xl leading-relaxed line-clamp-4 text-center"></p>
-                <div class="flex flex-wrap justify-center gap-4 text-xs text-gray-400 font-bold bg-[#111622] px-4 py-2 rounded-xl border border-gray-800">
-                    <span>Born: <strong id="actorModalBirthday" class="text-white">N/A</strong></span>
-                    <span>Place: <strong id="actorModalPlace" class="text-white">N/A</strong></span>
-                    <span>Movies: <strong id="actorMoviesCount" class="text-cyan-400">0</strong></span>
-                    <span>Series: <strong id="actorSeriesCount" class="text-cyan-400">0</strong></span>
+            <div class="flex flex-col md:flex-row items-center md:items-start gap-6 bg-[#111622] p-5 rounded-2xl border border-gray-800 shadow-xl">
+                <img id="actorModalAvatar" src="" class="w-32 h-32 sm:w-40 sm:h-40 rounded-2xl object-cover border-2 border-cyan-500 shadow-2xl shrink-0">
+                <div class="space-y-3 flex-1 text-center md:text-left">
+                    <h2 id="actorModalName" class="text-2xl sm:text-3xl font-extrabold text-white"></h2>
+                    <div class="flex flex-wrap justify-center md:justify-start gap-3 text-xs text-gray-300">
+                        <span>Department: <strong id="actorModalDepartment" class="text-cyan-400">Acting</strong></span>
+                        <span>•</span>
+                        <span>Gender: <strong id="actorModalGender" class="text-white">N/A</strong></span>
+                        <span>•</span>
+                        <span>Popularity: <strong id="actorModalPopularity" class="text-amber-400">0</strong></span>
+                    </div>
+                    <p id="actorModalBio" class="text-xs sm:text-sm text-gray-400 leading-relaxed max-h-36 overflow-y-auto hide-scrollbar native-scroll"></p>
                 </div>
+            </div>
+
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
+                <div class="bg-[#111622] p-3 rounded-xl border border-gray-800 text-center">
+                    <span class="text-gray-500 block uppercase font-bold text-[10px]">Born Date</span>
+                    <strong id="actorModalBirthday" class="text-white text-sm">N/A</strong>
+                </div>
+                <div class="bg-[#111622] p-3 rounded-xl border border-gray-800 text-center">
+                    <span class="text-gray-500 block uppercase font-bold text-[10px]">Place of Birth</span>
+                    <strong id="actorModalPlace" class="text-white text-sm truncate block">N/A</strong>
+                </div>
+                <div class="bg-[#111622] p-3 rounded-xl border border-gray-800 text-center">
+                    <span class="text-gray-500 block uppercase font-bold text-[10px]">Total Movies</span>
+                    <strong id="actorMoviesCount" class="text-cyan-400 text-sm">0</strong>
+                </div>
+                <div class="bg-[#111622] p-3 rounded-xl border border-gray-800 text-center">
+                    <span class="text-gray-500 block uppercase font-bold text-[10px]">Total Series</span>
+                    <strong id="actorSeriesCount" class="text-cyan-400 text-sm">0</strong>
+                </div>
+            </div>
+
+            <div class="space-y-3 pt-2">
+                <h4 class="text-xs font-bold uppercase text-gray-400 tracking-wider">Also Known As</h4>
+                <div id="actorAlsoKnownAs" class="flex flex-wrap gap-2 text-xs"></div>
             </div>
 
             <div class="space-y-3 pt-2">
@@ -489,30 +550,58 @@
         const BACKDROP_URL = 'https://image.tmdb.org/t/p/original';
         const PLACEHOLDER_IMG = 'https://placehold.co/400x600/111622/ffffff?text=No+Image';
 
+        async function fetchWithCache(url) {
+            const cacheKey = 'fv_cache_' + url;
+            const cachedData = localStorage.getItem(cacheKey);
+            const cachedTime = localStorage.getItem(cacheKey + '_time');
+            const now = new Date().getTime();
+
+            if (cachedData && cachedTime && (now - cachedTime < 86400000)) {
+                return JSON.parse(cachedData);
+            }
+
+            try {
+                const res = await fetch(url);
+                const data = await res.json();
+                localStorage.setItem(cacheKey, JSON.stringify(data));
+                localStorage.setItem(cacheKey + '_time', now);
+                return data;
+            } catch (error) {
+                if (cachedData) return JSON.parse(cachedData);
+                throw error;
+            }
+        }
+
+        const imageCache = new Map();
+        function preloadImage(url) {
+            if (!url || imageCache.has(url)) return;
+            const img = new Image();
+            img.src = url;
+            imageCache.set(url, img);
+        }
+
         const NETWORKS = [
-            { id: 'anime', name: 'Anime', isAnime: true },
-            { id: 'marvel', name: 'Marvel Studios', isMarvel: true },
-            { id: 'all', name: 'All', isAll: true },
-            { id: 213, providerId: 8, companyId: 10181, name: 'Netflix', svg: `<span class="text-red-600 font-black tracking-tighter text-xs uppercase">NETFLIX</span>` },
-            { id: 1024, providerId: 9, companyId: 4, name: 'Amazon Prime', svg: `<span class="text-cyan-400 font-black tracking-wide text-[10px]">PRIME</span>` },
-            { id: 2739, providerId: 337, companyId: 2, name: 'Disney+', svg: `<span class="text-blue-500 font-black italic text-xs">Disney+</span>` },
-            { id: 49, providerId: 15, companyId: 10163, name: 'HBO', svg: `<span class="text-white font-black tracking-widest text-xs">HBO</span>` },
-            { id: 2552, providerId: 350, companyId: 130932, name: 'Apple TV+', svg: `<span class="text-black font-black text-[10px]"><i class="fa-brands fa-apple mr-0.5"></i>tv+</span>` },
-            { id: 4330, providerId: 531, companyId: 4330, name: 'Paramount+', svg: `<span class="text-blue-600 font-black italic text-[10px]">Paramount+</span>` },
-            { id: 3353, providerId: 386, companyId: 3353, name: 'Peacock', svg: `<span class="text-yellow-500 font-black text-[10px]">Peacock</span>` },
-            { id: 2076, providerId: 15, companyId: 10163, name: 'Hulu', svg: `<span class="text-emerald-500 font-black text-[10px]">Hulu</span>` },
-            { id: 43, providerId: 43, companyId: 43, name: 'Nat Geo', svg: `<span class="text-yellow-400 font-bold text-[9px]">NAT GEO</span>` },
-            { id: 19, providerId: 9, companyId: 25, name: 'FOX', svg: `<span class="text-blue-400 font-black text-xs">FOX</span>` },
-            { id: 67, providerId: 1899, companyId: 3268, name: 'Showtime', svg: `<span class="text-red-500 font-black text-[10px]">SHOWTIME</span>` },
-            { id: 2, providerId: 2, companyId: 2, name: 'ABC', svg: `<span class="text-black font-black text-xs">ABC</span>` },
-            { id: 6, providerId: 6, companyId: 6, name: 'NBC', svg: `<span class="text-purple-500 font-black text-[10px]">NBC</span>` },
-            { id: 16, providerId: 16, companyId: 16, name: 'CBS', svg: `<span class="text-blue-700 font-black text-xs">CBS</span>` },
-            { id: 174, providerId: 174, companyId: 174, name: 'AMC', svg: `<span class="text-red-600 font-black text-xs">AMC</span>` }
+            { id: 'all', name: 'All Networks', companyId: '', networkId: '', svg: `<span class="text-cyan-400 font-black text-xs uppercase">ALL</span>` },
+            { id: 213, name: 'Netflix', companyId: '213', networkId: '213', svg: `<span class="text-red-600 font-black tracking-tighter text-xs uppercase">NETFLIX</span>` },
+            { id: 1024, name: 'Amazon Prime', companyId: '1024', networkId: '1024', svg: `<span class="text-cyan-400 font-black tracking-wide text-[10px]">PRIME</span>` },
+            { id: 2739, name: 'Disney+', companyId: '2739', networkId: '2739', svg: `<span class="text-blue-500 font-black italic text-xs">Disney+</span>` },
+            { id: 49, name: 'HBO', companyId: '49', networkId: '49', svg: `<span class="text-white font-black tracking-widest text-xs">HBO</span>` },
+            { id: 420, name: 'Marvel Studios', companyId: '420', networkId: '420', svg: `<span class="text-red-500 font-black italic text-[10px]">MARVEL</span>` },
+            { id: 2552, name: 'Apple TV+', companyId: '2552', networkId: '2552', svg: `<span class="text-black font-black text-[10px]"><i class="fa-brands fa-apple mr-0.5"></i>tv+</span>` },
+            { id: 3353, name: 'Peacock', companyId: '3353', networkId: '3353', svg: `<span class="text-yellow-500 font-black text-[10px]">Peacock</span>` },
+            { id: 2076, name: 'Hulu', companyId: '2076', networkId: '2076', svg: `<span class="text-emerald-500 font-black text-[10px]">Hulu</span>` },
+            { id: 43, name: 'Nat Geo', companyId: '43', networkId: '43', svg: `<span class="text-yellow-400 font-bold text-[9px]">NAT GEO</span>` },
+            { id: 19, name: 'FOX', companyId: '19', networkId: '19', svg: `<span class="text-blue-400 font-black text-xs">FOX</span>` },
+            { id: 67, name: 'Showtime', companyId: '67', networkId: '67', svg: `<span class="text-red-500 font-black text-[10px]">SHOWTIME</span>` },
+            { id: 2, name: 'ABC', companyId: '2', networkId: '2', svg: `<span class="text-black font-black text-xs">ABC</span>` },
+            { id: 6, name: 'NBC', companyId: '6', networkId: '6', svg: `<span class="text-purple-500 font-black text-[10px]">NBC</span>` },
+            { id: 16, name: 'CBS', companyId: '16', networkId: '16', svg: `<span class="text-blue-700 font-black text-xs">CBS</span>` }
         ];
 
         const GENRES = [
             { id: 'all', name: 'All Genres' },
-            { id: 28, name: 'Action' }, { id: 12, name: 'Adventure' }, { id: 16, name: 'Animation' },
+            { id: 16, name: 'Animation' },
+            { id: 28, name: 'Action' }, { id: 12, name: 'Adventure' }, 
             { id: 35, name: 'Comedy' }, { id: 80, name: 'Crime' }, { id: 99, name: 'Documentary' },
             { id: 18, name: 'Drama' }, { id: 10751, name: 'Family' }, { id: 14, name: 'Fantasy' },
             { id: 36, name: 'History' }, { id: 27, name: 'Horror' }, { id: 10402, name: 'Music' },
@@ -522,18 +611,19 @@
 
         let currentState = {
             type: 'movie',
-            category: 'trending',
             network: 'all',
             genre: 'all',
             year: 'all',
             sort: 'popularity.desc',
             query: '',
             searchTab: 'movie',
-            page: 1
+            page: 1,
+            isLoading: false,
+            hasMore: true
         };
 
         let appSettings = JSON.parse(localStorage.getItem('fv_settings') || '{"hdPosters": true, "hindiLinks": true}');
-        let peopleState = { query: '', page: 1, items: [] };
+        let peopleState = { query: '', page: 1, items: [], isLoading: false };
         let cachedItems = [];
         let favorites = JSON.parse(localStorage.getItem('fv_favorites') || '[]');
         let watchedHistory = JSON.parse(localStorage.getItem('fv_watched') || '[]');
@@ -541,12 +631,34 @@
         let currentCustomView = null;
         let hlsInstance = null;
 
+        let filterState = {
+            page: 1,
+            isLoading: false,
+            hasMore: true
+        };
+        let cachedFilterItems = [];
+        let currentAbortController = null;
+
         document.addEventListener('DOMContentLoaded', () => {
             setupFilterDropdowns();
             setupEventListeners();
             loadSettingsToUI();
             fetchContent(true);
+            setupInfiniteScroll();
+            setupBrowserHistorySupport();
         });
+
+        function setLoaderActive(active) {
+            const bar = document.getElementById('appLoaderBar');
+            if (active) {
+                bar.style.width = '85%';
+                bar.classList.add('loading-animation');
+            } else {
+                bar.style.width = '100%';
+                bar.classList.remove('loading-animation');
+                setTimeout(() => { bar.style.width = '0%'; }, 40);
+            }
+        }
 
         function showToast(message) {
             const toast = document.getElementById('toastNotification');
@@ -559,101 +671,72 @@
 
         function setupFilterDropdowns() {
             document.getElementById('networkChipsContainer').innerHTML = NETWORKS.map(net => {
-                if (net.isAnime) {
-                    return `
-                        <button onclick="showAnimeSection()" class="px-3.5 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap bg-cyan-600/20 border border-cyan-500 text-cyan-400 transition shrink-0">
-                            <i class="fa-solid fa-wand-magic-sparkles mr-1"></i> Anime
-                        </button>
-                    `;
-                }
-                if (net.isMarvel) {
-                    return `
-                        <button onclick="showMarvelSection()" class="px-3.5 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap bg-red-600/20 border border-red-500 text-red-400 transition shrink-0">
-                            <i class="fa-solid fa-shield-halved mr-1"></i> Marvel
-                        </button>
-                    `;
-                }
-                if (net.isAll) {
-                    return `
-                        <button onclick="selectNetwork('${net.id}')" class="px-4 py-2 rounded-xl text-xs font-bold whitespace-nowrap bg-[#111622] border border-gray-800 text-gray-300 hover:border-cyan-500 transition shrink-0">
-                            All
-                        </button>
-                    `;
-                }
                 return `
-                    <button onclick="selectNetwork('${net.id}')" class="px-3 py-1.5 rounded-xl bg-white border border-gray-200 hover:border-cyan-500 transition shrink-0 flex items-center justify-center h-8 min-w-[70px] shadow-sm">
+                    <button onclick="selectNetworkAndOpenFilter('${net.id}')" class="px-3.5 py-2 rounded-xl bg-[#111622] border border-gray-800 hover:border-cyan-500 transition shrink-0 flex items-center justify-center h-9 min-w-[75px] shadow-sm cursor-pointer active:scale-95">
                         ${net.svg}
                     </button>
                 `;
             }).join('');
 
-            document.getElementById('filterNetworkSelect').innerHTML = NETWORKS.filter(n => !n.isAnime && !n.isMarvel).map(n => `<option value="${n.id}">${n.name}</option>`).join('');
-            document.getElementById('filterGenreSelect').innerHTML = GENRES.map(g => `<option value="${g.id}">${g.name}</option>`).join('');
+            document.getElementById('filterNetworkSelect').innerHTML = NETWORKS.map(n => `<option value="${n.id}" class="bg-[#111622] text-white">${n.name}</option>`).join('');
+            document.getElementById('filterGenreSelect').innerHTML = GENRES.map(g => `<option value="${g.id}" class="bg-[#111622] text-white">${g.name}</option>`).join('');
             
-            let yearOpts = '<option value="all">All Years</option>';
-            for (let y = 2026; y >= 1960; y--) yearOpts += `<option value="${y}">${y}</option>`;
+            let yearOpts = '<option value="all" class="bg-[#111622] text-white">All Years</option>';
+            for (let y = 2026; y >= 1960; y--) yearOpts += `<option value="${y}" class="bg-[#111622] text-white">${y}</option>`;
             document.getElementById('filterYearSelect').innerHTML = yearOpts;
         }
 
-        function selectNetwork(id) {
-            currentState.network = id;
-            currentState.page = 1;
-            document.getElementById('filterNetworkSelect').value = id;
-            fetchContent(true);
-        }
-
-        function applyFiltersModal() {
-            currentState.network = document.getElementById('filterNetworkSelect').value;
-            currentState.type = document.getElementById('filterTypeSelect').value;
-            currentState.genre = document.getElementById('filterGenreSelect').value;
-            currentState.year = document.getElementById('filterYearSelect').value;
-            currentState.sort = document.getElementById('filterSortSelect').value;
-            currentState.page = 1;
-            
-            document.getElementById('filterSection').classList.add('hidden');
-            document.getElementById('pageTitle').innerText = `${currentState.type.toUpperCase()}S: FILTERED`;
-            fetchContent(true);
-            showToast('Filters Applied Successfully!');
-        }
-
-        function switchCategory(cat) {
-            currentState.category = cat;
-            currentState.page = 1;
-            currentCustomView = null;
-
-            const tabs = {
-                trending: document.getElementById('tabTrending'),
-                theater: document.getElementById('tabInTheater'),
-                popular: document.getElementById('tabPopular')
-            };
-
-            Object.keys(tabs).forEach(key => {
-                const btn = tabs[key];
-                if (btn) {
-                    btn.className = key === cat ? 'py-3 text-white border-b-2 border-cyan-400 transition whitespace-nowrap' : 'py-3 text-gray-400 hover:text-white border-b-2 border-transparent transition whitespace-nowrap';
+        function setupBrowserHistorySupport() {
+            window.addEventListener('popstate', (e) => {
+                const filterSection = document.getElementById('filterSection');
+                const detailModal = document.getElementById('movieDetailModal');
+                
+                if (!detailModal.classList.contains('hidden')) {
+                    detailModal.classList.add('hidden');
+                } else if (!filterSection.classList.contains('hidden')) {
+                    filterSection.classList.add('hidden');
                 }
             });
+        }
 
-            document.getElementById('pageTitle').innerText = `${currentState.type.toUpperCase()}S: ${cat === 'theater' ? 'IN THEATER' : cat.toUpperCase()}`;
-            document.getElementById('customViewHeader').classList.add('hidden');
-            fetchContent(true);
+        function selectNetworkAndOpenFilter(id) {
+            currentState.network = id;
+            document.getElementById('filterNetworkSelect').value = id;
+            
+            document.getElementById('filterSection').classList.remove('hidden');
+            history.pushState({view: 'filter'}, '', '#filter');
+            applyQuickFilters(true);
         }
 
         function switchContentType(type) {
             currentState.type = type;
             currentState.page = 1;
             currentCustomView = null;
-
             document.getElementById('filterTypeSelect').value = type;
-            document.getElementById('pageTitle').innerText = `${type.toUpperCase()}S: ${currentState.category.toUpperCase()}`;
+
+            const movieBtn = document.getElementById('tabMovieType');
+            const tvBtn = document.getElementById('tabTvType');
+
+            if (type === 'movie') {
+                movieBtn.className = 'py-3 text-white border-b-2 border-cyan-400 transition whitespace-nowrap';
+                tvBtn.className = 'py-3 text-gray-400 hover:text-white border-b-2 border-transparent transition whitespace-nowrap';
+            } else {
+                tvBtn.className = 'py-3 text-white border-b-2 border-cyan-400 transition whitespace-nowrap';
+                movieBtn.className = 'py-3 text-gray-400 hover:text-white border-b-2 border-transparent transition whitespace-nowrap';
+            }
+
+            document.getElementById('pageTitle').innerText = `${type === 'movie' ? 'MOVIES' : 'SERIES'}: POPULAR`;
             document.getElementById('customViewHeader').classList.add('hidden');
-            closeSidebar();
             fetchContent(true);
         }
 
         function setupEventListeners() {
             document.getElementById('filterToggleBtn').addEventListener('click', () => {
-                document.getElementById('filterSection').classList.toggle('hidden');
+                document.getElementById('filterSection').classList.remove('hidden');
+                history.pushState({view: 'filter'}, '', '#filter');
+                document.getElementById('filterNetworkSelect').value = currentState.network;
+                document.getElementById('filterTypeSelect').value = currentState.type;
+                applyQuickFilters(true);
             });
 
             document.getElementById('openSidebarBtn').addEventListener('click', () => {
@@ -789,22 +872,12 @@
             showToast('Settings saved successfully!');
         }
 
-        function linkRealDebrid() {
-            const token = prompt('Enter your Real-Debrid API Token:');
-            if (token) {
-                localStorage.setItem('fv_real_debrid_token', token);
-                showToast('Real-Debrid account successfully linked!');
-            }
-        }
-
-        function authorizeTrakt() {
-            alert('Redirecting to Trakt.tv authorization page...');
-            showToast('Trakt.tv authorized successfully!');
-        }
-
         function clearAppCache() {
             if (confirm('Are you sure you want to clear app cache and reset history?')) {
-                localStorage.clear();
+                Object.keys(localStorage).forEach(key => {
+                    if (key.startsWith('fv_cache_')) localStorage.removeItem(key);
+                });
+                showToast('App Cache cleared successfully!');
                 location.reload();
             }
         }
@@ -816,7 +889,7 @@
                 return;
             }
             listContainer.innerHTML = searchHistory.map(term => `
-                <div onclick="selectSearchTerm('${term}')" class="px-3 py-2.5 hover:bg-gray-800/80 flex items-center justify-between cursor-pointer text-gray-300">
+                <div onclick="selectSearchTerm('${term}')" class="px-3 py-3 hover:bg-gray-800/80 flex items-center justify-between cursor-pointer text-gray-300 active:bg-gray-700">
                     <div class="flex items-center space-x-2">
                         <i class="fa-solid fa-clock-rotate-left text-gray-500 text-[10px]"></i>
                         <span>${term}</span>
@@ -858,76 +931,180 @@
         }
 
         async function fetchContent(reset = false) {
+            if (currentState.isLoading) return;
+            currentState.isLoading = true;
+            setLoaderActive(true);
+
             const grid = document.getElementById('movieGrid');
-            if (reset) grid.innerHTML = `<div class="col-span-full text-center py-20 text-gray-500 text-xs">Loading content...</div>`;
+            const loader = document.getElementById('mainLoader');
 
-            let fetchType = currentState.type === 'anime' || currentState.network === 'marvel' ? 'tv' : currentState.type;
-            let url = `${BASE_URL}/trending/${fetchType}/day?api_key=${API_KEY}&page=${currentState.page}`;
+            if (reset) {
+                currentState.page = 1;
+                cachedItems = [];
+                currentState.hasMore = true;
+                grid.innerHTML = `<div class="col-span-full text-center py-20 text-gray-500 text-xs">Loading...</div>`;
+            }
 
-            if (currentState.type === 'anime') {
-                url = `${BASE_URL}/discover/tv?api_key=${API_KEY}&with_genres=16&with_original_language=ja&sort_by=${currentState.sort}&page=${currentState.page}`;
-            } else if (currentState.network === 'marvel') {
-                url = `${BASE_URL}/discover/${currentState.type}?api_key=${API_KEY}&with_companies=420|7505|19551&sort_by=${currentState.sort}&page=${currentState.page}`;
-            } else if (currentState.category === 'theater') {
-                url = currentState.type === 'movie' 
-                    ? `${BASE_URL}/movie/now_playing?api_key=${API_KEY}&page=${currentState.page}`
-                    : `${BASE_URL}/tv/on_the_air?api_key=${API_KEY}&page=${currentState.page}`;
-            } else if (currentState.category === 'popular') {
+            if (!currentState.hasMore) {
+                currentState.isLoading = false;
+                setLoaderActive(false);
+                loader.classList.add('hidden');
+                return;
+            }
+
+            loader.classList.remove('hidden');
+
+            let url = '';
+            if (currentState.query) {
+                url = `${BASE_URL}/search/${currentState.type}?api_key=${API_KEY}&query=${encodeURIComponent(currentState.query)}&page=${currentState.page}`;
+            } else {
                 url = `${BASE_URL}/${currentState.type}/popular?api_key=${API_KEY}&page=${currentState.page}`;
             }
 
-            if (currentState.query) {
-                url = `${BASE_URL}/search/${fetchType}?api_key=${API_KEY}&query=${encodeURIComponent(currentState.query)}&page=${currentState.page}`;
-            } else if (currentState.type !== 'anime' && currentState.network !== 'marvel' && (currentState.network !== 'all' || currentState.genre !== 'all' || currentState.year !== 'all')) {
-                url = `${BASE_URL}/discover/${currentState.type}?api_key=${API_KEY}&sort_by=${currentState.sort}&page=${currentState.page}`;
-                
-                if (currentState.network !== 'all') {
-                    const netObj = NETWORKS.find(n => String(n.id) === String(currentState.network));
-                    if (currentState.network === '213' || netObj?.name === 'Netflix') {
-                        if (currentState.type === 'movie') {
-                            url += `&with_watch_providers=8&watch_region=US`;
-                        } else {
-                            url += `&with_networks=213`;
-                        }
-                    } else if (currentState.network === '2552' || netObj?.name === 'Apple TV+') {
-                        if (currentState.type === 'movie') {
-                            url += `&with_watch_providers=350&watch_region=US`;
-                        } else {
-                            url += `&with_networks=2552`;
-                        }
-                    } else if (currentState.type === 'tv') {
-                        url += `&with_networks=${currentState.network}`;
-                    } else {
-                        if (netObj?.companyId) {
-                            url += `&with_companies=${netObj.companyId}`;
-                        } else {
-                            url += `&with_companies=${currentState.network}`;
-                        }
-                    }
+            try {
+                const data = await fetchWithCache(url);
+                let results = data.results || [];
+
+                if (results.length === 0) {
+                    currentState.hasMore = false;
+                } else {
+                    cachedItems = reset ? results : [...cachedItems, ...results];
+                    renderGrid(cachedItems);
+                    currentState.page++;
                 }
-                if (currentState.genre !== 'all') url += `&with_genres=${currentState.genre}`;
-                if (currentState.year !== 'all') url += currentState.type === 'tv' ? `&first_air_date_year=${currentState.year}` : `&primary_release_year=${currentState.year}`;
+            } catch (e) {
+                if (reset) grid.innerHTML = `<div class="col-span-full text-center py-20 text-red-500 text-xs">Failed to load content.</div>`;
+            } finally {
+                currentState.isLoading = false;
+                setLoaderActive(false);
+                loader.classList.add('hidden');
+            }
+        }
+
+        async function applyQuickFilters(reset = true) {
+            if (currentAbortController) {
+                currentAbortController.abort();
+            }
+            currentAbortController = new AbortController();
+
+            const network = document.getElementById('filterNetworkSelect').value;
+            let typeSelection = document.getElementById('filterTypeSelect').value;
+            let genre = document.getElementById('filterGenreSelect').value;
+            const year = document.getElementById('filterYearSelect').value;
+            const sort = document.getElementById('filterSortSelect').value;
+
+            let targetType = (typeSelection === 'tv') ? 'tv' : (typeSelection === 'anime' ? 'tv' : 'movie');
+            const grid = document.getElementById('filterMovieGrid');
+            const loader = document.getElementById('filterLoader');
+            
+            if (reset) {
+                filterState.page = 1;
+                cachedFilterItems = [];
+                filterState.hasMore = true;
+                grid.innerHTML = `<div class="col-span-full text-center py-20 text-cyan-400 text-xs font-bold">Ultra Fast Loading...</div>`;
+            }
+
+            if (!filterState.hasMore) return;
+
+            loader.classList.remove('hidden');
+            setLoaderActive(true);
+
+            let netObj = NETWORKS.find(n => n.id == network);
+            let url = `${BASE_URL}/discover/${targetType}?api_key=${API_KEY}&sort_by=${sort}&page=${filterState.page}`;
+
+            if (typeSelection === 'anime') {
+                genre = '16';
+            }
+
+            if (genre !== 'all') {
+                url += `&with_genres=${genre}`;
+            }
+            
+            if (year !== 'all') {
+                url += targetType === 'movie' ? `&primary_release_year=${year}` : `&first_air_date_year=${year}`;
+            }
+
+            if (network !== 'all') {
+                if (targetType === 'movie') {
+                    url += `&with_companies=${netObj ? netObj.companyId : network}`;
+                } else {
+                    url += `&with_networks=${netObj ? netObj.networkId : network}`;
+                }
             }
 
             try {
-                const res = await fetch(url);
-                let data = await res.json();
-                if (reset) cachedItems = data.results || [];
-                else cachedItems = [...cachedItems, ...(data.results || [])];
-                renderGrid(cachedItems);
+                let data = await fetchWithCache(url);
+                let results = data.results || [];
+
+                if (results.length === 0 && network !== 'all') {
+                    url = `${BASE_URL}/${targetType}/popular?api_key=${API_KEY}&page=${filterState.page}`;
+                    const dataPop = await fetchWithCache(url);
+                    results = dataPop.results || [];
+                }
+
+                if (results.length === 0) {
+                    filterState.hasMore = false;
+                } else {
+                    cachedFilterItems = reset ? results : [...cachedFilterItems, ...results];
+                    filterState.page++;
+                }
+
+                if (cachedFilterItems.length > 0) {
+                    grid.innerHTML = cachedFilterItems.map(item => {
+                        const posterUrl = item.poster_path ? IMAGE_URL + item.poster_path : PLACEHOLDER_IMG;
+                        preloadImage(posterUrl);
+                        return `
+                            <div onclick="openMovieDetails(${item.id}, '${targetType}')" class="poster-card bg-[#111622] border border-gray-800 rounded-xl overflow-hidden flex flex-col cursor-pointer active:scale-95">
+                                <div class="aspect-[2/3] w-full bg-gray-900">
+                                    <img src="${posterUrl}" class="w-full h-full object-cover" loading="eager">
+                                </div>
+                                <div class="p-2 text-center">
+                                    <h3 class="text-xs font-bold text-gray-100 truncate">${item.title || item.name}</h3>
+                                    <p class="text-[10px] text-gray-400 font-semibold">${(item.release_date || item.first_air_date || '').split('-')[0]}</p>
+                                </div>
+                            </div>
+                        `;
+                    }).join('');
+                } else {
+                    grid.innerHTML = `<div class="col-span-full text-center py-20 text-gray-400 text-xs font-bold">No content found.</div>`;
+                }
             } catch (e) {
-                grid.innerHTML = `<div class="col-span-full text-center py-20 text-red-500 text-xs">Failed to load content from server.</div>`;
+                if (e.name !== 'AbortError' && reset) {
+                    grid.innerHTML = `<div class="col-span-full text-center py-20 text-red-500 text-xs">Failed to load content.</div>`;
+                }
+            } finally {
+                setLoaderActive(false);
+                loader.classList.add('hidden');
+                filterState.isLoading = false;
             }
-        }        
-        
-        function handleLoadMore() {
-            if (currentState.searchTab === 'person' && currentState.query) {
-                peopleState.page++;
-                executePeopleSearch(false);
-                return;
-            }
-            currentState.page++;
-            fetchContent(false);
+        }
+
+        function setupInfiniteScroll() {
+            const filterSection = document.getElementById('filterSection');
+
+            window.addEventListener('scroll', () => {
+                if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 500) {
+                    if (!filterSection.classList.contains('hidden')) {
+                        if (!filterState.isLoading && filterState.hasMore && !currentCustomView) {
+                            filterState.isLoading = true;
+                            applyQuickFilters(false);
+                        }
+                    } else {
+                        if (!currentState.isLoading && currentState.hasMore && !currentCustomView && !currentState.query) {
+                            fetchContent(false);
+                        }
+                    }
+                }
+            });
+
+            filterSection.addEventListener('scroll', () => {
+                if ((filterSection.scrollTop + filterSection.clientHeight) >= filterSection.scrollHeight - 400) {
+                    if (!filterState.isLoading && filterState.hasMore) {
+                        filterState.isLoading = true;
+                        applyQuickFilters(false);
+                    }
+                }
+            });
         }
 
         function renderGrid(items) {
@@ -941,12 +1118,13 @@
                 const title = item.title || item.name || 'Untitled';
                 const year = (item.release_date || item.first_air_date || '2026').split('-')[0];
                 const poster = item.poster_path ? `${IMAGE_URL}${item.poster_path}` : PLACEHOLDER_IMG;
+                preloadImage(poster);
                 const itemType = item.media_type || currentState.type;
 
                 return `
-                    <div onclick="openMovieDetails(${item.id}, '${itemType}')" class="poster-card bg-[#111622] border border-gray-800/80 rounded-xl overflow-hidden flex flex-col cursor-pointer">
+                    <div onclick="openMovieDetails(${item.id}, '${itemType}')" class="poster-card bg-[#111622] border border-gray-800/80 rounded-xl overflow-hidden flex flex-col cursor-pointer active:scale-95">
                         <div class="aspect-[2/3] w-full bg-gray-900 relative">
-                            <img src="${poster}" alt="${title}" loading="lazy" class="w-full h-full object-cover">
+                            <img src="${poster}" alt="${title}" loading="eager" class="w-full h-full object-cover">
                             ${itemType === 'tv' ? `<span class="absolute top-1.5 right-1.5 bg-black/70 text-cyan-400 border border-cyan-500 text-[9px] font-black px-1 rounded">TV</span>` : ''}
                         </div>
                         <div class="p-2 flex flex-col justify-between flex-1">
@@ -959,26 +1137,36 @@
         }
 
         async function openMovieDetails(id, type) {
-            try {
-                let apiType = type === 'anime' ? 'tv' : type;
-                const res = await fetch(`${BASE_URL}/${apiType}/${id}?api_key=${API_KEY}&append_to_response=credits,recommendations,videos`);
-                const data = await res.json();
+            document.getElementById('detailBackdrop').src = '';
+            document.getElementById('detailTitle').innerText = 'Loading...';
+            document.getElementById('detailOverview').innerText = '';
+            document.getElementById('detailCastContainer').innerHTML = '';
+            document.getElementById('detailRecommendationsGrid').innerHTML = '';
 
-                document.getElementById('detailBackdrop').src = data.backdrop_path ? BACKDROP_URL + data.backdrop_path : PLACEHOLDER_IMG;
+            document.getElementById('movieDetailModal').classList.remove('hidden');
+            setLoaderActive(true);
+            
+            try {
+                const url = `${BASE_URL}/${type}/${id}?api_key=${API_KEY}&append_to_response=credits,recommendations,videos`;
+                const data = await fetchWithCache(url);
+
+                const backdropUrl = data.backdrop_path ? BACKDROP_URL + data.backdrop_path : PLACEHOLDER_IMG;
+                preloadImage(backdropUrl);
+                document.getElementById('detailBackdrop').src = backdropUrl;
                 document.getElementById('detailTitle').innerText = data.title || data.name;
                 document.getElementById('detailYear').innerText = (data.release_date || data.first_air_date || '2026').split('-')[0];
-                document.getElementById('detailRuntime').innerText = apiType === 'movie' ? `${data.runtime || 120}m` : `${data.number_of_seasons || 1} Seasons`;
+                document.getElementById('detailRuntime').innerText = type === 'movie' ? `${data.runtime || 120}m` : `${data.number_of_seasons || 1} Seasons`;
                 document.getElementById('detailGenres').innerText = (data.genres || []).map(g => g.name).join(', ');
-                document.getElementById('detailTypeTag').innerText = apiType === 'movie' ? 'Film' : 'Series';
+                document.getElementById('detailTypeTag').innerText = type === 'movie' ? 'Film' : 'Series';
                 document.getElementById('detailOverview').innerText = data.overview || 'No description available.';
 
                 const isFav = favorites.some(f => f.id === data.id);
                 const favBtn = document.getElementById('detailFavoriteBtn');
                 favBtn.innerHTML = `<i class="${isFav ? 'fa-solid text-red-500' : 'fa-regular'} fa-heart"></i>`;
-                favBtn.onclick = () => toggleFavorite(data, apiType);
+                favBtn.onclick = () => toggleFavorite(data, type);
 
                 const seasonContainer = document.getElementById('tvShowSeasonSelectorContainer');
-                if (apiType === 'tv' && data.seasons) {
+                if (type === 'tv' && data.seasons) {
                     seasonContainer.classList.remove('hidden');
                     const seasonSel = document.getElementById('seasonSelect');
                     seasonSel.innerHTML = data.seasons.map(s => `<option value="${s.season_number}">Season ${s.season_number} (${s.episode_count} Ep)</option>`).join('');
@@ -999,19 +1187,27 @@
                 document.getElementById('detailDirector').innerText = (data.credits?.crew || []).find(c => c.job === 'Director')?.name || 'N/A';
                 document.getElementById('detailWriter').innerText = (data.credits?.crew || []).find(c => c.job === 'Screenplay')?.name || 'N/A';
 
-                document.getElementById('detailCastContainer').innerHTML = (data.credits?.cast || []).slice(0, 15).map(actor => `
-                    <div onclick="openActorProfile(${actor.id})" class="flex flex-col items-center shrink-0 w-20 text-center cursor-pointer group">
-                        <img src="${actor.profile_path ? IMAGE_URL + actor.profile_path : PLACEHOLDER_IMG}" class="w-14 h-14 rounded-full object-cover border border-gray-700 shadow group-hover:border-cyan-400 transition">
-                        <span class="text-[10px] font-bold text-white mt-1 truncate w-full group-hover:text-cyan-400 transition">${actor.name}</span>
-                    </div>
-                `).join('');
+                document.getElementById('detailCastContainer').innerHTML = (data.credits?.cast || []).slice(0, 15).map(actor => {
+                    const actorImg = actor.profile_path ? IMAGE_URL + actor.profile_path : PLACEHOLDER_IMG;
+                    preloadImage(actorImg);
+                    return `
+                        <div onclick="openActorProfile(${actor.id})" class="flex flex-col items-center shrink-0 w-20 text-center cursor-pointer group active:scale-95">
+                            <img src="${actorImg}" class="w-14 h-14 rounded-full object-cover border border-gray-700 shadow group-hover:border-cyan-400 transition" loading="eager">
+                            <span class="text-[10px] font-bold text-white mt-1 truncate w-full group-hover:text-cyan-400 transition">${actor.name}</span>
+                        </div>
+                    `;
+                }).join('');
 
-                document.getElementById('detailRecommendationsGrid').innerHTML = (data.recommendations?.results || []).slice(0, 6).map(rec => `
-                    <div onclick="openMovieDetails(${rec.id}, '${apiType}')" class="bg-[#111622] border border-gray-800 rounded-lg overflow-hidden cursor-pointer">
-                        <div class="aspect-[2/3] w-full bg-gray-900"><img src="${rec.poster_path ? IMAGE_URL + rec.poster_path : PLACEHOLDER_IMG}" class="w-full h-full object-cover"></div>
-                        <div class="p-1.5"><p class="text-[10px] font-bold text-white truncate">${rec.title || rec.name}</p></div>
-                    </div>
-                `).join('');
+                document.getElementById('detailRecommendationsGrid').innerHTML = (data.recommendations?.results || []).slice(0, 6).map(rec => {
+                    const recPoster = rec.poster_path ? IMAGE_URL + rec.poster_path : PLACEHOLDER_IMG;
+                    preloadImage(recPoster);
+                    return `
+                        <div onclick="openMovieDetails(${rec.id}, '${type}')" class="bg-[#111622] border border-gray-800 rounded-lg overflow-hidden cursor-pointer active:scale-95">
+                            <div class="aspect-[2/3] w-full bg-gray-900"><img src="${recPoster}" class="w-full h-full object-cover" loading="eager"></div>
+                            <div class="p-1.5"><p class="text-[10px] font-bold text-white truncate">${rec.title || rec.name}</p></div>
+                        </div>
+                    `;
+                }).join('');
 
                 const trailerVideo = (data.videos?.results || []).find(v => v.type === 'Trailer' && v.site === 'YouTube');
                 document.getElementById('detailTrailerBtn').onclick = () => {
@@ -1023,9 +1219,12 @@
                     }
                 };
 
-                document.getElementById('detailPlayBtn').onclick = () => openStreamLinks(data.id, apiType);
-                document.getElementById('movieDetailModal').classList.remove('hidden');
-            } catch (e) {}
+                document.getElementById('detailPlayBtn').onclick = () => openStreamLinks(data.id, type);
+                history.pushState({view: 'detail'}, '', '#detail');
+            } catch (e) {
+            } finally {
+                setLoaderActive(false);
+            }
         }
 
         function toggleFavorite(item, type) {
@@ -1049,25 +1248,24 @@
                 episode = document.getElementById('episodeSelect')?.value || 1;
             }
 
-            // پاکتاوکردن و ڕێکخستنی سێرڤەرە چالاکەکان بە پێشکەوتووترین شێواز
+            // سێرڤەرە نوێ و کاراکانی بینینی فیلم و دراماکان
             const servers = [
-                { name: 'VIDSRC.VIP (Ultra Fast HD)', url: type === 'tv' ? `https://vidsrc.vip/embed/tv/${id}/${season}/${episode}` : `https://vidsrc.vip/embed/movie/${id}` },
+                { name: 'VIDFAST (Ultra Fast HD Server)', url: type === 'tv' ? `https://vidfast.pro/tv/${id}/${season}/${episode}` : `https://vidfast.pro/movie/${id}` },
+                { name: 'AUTOEMBED HD (Stable & Fast)', url: type === 'tv' ? `https://player.autoembed.cc/embed/tv/${id}/${season}/${episode}` : `https://player.autoembed.cc/embed/movie/${id}` },
                 { name: 'VIDLINK PRO (Clean & Stable)', url: type === 'tv' ? `https://vidlink.pro/tv/${id}/${season}/${episode}` : `https://vidlink.pro/movie/${id}` },
-                { name: 'STREAMWISH (Fast HD)', url: type === 'tv' ? `https://streamwish.to/embed-${id}-${season}x${episode}.html` : `https://streamwish.to/embed-${id}.html` },
-                { name: 'VIDMOLY (Stable Server)', url: type === 'tv' ? `https://vidmoly.to/embed-${id}-${season}x${episode}.html` : `https://vidmoly.to/embed-${id}.html` },
-                { name: 'VIDSRC.ME (Official Hub)', url: type === 'tv' ? `https://vidsrc.me/embed/tv?tmdb=${id}&season=${season}&episode=${episode}` : `https://vidsrc.me/embed/movie?tmdb=${id}` },
-                { name: 'SUPEREMBED 4K (Ultra Fast)', url: type === 'tv' ? `https://multiembed.mov/?video_id=${id}&tmdb=1&s=${season}&e=${episode}` : `https://multiembed.mov/?video_id=${id}&tmdb=1` },
+                { name: 'MULTIEBED 4K (Ultra Fast)', url: type === 'tv' ? `https://multiembed.mov/?video_id=${id}&tmdb=1&s=${season}&e=${episode}` : `https://multiembed.mov/?video_id=${id}&tmdb=1` },
+                { name: 'PRIMEWIRE API (Server 1)', url: type === 'tv' ? `https://www.primewire.tf/embed/tv?tmdb=${id}&season=${season}&episode=${episode}` : `https://www.primewire.tf/embed/movie?tmdb=${id}` },
+                { name: 'VIDSRC.NET (Official Mirror)', url: type === 'tv' ? `https://vidsrc.net/embed/tv/${id}/${season}/${episode}` : `https://vidsrc.net/embed/movie/${id}` },
                 { name: 'RIVESTREAM VIP (Fast App Player)', url: type === 'tv' ? `https://www.rivestream.app/embed/tv/${id}/${season}/${episode}` : `https://www.rivestream.app/embed/movie/${id}` },
                 { name: 'FLIXER GD (Ultra Clean)', url: type === 'tv' ? `https://flixer.gd/embed/tv/${id}/${season}/${episode}` : `https://flixer.gd/embed/movie/${id}` },
                 { name: 'GAIAFLIX (New Server)', url: type === 'tv' ? `https://gaiaflix.live/embed/tv/${id}/${season}/${episode}` : `https://gaiaflix.live/embed/movie/${id}` },
                 { name: 'SSFLIX (Alternative)', url: type === 'tv' ? `https://ssflix.pro/tv/${id}/${season}/${episode}` : `https://ssflix.pro/movie/${id}` },
-                { name: 'VIDSRC.WIN (Mirror Server)', url: type === 'tv' ? `https://vidsrc.win/embed/tv/${id}/${season}/${episode}` : `https://vidsrc.win/embed/movie/${id}` },
                 { name: 'BRAFLIX (HD Stream)', url: type === 'tv' ? `https://braflix.uk/tv/${id}/${season}/${episode}` : `https://braflix.uk/movie/${id}` },
                 { name: '2EMBED.CC (Ultimate Mirror)', url: type === 'tv' ? `https://2embed.cc/embedtv/${id}&s=${season}&e=${episode}` : `https://2embed.cc/embed/${id}` }
             ];
 
             container.innerHTML = servers.map((srv) => `
-                <div onclick="playStreamInCustomPlayer('${srv.url}', '${srv.name}')" class="p-3 rounded-xl bg-[#070b12] hover:bg-cyan-600/20 border border-gray-800 flex items-center justify-between cursor-pointer transition">
+                <div onclick="playStreamInCustomPlayer('${srv.url}', '${srv.name}')" class="p-3.5 rounded-xl bg-[#070b12] hover:bg-cyan-600/20 border border-gray-800 flex items-center justify-between cursor-pointer transition active:scale-95">
                     <div><span class="font-bold text-cyan-400 block">${srv.name}</span><span class="text-[9px] text-gray-500">Active embed stream</span></div>
                     <i class="fa-solid fa-play text-cyan-400 text-xs"></i>
                 </div>
@@ -1102,7 +1300,7 @@
                 iframeElem.src = url;
             }
 
-            document.getElementById('playerModal').classList.remove('hidden');
+            document.getElementById('playerModal').classList.add('hidden');
             showToast('Loading Player Source...');
         }
 
@@ -1153,29 +1351,6 @@
             showToast('My Playlists menu loaded.');
         }
 
-        function showAnimeSection() {
-            currentState.genre = 16;
-            currentState.network = 'all';
-            currentState.page = 1;
-            currentCustomView = null;
-            document.getElementById('filterGenreSelect').value = 16;
-            document.getElementById('pageTitle').innerText = `${currentState.type.toUpperCase()}S: ANIME`;
-            document.getElementById('customViewHeader').classList.add('hidden');
-            fetchContent(true);
-            showToast('Anime filter applied!');
-        }
-
-        function showMarvelSection() {
-            currentState.network = 'marvel';
-            currentState.genre = 'all';
-            currentState.page = 1;
-            currentCustomView = null;
-            document.getElementById('pageTitle').innerText = `${currentState.type.toUpperCase()}S: MARVEL STUDIOS`;
-            document.getElementById('customViewHeader').classList.add('hidden');
-            fetchContent(true);
-            showToast('Marvel Studios filter applied!');
-        }
-
         function switchSearchTab(tab) {
             currentState.searchTab = tab;
             if (tab === 'movie' || tab === 'tv') {
@@ -1185,7 +1360,7 @@
             ['movie', 'tv', 'person'].forEach(t => {
                 const btn = document.getElementById(`searchTab${t.charAt(0).toUpperCase() + t.slice(1)}`);
                 if (btn) {
-                    btn.className = t === tab ? 'bg-cyan-600 text-white px-4 py-1.5 rounded-full shadow transition' : 'bg-[#111622] text-gray-400 border border-gray-700 px-4 py-1.5 rounded-full shadow transition';
+                    btn.className = t === tab ? 'bg-cyan-600 text-white px-4 py-1.5 rounded-full shadow transition active:scale-95' : 'bg-[#111622] text-gray-400 border border-gray-700 px-4 py-1.5 rounded-full shadow transition active:scale-95';
                 }
             });
 
@@ -1206,8 +1381,8 @@
                 return;
             }
             try {
-                const res = await fetch(`${BASE_URL}/search/person?api_key=${API_KEY}&query=${encodeURIComponent(peopleState.query)}&page=${peopleState.page}`);
-                const data = await res.json();
+                const url = `${BASE_URL}/search/person?api_key=${API_KEY}&query=${encodeURIComponent(peopleState.query)}&page=${peopleState.page}`;
+                const data = await fetchWithCache(url);
                 peopleState.items = reset ? (data.results || []) : [...peopleState.items, ...(data.results || [])];
                 renderPeopleGrid(peopleState.items);
             } catch(e) {}
@@ -1219,42 +1394,61 @@
                 grid.innerHTML = `<div class="col-span-full text-center py-20 text-gray-500 text-xs">No people found.</div>`;
                 return;
             }
-            grid.innerHTML = people.map(person => `
-                <div onclick="openActorProfile(${person.id})" class="bg-[#111622] border border-gray-800/80 rounded-xl p-3 flex flex-col items-center cursor-pointer hover:border-cyan-500 transition group">
-                    <img src="${person.profile_path ? IMAGE_URL + person.profile_path : PLACEHOLDER_IMG}" class="w-20 h-20 sm:w-24 sm:h-24 rounded-full object-cover border border-gray-700 shadow mb-2">
-                    <h3 class="text-xs font-bold text-white text-center truncate w-full group-hover:text-cyan-400">${person.name}</h3>
-                </div>
-            `).join('');
+            grid.innerHTML = people.map(person => {
+                const personImg = person.profile_path ? IMAGE_URL + person.profile_path : PLACEHOLDER_IMG;
+                preloadImage(personImg);
+                return `
+                    <div onclick="openActorProfile(${person.id})" class="bg-[#111622] border border-gray-800/80 rounded-xl p-3 flex flex-col items-center cursor-pointer hover:border-cyan-500 transition group active:scale-95">
+                        <img src="${personImg}" class="w-20 h-20 sm:w-24 sm:h-24 rounded-full object-cover border border-gray-700 shadow mb-2" loading="eager">
+                        <h3 class="text-xs font-bold text-white text-center truncate w-full group-hover:text-cyan-400">${person.name}</h3>
+                    </div>
+                `;
+            }).join('');
         }
 
         async function openActorProfile(personId) {
             const modal = document.getElementById('actorModal');
-            modal.classList.add('hidden');
+            modal.classList.remove('hidden');
+            setLoaderActive(true);
             try {
-                const [personRes, creditsRes] = await Promise.all([
-                    fetch(`${BASE_URL}/person/${personId}?api_key=${API_KEY}`),
-                    fetch(`${BASE_URL}/person/${personId}/combined_credits?api_key=${API_KEY}`)
+                const [person, credits] = await Promise.all([
+                    fetchWithCache(`${BASE_URL}/person/${personId}?api_key=${API_KEY}`),
+                    fetchWithCache(`${BASE_URL}/person/${personId}/combined_credits?api_key=${API_KEY}`)
                 ]);
-                const person = await personRes.json();
-                const credits = await creditsRes.json();
 
-                document.getElementById('actorModalAvatar').src = person.profile_path ? `${IMAGE_URL}${person.profile_path}` : PLACEHOLDER_IMG;
+                const avatarUrl = person.profile_path ? `${IMAGE_URL}${person.profile_path}` : PLACEHOLDER_IMG;
+                preloadImage(avatarUrl);
+                document.getElementById('actorModalAvatar').src = avatarUrl;
                 document.getElementById('actorModalName').innerText = person.name || 'Unknown';
-                document.getElementById('actorModalBio').innerText = person.biography || 'No biography available.';
+                document.getElementById('actorModalBio').innerText = person.biography || 'No biography available for this person.';
                 document.getElementById('actorModalBirthday').innerText = person.birthday || 'N/A';
                 document.getElementById('actorModalPlace').innerText = person.place_of_birth || 'N/A';
+                document.getElementById('actorModalDepartment').innerText = person.known_for_department || 'Acting';
+                document.getElementById('actorModalGender').innerText = person.gender === 1 ? 'Female' : (person.gender === 2 ? 'Male' : 'N/A');
+                document.getElementById('actorModalPopularity').innerText = person.popularity ? person.popularity.toFixed(1) : '0';
+
+                const alsoKnown = person.also_known_as || [];
+                document.getElementById('actorAlsoKnownAs').innerHTML = alsoKnown.length > 0 ? alsoKnown.map(name => `<span class="bg-[#151a26] border border-gray-800 text-gray-300 px-2.5 py-1 rounded-lg">${name}</span>`).join('') : '<span class="text-gray-500">None</span>';
 
                 const uniqueWorks = Array.from(new Set((credits.cast || []).map(a => a.id))).map(id => credits.cast.find(a => a.id === id));
                 document.getElementById('actorMoviesCount').innerText = uniqueWorks.filter(w => w.media_type === 'movie').length;
                 document.getElementById('actorSeriesCount').innerText = uniqueWorks.filter(w => w.media_type === 'tv').length;
 
-                document.getElementById('actorFilmographyGrid').innerHTML = uniqueWorks.map(work => `
-                    <div onclick="document.getElementById('actorModal').classList.add('hidden'); openMovieDetails(${work.id}, '${work.media_type || 'movie'}')" class="bg-[#111622] border border-gray-800 rounded-lg overflow-hidden cursor-pointer">
-                        <div class="aspect-[2/3] w-full bg-gray-900"><img src="${work.poster_path ? IMAGE_URL + work.poster_path : PLACEHOLDER_IMG}" class="w-full h-full object-cover"></div>
-                        <div class="p-1.5"><p class="text-[10px] font-bold text-white truncate">${work.title || work.name}</p></div>
-                    </div>
-                `).join('');
-            } catch(e) {}
+                document.getElementById('actorFilmographyGrid').innerHTML = uniqueWorks.map(work => {
+                    const workPoster = work.poster_path ? IMAGE_URL + work.poster_path : PLACEHOLDER_IMG;
+                    preloadImage(workPoster);
+                    return `
+                        <div onclick="document.getElementById('actorModal').classList.add('hidden'); openMovieDetails(${work.id}, '${work.media_type || 'movie'}')" class="bg-[#111622] border border-gray-800 rounded-lg overflow-hidden cursor-pointer active:scale-95">
+                            <div class="aspect-[2/3] w-full bg-gray-900"><img src="${workPoster}" class="w-full h-full object-cover" loading="eager"></div>
+                            <div class="p-1.5"><p class="text-[10px] font-bold text-white truncate">${work.title || work.name}</p></div>
+                        </div>
+                    `;
+                }).join('');
+            } catch(e) {
+                showToast('Failed to load actor profile');
+            } finally {
+                setLoaderActive(false);
+            }
         }
     </script>
 </body>
