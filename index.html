@@ -47,8 +47,10 @@
             -webkit-overflow-scrolling: touch;
         }
         .poster-card {
-            transition: transform 0.12s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.12s ease;
+            transition: transform 0.12s cubic-bezier(0.4, 0, 0.2, 1);
             will-change: transform;
+            backface-visibility: hidden;
+            transform: translateZ(0);
         }
         .poster-card:active {
             transform: scale(0.96);
@@ -174,30 +176,41 @@
         </div>
     </header>
 
-    <!-- Search Bar & History -->
-    <div id="searchBarContainer" class="hidden bg-[#111723] px-4 py-3 border-b border-gray-800 transition-all space-y-3 relative z-20">
-        <div class="relative max-w-xl mx-auto flex items-center">
-            <input type="text" id="searchInput" placeholder="Search Movies, TV Shows, People..." 
-                class="w-full bg-[#070b12] text-sm text-gray-100 placeholder-gray-500 rounded-lg pl-9 pr-16 py-2.5 border border-gray-700 focus:outline-none focus:border-cyan-500">
-            <i class="fa-solid fa-magnifying-glass absolute left-3 text-xs text-gray-400"></i>
-            <div class="absolute right-3 flex items-center space-x-2">
-                <button id="clearSearchBtn" class="text-gray-400 hover:text-white hidden"><i class="fa-solid fa-xmark"></i></button>
-                <i class="fa-solid fa-microphone text-gray-400 text-xs"></i>
+    <!-- Search Modal / Fullscreen Popup with Ultra Fast Automatic Search & Infinite Scroll -->
+    <div id="searchModal" class="hidden fixed inset-0 bg-[#070b12] z-50 flex flex-col overflow-y-auto hide-scrollbar native-scroll">
+        <div class="bg-[#0e131d]/95 backdrop-blur-md px-4 py-3 border-b border-gray-800 sticky top-0 z-20 flex items-center space-x-3 shadow-lg">
+            <button onclick="closeSearchModal()" class="text-gray-300 hover:text-white text-lg p-1 active:scale-90 transition">
+                <i class="fa-solid fa-arrow-left"></i>
+            </button>
+            <div class="relative flex-1 flex items-center">
+                <input type="text" id="searchInput" placeholder="Search Movies, TV Shows, People..." 
+                    class="w-full bg-[#070b12] text-sm text-gray-100 placeholder-gray-500 rounded-lg pl-9 pr-10 py-2.5 border border-gray-700 focus:outline-none focus:border-cyan-500">
+                <i class="fa-solid fa-magnifying-glass absolute left-3 text-xs text-gray-400"></i>
+                <button id="clearSearchBtn" class="absolute right-3 text-gray-400 hover:text-white hidden"><i class="fa-solid fa-xmark"></i></button>
             </div>
-        </div>
-        
-        <div id="searchHistoryContainer" class="hidden absolute left-4 right-4 max-w-xl mx-auto bg-[#111622] border border-gray-800 rounded-xl shadow-2xl z-30 overflow-hidden mt-1">
-            <div class="p-2 text-[10px] font-bold text-gray-400 uppercase border-b border-gray-800 flex justify-between items-center">
-                <span>Recent Searches</span>
-                <span onclick="clearSearchHistory()" class="text-cyan-400 cursor-pointer hover:underline">Clear</span>
-            </div>
-            <div id="searchHistoryList" class="divide-y divide-gray-800/50 max-h-48 overflow-y-auto text-xs native-scroll"></div>
         </div>
 
-        <div id="searchTabsContainer" class="hidden flex justify-center space-x-3 text-xs font-bold">
-            <button onclick="switchSearchTab('movie')" id="searchTabMovie" class="bg-cyan-600 text-white px-4 py-1.5 rounded-full shadow transition active:scale-95">Movies</button>
-            <button onclick="switchSearchTab('tv')" id="searchTabTv" class="bg-[#111622] text-gray-400 border border-gray-700 px-4 py-1.5 rounded-full shadow transition active:scale-95">Series</button>
-            <button onclick="switchSearchTab('person')" id="searchTabPerson" class="bg-[#111622] text-gray-400 border border-gray-700 px-4 py-1.5 rounded-full shadow transition active:scale-95">People</button>
+        <div class="p-3 sm:p-4 max-w-7xl mx-auto w-full space-y-4 flex-1">
+            <div id="searchTabsContainer" class="flex justify-center space-x-3 text-xs font-bold">
+                <button onclick="switchSearchTab('movie')" id="searchTabMovie" class="bg-cyan-600 text-white px-4 py-1.5 rounded-full shadow transition active:scale-95">Movies</button>
+                <button onclick="switchSearchTab('tv')" id="searchTabTv" class="bg-[#111622] text-gray-400 border border-gray-700 px-4 py-1.5 rounded-full shadow transition active:scale-95">Series</button>
+                <button onclick="switchSearchTab('person')" id="searchTabPerson" class="bg-[#111622] text-gray-400 border border-gray-700 px-4 py-1.5 rounded-full shadow transition active:scale-95">People</button>
+            </div>
+
+            <div id="searchHistoryContainer" class="hidden bg-[#111622] border border-gray-800 rounded-xl shadow-2xl overflow-hidden max-w-xl mx-auto">
+                <div class="p-2.5 text-[10px] font-bold text-gray-400 uppercase border-b border-gray-800 flex justify-between items-center">
+                    <span>Recent Searches</span>
+                    <span onclick="clearSearchHistory()" class="text-cyan-400 cursor-pointer hover:underline">Clear</span>
+                </div>
+                <div id="searchHistoryList" class="divide-y divide-gray-800/50 max-h-48 overflow-y-auto text-xs native-scroll"></div>
+            </div>
+
+            <div id="searchHeaderTitleContainer" class="hidden flex items-center justify-between border-b border-gray-800 pb-2">
+                <h2 id="searchHeaderTitle" class="text-sm font-extrabold text-cyan-400 uppercase tracking-wider">RESULTS</h2>
+            </div>
+
+            <div id="searchMovieGrid" class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-2.5 sm:gap-4"></div>
+            <div id="searchLoader" class="text-center py-6 text-cyan-400 text-xs hidden font-bold">Loading more results...</div>
         </div>
     </div>
 
@@ -366,7 +379,7 @@
         </div>
         <div class="flex-1 w-full h-full bg-black relative flex items-center justify-center">
             <video id="customVideoPlayer" class="w-full h-full object-contain" controls autoplay playsinline></video>
-            <iframe id="videoIframe" src="" class="hidden w-full h-full border-0 absolute inset-0" allowfullscreen></iframe>
+            <iframe id="videoIframe" src="" class="hidden w-full h-full border-0 absolute inset-0" allowfullscreen allow="autoplay; encrypted-media; picture-in-picture"></iframe>
         </div>
     </div>
 
@@ -622,8 +635,15 @@
             hasMore: true
         };
 
+        let searchState = {
+            page: 1,
+            isLoading: false,
+            hasMore: true
+        };
+        let cachedSearchItems = [];
+
         let appSettings = JSON.parse(localStorage.getItem('fv_settings') || '{"hdPosters": true, "hindiLinks": true}');
-        let peopleState = { query: '', page: 1, items: [], isLoading: false };
+        let peopleState = { query: '', page: 1, items: [], isLoading: false, hasMore: true };
         let cachedItems = [];
         let favorites = JSON.parse(localStorage.getItem('fv_favorites') || '[]');
         let watchedHistory = JSON.parse(localStorage.getItem('fv_watched') || '[]');
@@ -638,6 +658,7 @@
         };
         let cachedFilterItems = [];
         let currentAbortController = null;
+        let searchDebounceTimer = null;
 
         document.addEventListener('DOMContentLoaded', () => {
             setupFilterDropdowns();
@@ -690,11 +711,17 @@
             window.addEventListener('popstate', (e) => {
                 const filterSection = document.getElementById('filterSection');
                 const detailModal = document.getElementById('movieDetailModal');
+                const searchModal = document.getElementById('searchModal');
+                const actorModal = document.getElementById('actorModal');
                 
-                if (!detailModal.classList.contains('hidden')) {
+                if (!actorModal.classList.contains('hidden')) {
+                    actorModal.classList.add('hidden');
+                } else if (!detailModal.classList.contains('hidden')) {
                     detailModal.classList.add('hidden');
                 } else if (!filterSection.classList.contains('hidden')) {
                     filterSection.classList.add('hidden');
+                } else if (!searchModal.classList.contains('hidden')) {
+                    searchModal.classList.add('hidden');
                 }
             });
         }
@@ -753,7 +780,6 @@
 
             document.addEventListener('click', () => {
                 document.getElementById('dotsDropdown').classList.add('hidden');
-                document.getElementById('searchHistoryContainer').classList.add('hidden');
             });
 
             document.getElementById('castBtn').addEventListener('click', () => {
@@ -764,49 +790,45 @@
             });
 
             document.getElementById('searchToggleBtn').addEventListener('click', () => {
-                const container = document.getElementById('searchBarContainer');
-                container.classList.toggle('hidden');
-                document.getElementById('searchTabsContainer').classList.toggle('hidden');
-                if (!container.classList.contains('hidden')) {
-                    document.getElementById('searchInput').focus();
-                    renderSearchHistory();
-                } else {
-                    document.getElementById('searchHistoryContainer').classList.add('hidden');
-                }
+                const searchModal = document.getElementById('searchModal');
+                searchModal.classList.remove('hidden');
+                history.pushState({view: 'search'}, '', '#search');
+                document.getElementById('searchInput').focus();
+                renderSearchHistory();
             });
 
             const searchInput = document.getElementById('searchInput');
-            searchInput.addEventListener('focus', () => {
-                if (searchHistory.length > 0) {
-                    renderSearchHistory();
-                    document.getElementById('searchHistoryContainer').classList.remove('hidden');
-                }
-            });
-
             searchInput.addEventListener('input', (e) => {
                 const query = e.target.value.trim();
-                const tabsContainer = document.getElementById('searchTabsContainer');
                 const clearBtn = document.getElementById('clearSearchBtn');
 
                 if (query.length > 0) {
-                    tabsContainer.classList.remove('hidden');
                     clearBtn.classList.remove('hidden');
                     document.getElementById('searchHistoryContainer').classList.add('hidden');
                 } else {
-                    tabsContainer.classList.add('hidden');
                     clearBtn.classList.add('hidden');
                     renderSearchHistory();
+                    document.getElementById('searchMovieGrid').innerHTML = '';
+                    document.getElementById('searchHeaderTitleContainer').classList.add('hidden');
                 }
 
                 currentState.query = query;
-                currentState.page = 1;
+                searchState.page = 1;
+                peopleState.page = 1;
 
-                if (currentState.searchTab === 'person') {
-                    peopleState.query = query;
-                    peopleState.page = 1;
-                    executePeopleSearch(true);
-                } else {
-                    fetchContent(true);
+                if (query.length > 0) {
+                    document.getElementById('searchHeaderTitleContainer').classList.remove('hidden');
+                    document.getElementById('searchHeaderTitle').innerText = `RESULTS FOR "${query.toUpperCase()}"`;
+                    
+                    clearTimeout(searchDebounceTimer);
+                    searchDebounceTimer = setTimeout(() => {
+                        if (currentState.searchTab === 'person') {
+                            peopleState.query = query;
+                            executePeopleSearchInModal(true);
+                        } else {
+                            executeSearchInModal(true);
+                        }
+                    }, 150);
                 }
             });
 
@@ -826,15 +848,10 @@
                 searchInput.value = '';
                 currentState.query = '';
                 peopleState.query = '';
-                document.getElementById('searchTabsContainer').classList.add('hidden');
                 document.getElementById('clearSearchBtn').classList.add('hidden');
                 renderSearchHistory();
-                if (currentState.searchTab === 'person') {
-                    peopleState.items = [];
-                    renderPeopleGrid([]);
-                } else {
-                    fetchContent(true);
-                }
+                document.getElementById('searchMovieGrid').innerHTML = '';
+                document.getElementById('searchHeaderTitleContainer').classList.add('hidden');
             });
 
             document.getElementById('closeDetailModalBtn').addEventListener('click', () => {
@@ -858,6 +875,13 @@
                 document.getElementById('trailerModal').classList.add('hidden');
                 document.getElementById('trailerIframe').src = '';
             });
+        }
+
+        function closeSearchModal() {
+            document.getElementById('searchModal').classList.add('hidden');
+            if (window.location.hash === '#search') {
+                history.back();
+            }
         }
 
         function loadSettingsToUI() {
@@ -904,11 +928,12 @@
             const input = document.getElementById('searchInput');
             input.value = term;
             currentState.query = term;
-            currentState.page = 1;
+            searchState.page = 1;
             document.getElementById('searchHistoryContainer').classList.add('hidden');
-            document.getElementById('searchTabsContainer').classList.remove('hidden');
             document.getElementById('clearSearchBtn').classList.remove('hidden');
-            fetchContent(true);
+            document.getElementById('searchHeaderTitleContainer').classList.remove('hidden');
+            document.getElementById('searchHeaderTitle').innerText = `RESULTS FOR "${term.toUpperCase()}"`;
+            executeSearchInModal(true);
         }
 
         function clearSearchHistory() {
@@ -954,12 +979,7 @@
 
             loader.classList.remove('hidden');
 
-            let url = '';
-            if (currentState.query) {
-                url = `${BASE_URL}/search/${currentState.type}?api_key=${API_KEY}&query=${encodeURIComponent(currentState.query)}&page=${currentState.page}`;
-            } else {
-                url = `${BASE_URL}/${currentState.type}/popular?api_key=${API_KEY}&page=${currentState.page}`;
-            }
+            let url = `${BASE_URL}/${currentState.type}/popular?api_key=${API_KEY}&page=${currentState.page}`;
 
             try {
                 const data = await fetchWithCache(url);
@@ -978,6 +998,176 @@
                 currentState.isLoading = false;
                 setLoaderActive(false);
                 loader.classList.add('hidden');
+            }
+        }
+
+        async function executeSearchInModal(reset = true) {
+            if (searchState.isLoading) return;
+            searchState.isLoading = true;
+            const grid = document.getElementById('searchMovieGrid');
+            const loader = document.getElementById('searchLoader');
+
+            if (reset) {
+                searchState.page = 1;
+                cachedSearchItems = [];
+                searchState.hasMore = true;
+                grid.innerHTML = '';
+            }
+
+            if (!searchState.hasMore) {
+                searchState.isLoading = false;
+                return;
+            }
+
+            loader.classList.remove('hidden');
+            setLoaderActive(true);
+
+            try {
+                const url = `${BASE_URL}/search/${currentState.type}?api_key=${API_KEY}&query=${encodeURIComponent(currentState.query)}&page=${searchState.page}`;
+                const data = await fetchWithCache(url);
+                const results = data.results || [];
+
+                if (results.length === 0) {
+                    searchState.hasMore = false;
+                } else {
+                    cachedSearchItems = reset ? results : [...cachedSearchItems, ...results];
+                    searchState.page++;
+                }
+
+                if (cachedSearchItems.length > 0) {
+                    grid.innerHTML = cachedSearchItems.map(item => {
+                        const title = item.title || item.name || 'Untitled';
+                        const year = (item.release_date || item.first_air_date || '2026').split('-')[0];
+                        const poster = item.poster_path ? `${IMAGE_URL}${item.poster_path}` : PLACEHOLDER_IMG;
+                        preloadImage(poster);
+                        return `
+                            <div onclick="openMovieDetails(${item.id}, '${currentState.type}')" class="poster-card bg-[#111622] border border-gray-800/80 rounded-xl overflow-hidden flex flex-col cursor-pointer active:scale-95">
+                                <div class="aspect-[2/3] w-full bg-gray-900 relative">
+                                    <img src="${poster}" alt="${title}" loading="eager" class="w-full h-full object-cover">
+                                </div>
+                                <div class="p-2 flex flex-col justify-between flex-1">
+                                    <h3 class="text-xs font-bold text-gray-100 truncate leading-tight">${title}</h3>
+                                    <span class="text-[10px] text-gray-400 mt-1">${year}</span>
+                                </div>
+                            </div>
+                        `;
+                    }).join('');
+                } else {
+                    grid.innerHTML = `<div class="col-span-full text-center py-20 text-gray-400 text-xs font-bold">No items found.</div>`;
+                }
+            } catch (e) {
+                if (reset) grid.innerHTML = `<div class="col-span-full text-center py-20 text-red-500 text-xs">Search failed.</div>`;
+            } finally {
+                setLoaderActive(false);
+                loader.classList.add('hidden');
+                searchState.isLoading = false;
+            }
+        }
+
+        async function executePeopleSearchInModal(reset = true) {
+            if (peopleState.isLoading) return;
+            peopleState.isLoading = true;
+            const grid = document.getElementById('searchMovieGrid');
+            const loader = document.getElementById('searchLoader');
+
+            if (reset) {
+                peopleState.page = 1;
+                peopleState.items = [];
+                peopleState.hasMore = true;
+                grid.innerHTML = '';
+            }
+
+            if (!peopleState.hasMore) {
+                peopleState.isLoading = false;
+                return;
+            }
+
+            loader.classList.remove('hidden');
+            setLoaderActive(true);
+
+            try {
+                const url = `${BASE_URL}/search/person?api_key=${API_KEY}&query=${encodeURIComponent(peopleState.query)}&page=${peopleState.page}`;
+                const data = await fetchWithCache(url);
+                const people = data.results || [];
+
+                if (people.length === 0) {
+                    peopleState.hasMore = false;
+                } else {
+                    peopleState.items = reset ? people : [...peopleState.items, ...people];
+                    peopleState.page++;
+                }
+
+                if (peopleState.items.length > 0) {
+                    grid.innerHTML = peopleState.items.map(person => {
+                        const personImg = person.profile_path ? IMAGE_URL + person.profile_path : PLACEHOLDER_IMG;
+                        preloadImage(personImg);
+                        return `
+                            <div onclick="openActorProfile(${person.id})" class="bg-[#111622] border border-gray-800/80 rounded-xl p-3 flex flex-col items-center cursor-pointer hover:border-cyan-500 transition group active:scale-95">
+                                <img src="${personImg}" class="w-20 h-20 sm:w-24 sm:h-24 rounded-full object-cover border border-gray-700 shadow mb-2" loading="eager">
+                                <h3 class="text-xs font-bold text-white text-center truncate w-full group-hover:text-cyan-400">${person.name}</h3>
+                            </div>
+                        `;
+                    }).join('');
+                } else {
+                    grid.innerHTML = `<div class="col-span-full text-center py-20 text-gray-400 text-xs font-bold">No people found.</div>`;
+                }
+            } catch (e) {
+                if (reset) grid.innerHTML = `<div class="col-span-full text-center py-20 text-red-500 text-xs">Search failed.</div>`;
+            } finally {
+                setLoaderActive(false);
+                loader.classList.add('hidden');
+                peopleState.isLoading = false;
+            }
+        }
+
+        async function openActorProfile(personId) {
+            const modal = document.getElementById('actorModal');
+            modal.classList.remove('hidden');
+            setLoaderActive(true);
+
+            try {
+                const url = `${BASE_URL}/person/${personId}?api_key=${API_KEY}&append_to_response=combined_credits`;
+                const data = await fetchWithCache(url);
+
+                const avatar = data.profile_path ? IMAGE_URL + data.profile_path : PLACEHOLDER_IMG;
+                preloadImage(avatar);
+                document.getElementById('actorModalAvatar').src = avatar;
+                document.getElementById('actorModalName').innerText = data.name || 'Unknown';
+                document.getElementById('actorModalDepartment').innerText = data.known_for_department || 'Acting';
+                document.getElementById('actorModalGender').innerText = data.gender === 1 ? 'Female' : (data.gender === 2 ? 'Male' : 'N/A');
+                document.getElementById('actorModalPopularity').innerText = Math.round(data.popularity || 0);
+                document.getElementById('actorModalBio').innerText = data.biography || 'No biography available.';
+                document.getElementById('actorModalBirthday').innerText = data.birthday || 'N/A';
+                document.getElementById('actorModalPlace').innerText = data.place_of_birth || 'N/A';
+
+                const castCredits = data.combined_credits?.cast || [];
+                const movies = castCredits.filter(c => c.media_type === 'movie');
+                const series = castCredits.filter(c => c.media_type === 'tv');
+
+                document.getElementById('actorMoviesCount').innerText = movies.length;
+                document.getElementById('actorSeriesCount').innerText = series.length;
+
+                document.getElementById('actorAlsoKnownAs').innerHTML = (data.also_known_as || []).slice(0, 5).map(alias => `
+                    <span class="bg-[#151c28] border border-gray-800 px-2.5 py-1 rounded-lg text-gray-300 font-semibold">${alias}</span>
+                `).join('') || '<span class="text-gray-500">None</span>';
+
+                document.getElementById('actorFilmographyGrid').innerHTML = castCredits.slice(0, 18).map(item => {
+                    const itemPoster = item.poster_path ? IMAGE_URL + item.poster_path : PLACEHOLDER_IMG;
+                    preloadImage(itemPoster);
+                    const itType = item.media_type || 'movie';
+                    return `
+                        <div onclick="openMovieDetails(${item.id}, '${itType}')" class="bg-[#111622] border border-gray-800 rounded-lg overflow-hidden cursor-pointer active:scale-95">
+                            <div class="aspect-[2/3] w-full bg-gray-900"><img src="${itemPoster}" class="w-full h-full object-cover" loading="eager"></div>
+                            <div class="p-1.5"><p class="text-[10px] font-bold text-white truncate">${item.title || item.name}</p></div>
+                        </div>
+                    `;
+                }).join('');
+
+                history.pushState({view: 'actor'}, '', '#actor');
+            } catch (e) {
+                showToast('Failed to load actor profile');
+            } finally {
+                setLoaderActive(false);
             }
         }
 
@@ -1036,9 +1226,10 @@
                 let data = await fetchWithCache(url);
                 let results = data.results || [];
 
-                if (results.length === 0 && network !== 'all') {
-                    url = `${BASE_URL}/${targetType}/popular?api_key=${API_KEY}&page=${filterState.page}`;
-                    const dataPop = await fetchWithCache(url);
+                // حیکەمەتی دڵنیابوونەوە (Fallback mechanism بۆ ڕێگریکردن لە Failed to load content)
+                if (results.length === 0) {
+                    let fallbackUrl = `${BASE_URL}/${targetType}/popular?api_key=${API_KEY}&page=${filterState.page}`;
+                    const dataPop = await fetchWithCache(fallbackUrl);
                     results = dataPop.results || [];
                 }
 
@@ -1081,6 +1272,7 @@
 
         function setupInfiniteScroll() {
             const filterSection = document.getElementById('filterSection');
+            const searchModal = document.getElementById('searchModal');
 
             window.addEventListener('scroll', () => {
                 if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 500) {
@@ -1102,6 +1294,22 @@
                     if (!filterState.isLoading && filterState.hasMore) {
                         filterState.isLoading = true;
                         applyQuickFilters(false);
+                    }
+                }
+            });
+
+            searchModal.addEventListener('scroll', () => {
+                if ((searchModal.scrollTop + searchModal.clientHeight) >= searchModal.scrollHeight - 400) {
+                    if (currentState.query) {
+                        if (currentState.searchTab === 'person') {
+                            if (!peopleState.isLoading && peopleState.hasMore) {
+                                executePeopleSearchInModal(false);
+                            }
+                        } else {
+                            if (!searchState.isLoading && searchState.hasMore) {
+                                executeSearchInModal(false);
+                            }
+                        }
                     }
                 }
             });
@@ -1248,13 +1456,15 @@
                 episode = document.getElementById('episodeSelect')?.value || 1;
             }
 
-            // سێرڤەرە نوێ و کاراکانی بینینی فیلم و دراماکان
             const servers = [
                 { name: 'VIDFAST (Ultra Fast HD Server)', url: type === 'tv' ? `https://vidfast.pro/tv/${id}/${season}/${episode}` : `https://vidfast.pro/movie/${id}` },
+                { name: 'VIDSRC.VIP (Ultra Fast HD)', url: type === 'tv' ? `https://vidsrc.vip/embed/tv/${id}/${season}/${episode}` : `https://vidsrc.vip/embed/movie/${id}` },
                 { name: 'AUTOEMBED HD (Stable & Fast)', url: type === 'tv' ? `https://player.autoembed.cc/embed/tv/${id}/${season}/${episode}` : `https://player.autoembed.cc/embed/movie/${id}` },
                 { name: 'VIDLINK PRO (Clean & Stable)', url: type === 'tv' ? `https://vidlink.pro/tv/${id}/${season}/${episode}` : `https://vidlink.pro/movie/${id}` },
-                { name: 'MULTIEBED 4K (Ultra Fast)', url: type === 'tv' ? `https://multiembed.mov/?video_id=${id}&tmdb=1&s=${season}&e=${episode}` : `https://multiembed.mov/?video_id=${id}&tmdb=1` },
-                { name: 'PRIMEWIRE API (Server 1)', url: type === 'tv' ? `https://www.primewire.tf/embed/tv?tmdb=${id}&season=${season}&episode=${episode}` : `https://www.primewire.tf/embed/movie?tmdb=${id}` },
+                { name: 'STREAMWISH (Fast HD)', url: type === 'tv' ? `https://streamwish.to/embed-${id}-${season}x${episode}.html` : `https://streamwish.to/embed-${id}.html` },
+                { name: 'VIDMOLY (Stable Server)', url: type === 'tv' ? `https://vidmoly.to/embed-${id}-${season}x${episode}.html` : `https://vidmoly.to/embed-${id}.html` },
+                { name: 'VIDSRC.ME (Official Hub)', url: type === 'tv' ? `https://vidsrc.me/embed/tv?tmdb=${id}&season=${season}&episode=${episode}` : `https://vidsrc.me/embed/movie?tmdb=${id}` },
+                { name: 'SUPEREMBED 4K (Ultra Fast)', url: type === 'tv' ? `https://multiembed.mov/?video_id=${id}&tmdb=1&s=${season}&e=${episode}` : `https://multiembed.mov/?video_id=${id}&tmdb=1` },
                 { name: 'VIDSRC.NET (Official Mirror)', url: type === 'tv' ? `https://vidsrc.net/embed/tv/${id}/${season}/${episode}` : `https://vidsrc.net/embed/movie/${id}` },
                 { name: 'RIVESTREAM VIP (Fast App Player)', url: type === 'tv' ? `https://www.rivestream.app/embed/tv/${id}/${season}/${episode}` : `https://www.rivestream.app/embed/movie/${id}` },
                 { name: 'FLIXER GD (Ultra Clean)', url: type === 'tv' ? `https://flixer.gd/embed/tv/${id}/${season}/${episode}` : `https://flixer.gd/embed/movie/${id}` },
@@ -1297,10 +1507,13 @@
             } else {
                 videoElem.classList.add('hidden');
                 iframeElem.classList.remove('hidden');
-                iframeElem.src = url;
+                iframeElem.src = '';
+                setTimeout(() => {
+                    iframeElem.src = url;
+                }, 50);
             }
 
-            document.getElementById('playerModal').classList.add('hidden');
+            document.getElementById('playerModal').classList.remove('hidden');
             showToast('Loading Player Source...');
         }
 
@@ -1364,90 +1577,13 @@
                 }
             });
 
-            if (tab === 'person') {
-                peopleState.query = currentState.query;
-                peopleState.page = 1;
-                executePeopleSearch(true);
-            } else {
-                currentState.page = 1;
-                fetchContent(true);
-            }
-        }
-
-        async function executePeopleSearch(reset = false) {
-            const grid = document.getElementById('movieGrid');
-            if (!peopleState.query) {
-                grid.innerHTML = `<div class="col-span-full text-center py-20 text-gray-500 text-xs">Type a name to search actors...</div>`;
-                return;
-            }
-            try {
-                const url = `${BASE_URL}/search/person?api_key=${API_KEY}&query=${encodeURIComponent(peopleState.query)}&page=${peopleState.page}`;
-                const data = await fetchWithCache(url);
-                peopleState.items = reset ? (data.results || []) : [...peopleState.items, ...(data.results || [])];
-                renderPeopleGrid(peopleState.items);
-            } catch(e) {}
-        }
-
-        function renderPeopleGrid(people) {
-            const grid = document.getElementById('movieGrid');
-            if (!people || people.length === 0) {
-                grid.innerHTML = `<div class="col-span-full text-center py-20 text-gray-500 text-xs">No people found.</div>`;
-                return;
-            }
-            grid.innerHTML = people.map(person => {
-                const personImg = person.profile_path ? IMAGE_URL + person.profile_path : PLACEHOLDER_IMG;
-                preloadImage(personImg);
-                return `
-                    <div onclick="openActorProfile(${person.id})" class="bg-[#111622] border border-gray-800/80 rounded-xl p-3 flex flex-col items-center cursor-pointer hover:border-cyan-500 transition group active:scale-95">
-                        <img src="${personImg}" class="w-20 h-20 sm:w-24 sm:h-24 rounded-full object-cover border border-gray-700 shadow mb-2" loading="eager">
-                        <h3 class="text-xs font-bold text-white text-center truncate w-full group-hover:text-cyan-400">${person.name}</h3>
-                    </div>
-                `;
-            }).join('');
-        }
-
-        async function openActorProfile(personId) {
-            const modal = document.getElementById('actorModal');
-            modal.classList.remove('hidden');
-            setLoaderActive(true);
-            try {
-                const [person, credits] = await Promise.all([
-                    fetchWithCache(`${BASE_URL}/person/${personId}?api_key=${API_KEY}`),
-                    fetchWithCache(`${BASE_URL}/person/${personId}/combined_credits?api_key=${API_KEY}`)
-                ]);
-
-                const avatarUrl = person.profile_path ? `${IMAGE_URL}${person.profile_path}` : PLACEHOLDER_IMG;
-                preloadImage(avatarUrl);
-                document.getElementById('actorModalAvatar').src = avatarUrl;
-                document.getElementById('actorModalName').innerText = person.name || 'Unknown';
-                document.getElementById('actorModalBio').innerText = person.biography || 'No biography available for this person.';
-                document.getElementById('actorModalBirthday').innerText = person.birthday || 'N/A';
-                document.getElementById('actorModalPlace').innerText = person.place_of_birth || 'N/A';
-                document.getElementById('actorModalDepartment').innerText = person.known_for_department || 'Acting';
-                document.getElementById('actorModalGender').innerText = person.gender === 1 ? 'Female' : (person.gender === 2 ? 'Male' : 'N/A');
-                document.getElementById('actorModalPopularity').innerText = person.popularity ? person.popularity.toFixed(1) : '0';
-
-                const alsoKnown = person.also_known_as || [];
-                document.getElementById('actorAlsoKnownAs').innerHTML = alsoKnown.length > 0 ? alsoKnown.map(name => `<span class="bg-[#151a26] border border-gray-800 text-gray-300 px-2.5 py-1 rounded-lg">${name}</span>`).join('') : '<span class="text-gray-500">None</span>';
-
-                const uniqueWorks = Array.from(new Set((credits.cast || []).map(a => a.id))).map(id => credits.cast.find(a => a.id === id));
-                document.getElementById('actorMoviesCount').innerText = uniqueWorks.filter(w => w.media_type === 'movie').length;
-                document.getElementById('actorSeriesCount').innerText = uniqueWorks.filter(w => w.media_type === 'tv').length;
-
-                document.getElementById('actorFilmographyGrid').innerHTML = uniqueWorks.map(work => {
-                    const workPoster = work.poster_path ? IMAGE_URL + work.poster_path : PLACEHOLDER_IMG;
-                    preloadImage(workPoster);
-                    return `
-                        <div onclick="document.getElementById('actorModal').classList.add('hidden'); openMovieDetails(${work.id}, '${work.media_type || 'movie'}')" class="bg-[#111622] border border-gray-800 rounded-lg overflow-hidden cursor-pointer active:scale-95">
-                            <div class="aspect-[2/3] w-full bg-gray-900"><img src="${workPoster}" class="w-full h-full object-cover" loading="eager"></div>
-                            <div class="p-1.5"><p class="text-[10px] font-bold text-white truncate">${work.title || work.name}</p></div>
-                        </div>
-                    `;
-                }).join('');
-            } catch(e) {
-                showToast('Failed to load actor profile');
-            } finally {
-                setLoaderActive(false);
+            if (currentState.query) {
+                if (tab === 'person') {
+                    peopleState.query = currentState.query;
+                    executePeopleSearchInModal(true);
+                } else {
+                    executeSearchInModal(true);
+                }
             }
         }
     </script>
