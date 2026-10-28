@@ -119,38 +119,53 @@
                 <div class="absolute inset-0 bg-gradient-to-t from-[#050508]"></div>
                 <div class="relative z-10 flex justify-between items-end w-full">
                     <h2 id="modal-title" class="text-xl font-bold"></h2>
-                    <button onclick="toggleFavorite()" id="fav-btn" class="px-3 py-1.5 bg-white/20 backdrop-blur rounded-xl text-xs font-bold flex items-center space-x-1.5 text-white">
+                    <button onclick="toggleFavorite()" id="fav-btn" class="px-3 py-1.5 bg-white/25 backdrop-blur rounded-xl text-xs font-bold flex items-center space-x-1.5 text-white">
                         <i class="fa-regular fa-heart text-red-500" id="fav-icon"></i><span>Favorite</span>
                     </button>
                 </div>
             </div>
-            <div class="px-4 space-y-3">
+            
+            <div class="px-4 space-y-4">
                 <p id="modal-desc" class="text-xs text-gray-300"></p>
-                
-                <!-- COLLECTION SECTION -->
-                <div id="collection-section" class="hidden space-y-2 pt-2 border-t border-white/10">
-                    <h3 class="text-xs font-bold text-red-500">Movie Collection</h3>
-                    <div id="collection-grid" class="grid grid-cols-2 sm:grid-cols-4 gap-2"></div>
+
+                <!-- 7 SERVERS (MOVED UP FOR BETTER ACCESSIBILITY) -->
+                <div class="space-y-1.5">
+                    <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-wider">Select Streaming Server</label>
+                    <div class="flex gap-1.5 overflow-x-auto pb-1">
+                        <button onclick="setServer(0)" class="px-3 py-1.5 bg-red-600 rounded-lg text-[10px] font-bold srv-btn whitespace-nowrap">VidSrc 1</button>
+                        <button onclick="setServer(1)" class="px-3 py-1.5 bg-white/10 rounded-lg text-[10px] font-bold srv-btn whitespace-nowrap">VidLink</button>
+                        <button onclick="setServer(2)" class="px-3 py-1.5 bg-white/10 rounded-lg text-[10px] font-bold srv-btn whitespace-nowrap">VidSrc.to</button>
+                        <button onclick="setServer(3)" class="px-3 py-1.5 bg-white/10 rounded-lg text-[10px] font-bold srv-btn whitespace-nowrap">SuperEmbed</button>
+                        <button onclick="setServer(4)" class="px-3 py-1.5 bg-white/10 rounded-lg text-[10px] font-bold srv-btn whitespace-nowrap">2Embed</button>
+                        <button onclick="setServer(5)" class="px-3 py-1.5 bg-white/10 rounded-lg text-[10px] font-bold srv-btn whitespace-nowrap">Atlantic</button>
+                        <button onclick="setServer(6)" class="px-3 py-1.5 bg-white/10 rounded-lg text-[10px] font-bold srv-btn whitespace-nowrap">VidSrc Win</button>
+                    </div>
                 </div>
 
-                <div id="tv-controls" class="hidden grid grid-cols-2 gap-2">
-                    <select id="season-sel" onchange="changeSeason()" class="bg-black border border-white/10 rounded-lg p-2 text-xs text-white"></select>
-                    <select id="episode-sel" onchange="updatePlayer()" class="bg-black border border-white/10 rounded-lg p-2 text-xs text-white"></select>
+                <!-- VIDEO PLAYER -->
+                <div class="aspect-video bg-black rounded-xl overflow-hidden border border-white/10 shadow-lg">
+                    <iframe id="iframe-player" class="w-full h-full border-0" allowfullscreen allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe>
                 </div>
-                
-                <!-- 7 SERVERS -->
-                <div class="flex gap-1 overflow-x-auto pb-1">
-                    <button onclick="setServer(0)" class="px-2.5 py-1 bg-red-600 rounded text-[10px] font-bold srv-btn whitespace-nowrap">VidSrc 1</button>
-                    <button onclick="setServer(1)" class="px-2.5 py-1 bg-white/10 rounded text-[10px] font-bold srv-btn whitespace-nowrap">VidLink</button>
-                    <button onclick="setServer(2)" class="px-2.5 py-1 bg-white/10 rounded text-[10px] font-bold srv-btn whitespace-nowrap">VidSrc.to</button>
-                    <button onclick="setServer(3)" class="px-2.5 py-1 bg-white/10 rounded text-[10px] font-bold srv-btn whitespace-nowrap">SuperEmbed</button>
-                    <button onclick="setServer(4)" class="px-2.5 py-1 bg-white/10 rounded text-[10px] font-bold srv-btn whitespace-nowrap">2Embed</button>
-                    <button onclick="setServer(5)" class="px-2.5 py-1 bg-white/10 rounded text-[10px] font-bold srv-btn whitespace-nowrap">Atlantic</button>
-                    <button onclick="setServer(6)" class="px-2.5 py-1 bg-white/10 rounded text-[10px] font-bold srv-btn whitespace-nowrap">VidSrc Win</button>
+
+                <!-- TV SEASONS & EPISODES CONTROLS -->
+                <div id="tv-controls" class="hidden grid grid-cols-2 gap-2 pt-2">
+                    <div>
+                        <label class="block text-[9px] font-bold text-gray-400 mb-1">SEASON</label>
+                        <select id="season-sel" onchange="changeSeason()" class="w-full bg-black border border-white/10 rounded-lg p-2 text-xs text-white focus:outline-none focus:border-red-500"></select>
+                    </div>
+                    <div>
+                        <label class="block text-[9px] font-bold text-gray-400 mb-1">EPISODE</label>
+                        <select id="episode-sel" onchange="updatePlayer()" class="w-full bg-black border border-white/10 rounded-lg p-2 text-xs text-white focus:outline-none focus:border-red-500"></select>
+                    </div>
                 </div>
-                
-                <div class="aspect-video bg-black rounded-xl overflow-hidden">
-                    <iframe id="iframe-player" class="w-full h-full border-0" allowfullscreen></iframe>
+
+                <!-- MOVIE COLLECTION SECTION -->
+                <div id="collection-section" class="hidden space-y-2 pt-3 border-t border-white/10">
+                    <h3 class="text-xs font-bold text-red-500 flex items-center space-x-1.5">
+                        <i class="fa-solid fa-layer-group text-[10px]"></i>
+                        <span>Movie Collection</span>
+                    </h3>
+                    <div id="collection-grid" class="grid grid-cols-2 sm:grid-cols-4 gap-2.5"></div>
                 </div>
             </div>
         </div>
@@ -261,7 +276,7 @@
             grid.innerHTML = '';
             res.parts?.forEach(m => {
                 let poster = m.poster_path ? IMG + m.poster_path : 'https://placehold.co/200x300';
-                grid.innerHTML += `<div onclick="openDetails(${m.id}, 'movie')" class="cursor-pointer glass rounded-lg overflow-hidden"><img src="${poster}" class="w-full aspect-[2/3] object-cover"><div class="p-1 text-[10px] truncate">${m.title}</div></div>`;
+                grid.innerHTML += `<div onclick="openDetails(${m.id}, 'movie')" class="cursor-pointer glass rounded-lg overflow-hidden"><img src="${poster}" class="w-full aspect-[2/3] object-cover"><div class="p-1 text-[10px] truncate text-white">${m.title}</div></div>`;
             });
         }
 
@@ -291,7 +306,7 @@
         function setServer(idx) {
             currentServerIdx = idx;
             document.querySelectorAll('.srv-btn').forEach((b, i) => {
-                b.className = i === idx ? 'px-2.5 py-1 bg-red-600 rounded text-[10px] font-bold srv-btn whitespace-nowrap' : 'px-2.5 py-1 bg-white/10 rounded text-[10px] font-bold srv-btn whitespace-nowrap';
+                b.className = i === idx ? 'px-3 py-1.5 bg-red-600 rounded-lg text-[10px] font-bold srv-btn whitespace-nowrap' : 'px-3 py-1.5 bg-white/10 rounded-lg text-[10px] font-bold srv-btn whitespace-nowrap';
             });
             updatePlayer();
         }
