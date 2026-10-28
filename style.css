@@ -1,0 +1,11 @@
+* { -webkit-tap-highlight-color: transparent; box-sizing: border-box; }
+body { background: #050508; color: #f3f4f6; font-family: system-ui, sans-serif; overflow-x: hidden; user-select: none; }
+input, select { user-select: auto; }
+::-webkit-scrollbar { width: 4px; height: 4px; }
+::-webkit-scrollbar-thumb { background: #e50914; border-radius: 9px; }
+.glass { background: rgba(15, 17, 26, 0.95); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.08); }
+.card { transition: transform 0.1s ease; will-change: transform; }
+.card:active { transform: scale(0.96); }
+.tab-content { display: none; }
+.tab-content.active { display: block; }
+#details-modal { overflow-y: auto !important; -webkit-overflow-scrolling: touch; }
