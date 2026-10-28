@@ -10,13 +10,14 @@
         * { -webkit-tap-highlight-color: transparent; box-sizing: border-box; }
         body { background: #050508; color: #f3f4f6; font-family: system-ui, sans-serif; overflow-x: hidden; user-select: none; }
         input, select { user-select: auto; }
-        ::-webkit-scrollbar { width: 3px; height: 3px; }
+        ::-webkit-scrollbar { width: 4px; height: 4px; }
         ::-webkit-scrollbar-thumb { background: #e50914; border-radius: 9px; }
-        .glass { background: rgba(15, 17, 26, 0.92); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.08); }
+        .glass { background: rgba(15, 17, 26, 0.95); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.08); }
         .card { transition: transform 0.1s ease; will-change: transform; }
         .card:active { transform: scale(0.96); }
         .tab-content { display: none; }
         .tab-content.active { display: block; }
+        #details-modal { overflow-y: auto !important; -webkit-overflow-scrolling: touch; }
     </style>
 </head>
 <body class="min-h-screen flex flex-col">
@@ -81,12 +82,14 @@
         <div id="tab-movies" class="tab-content space-y-4">
             <h2 class="text-base font-bold">Movies Collection</h2>
             <div id="grid-movies" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3"></div>
+            <button onclick="loadMoreMovies()" class="w-full py-3 bg-white/5 rounded-xl text-xs font-bold">Load More Movies</button>
         </div>
 
         <!-- TV -->
         <div id="tab-tv" class="tab-content space-y-4">
             <h2 class="text-base font-bold">TV Shows</h2>
             <div id="grid-tv" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3"></div>
+            <button onclick="loadMoreTv()" class="w-full py-3 bg-white/5 rounded-xl text-xs font-bold">Load More TV Shows</button>
         </div>
 
         <!-- FAVORITES -->
@@ -112,10 +115,11 @@
     </div>
 
     <!-- DETAILS MODAL -->
-    <div id="details-modal" class="fixed inset-0 z-50 bg-black/95 hidden overflow-y-auto p-3">
-        <div class="glass max-w-3xl mx-auto rounded-2xl overflow-hidden relative space-y-4 pb-6">
-            <button onclick="closeModal('details-modal')" class="absolute top-3 right-3 z-10 w-8 h-8 rounded-full bg-black/60 flex items-center justify-center text-white"><i class="fa-solid fa-xmark"></i></button>
-            <div id="modal-bg" class="h-56 bg-cover bg-center relative flex items-end p-4">
+    <div id="details-modal" class="fixed inset-0 z-50 bg-black/95 hidden p-2 sm:p-4">
+        <div class="glass max-w-3xl mx-auto rounded-2xl relative space-y-4 my-4 p-4 pb-20">
+            <button onclick="closeModal('details-modal')" class="sticky top-2 float-right z-30 w-9 h-9 rounded-full bg-black/80 flex items-center justify-center text-white shadow-xl"><i class="fa-solid fa-xmark text-lg"></i></button>
+            
+            <div id="modal-bg" class="h-56 bg-cover bg-center relative flex items-end p-4 rounded-xl overflow-hidden -mt-10">
                 <div class="absolute inset-0 bg-gradient-to-t from-[#050508]"></div>
                 <div class="relative z-10 flex justify-between items-end w-full">
                     <h2 id="modal-title" class="text-xl font-bold"></h2>
@@ -125,11 +129,11 @@
                 </div>
             </div>
             
-            <div class="px-4 space-y-4">
+            <div class="space-y-4">
                 <p id="modal-desc" class="text-xs text-gray-300"></p>
 
                 <!-- TV SEASONS & EPISODES CONTROLS -->
-                <div id="tv-controls" class="hidden grid grid-cols-2 gap-2">
+                <div id="tv-controls" class="hidden grid grid-cols-2 gap-2 pt-2">
                     <div>
                         <label class="block text-[9px] font-bold text-gray-400 mb-1">SEASON</label>
                         <select id="season-sel" onchange="changeSeason()" class="w-full bg-black border border-white/10 rounded-lg p-2 text-xs text-white focus:outline-none focus:border-red-500"></select>
@@ -141,16 +145,16 @@
                 </div>
 
                 <!-- 7 SERVERS -->
-                <div class="space-y-1.5">
+                <div class="space-y-1.5 pt-2">
                     <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-wider">Select Streaming Server</label>
-                    <div class="flex gap-1.5 overflow-x-auto pb-1">
-                        <button onclick="setServer(0)" class="px-3 py-1.5 bg-red-600 rounded-lg text-[10px] font-bold srv-btn whitespace-nowrap">VidSrc 1</button>
-                        <button onclick="setServer(1)" class="px-3 py-1.5 bg-white/10 rounded-lg text-[10px] font-bold srv-btn whitespace-nowrap">VidLink</button>
-                        <button onclick="setServer(2)" class="px-3 py-1.5 bg-white/10 rounded-lg text-[10px] font-bold srv-btn whitespace-nowrap">VidSrc.to</button>
-                        <button onclick="setServer(3)" class="px-3 py-1.5 bg-white/10 rounded-lg text-[10px] font-bold srv-btn whitespace-nowrap">SuperEmbed</button>
-                        <button onclick="setServer(4)" class="px-3 py-1.5 bg-white/10 rounded-lg text-[10px] font-bold srv-btn whitespace-nowrap">2Embed</button>
-                        <button onclick="setServer(5)" class="px-3 py-1.5 bg-white/10 rounded-lg text-[10px] font-bold srv-btn whitespace-nowrap">Atlantic</button>
-                        <button onclick="setServer(6)" class="px-3 py-1.5 bg-white/10 rounded-lg text-[10px] font-bold srv-btn whitespace-nowrap">VidSrc Win</button>
+                    <div class="flex gap-1.5 overflow-x-auto pb-1.5 scrollbar-thin">
+                        <button onclick="setServer(0)" class="px-2.5 py-1.5 bg-red-600 rounded-lg text-[10px] font-bold srv-btn whitespace-nowrap">VidSrc 1</button>
+                        <button onclick="setServer(1)" class="px-2.5 py-1.5 bg-white/10 rounded-lg text-[10px] font-bold srv-btn whitespace-nowrap">VidLink</button>
+                        <button onclick="setServer(2)" class="px-2.5 py-1.5 bg-white/10 rounded-lg text-[10px] font-bold srv-btn whitespace-nowrap">VidSrc.to</button>
+                        <button onclick="setServer(3)" class="px-2.5 py-1.5 bg-white/10 rounded-lg text-[10px] font-bold srv-btn whitespace-nowrap">SuperEmbed</button>
+                        <button onclick="setServer(4)" class="px-2.5 py-1.5 bg-white/10 rounded-lg text-[10px] font-bold srv-btn whitespace-nowrap">2Embed</button>
+                        <button onclick="setServer(5)" class="px-2.5 py-1.5 bg-white/10 rounded-lg text-[10px] font-bold srv-btn whitespace-nowrap">Atlantic</button>
+                        <button onclick="setServer(6)" class="px-2.5 py-1.5 bg-white/10 rounded-lg text-[10px] font-bold srv-btn whitespace-nowrap">VidSrc Win</button>
                     </div>
                 </div>
 
@@ -159,7 +163,7 @@
                     <iframe id="iframe-player" class="w-full h-full border-0" allowfullscreen allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe>
                 </div>
 
-                <!-- MOVIE COLLECTION SECTION -->
+                <!-- MOVIE COLLECTION SECTION (NOW PLACED AFTER PLAYER) -->
                 <div id="collection-section" class="hidden space-y-2 pt-3 border-t border-white/10">
                     <h3 class="text-xs font-bold text-red-500 flex items-center space-x-1.5">
                         <i class="fa-solid fa-layer-group text-[10px]"></i>
@@ -183,15 +187,16 @@
     <script>
         const API = localStorage.getItem('s_key') || '3fd2be6f0c70a2a598f084ddfb75487c';
         const BASE = 'https://api.themoviedb.org/3', IMG = 'https://image.tmdb.org/t/p/w500';
-        let page = 1, currentId = null, currentType = 'movie', currentServerIdx = 0, detailsData = null;
+        let page = 1, moviesPage = 1, tvPage = 1;
+        let currentId = null, currentType = 'movie', currentServerIdx = 0, detailsData = null;
 
         window.onload = async () => {
             for (let y = 2026; y >= 1960; y--) document.getElementById('year-select').innerHTML += `<option value="${y}">${y}</option>`;
             let gRes = await fetch(`${BASE}/genre/movie/list?api_key=${API}`).then(r => r.json());
             if(gRes.genres) gRes.genres.forEach(g => document.getElementById('genre-select').innerHTML += `<option value="${g.id}">${g.name}</option>`);
             loadCatalog(true);
-            loadTabContent('movie', 'grid-movies', 'movie');
-            loadTabContent('tv', 'grid-tv', 'tv');
+            loadTabContent('movie', 'grid-movies', 'movie', true);
+            loadTabContent('tv', 'grid-tv', 'tv', true);
         };
 
         async function loadCatalog(reset = false) {
@@ -209,18 +214,25 @@
             let data = await fetch(url).then(r => r.json());
             if(reset) document.getElementById('grid-home').innerHTML = '';
             if(data.results?.[0] && reset) setHero(data.results[0]);
-            renderGrid(data.results, 'grid-home');
+            renderGrid(data.results, 'grid-home', false);
         }
 
-        async function loadTabContent(type, gridId, mediaType) {
-            let data = await fetch(`${BASE}/${type}/popular?api_key=${API}`).then(r => r.json());
-            renderGrid(data.results.map(i => ({...i, media_type: mediaType})), gridId);
+        async function loadTabContent(type, gridId, mediaType, reset = false) {
+            if (type === 'movie') { if (reset) moviesPage = 1; }
+            else { if (reset) tvPage = 1; }
+
+            let curPage = (type === 'movie') ? moviesPage : tvPage;
+            let data = await fetch(`${BASE}/${type}/popular?api_key=${API}&page=${curPage}`).then(r => r.json());
+            renderGrid(data.results.map(i => ({...i, media_type: mediaType})), gridId, !reset);
         }
 
-        function renderGrid(items, gridId) {
+        function loadMoreMovies() { moviesPage++; loadTabContent('movie', 'grid-movies', 'movie', false); }
+        function loadMoreTv() { tvPage++; loadTabContent('tv', 'grid-tv', 'tv', false); }
+
+        function renderGrid(items, gridId, append = false) {
             let g = document.getElementById(gridId);
-            if(!items || items.length === 0) { g.innerHTML = '<p class="text-xs text-gray-500 col-span-full">No items found.</p>'; return; }
-            g.innerHTML = '';
+            if(!items || items.length === 0) { if(!append) g.innerHTML = '<p class="text-xs text-gray-500 col-span-full">No items found.</p>'; return; }
+            if(!append) g.innerHTML = '';
             items.forEach(i => {
                 let title = i.title || i.name || '';
                 let poster = i.poster_path ? IMG + i.poster_path : 'https://placehold.co/300x450';
@@ -306,7 +318,7 @@
         function setServer(idx) {
             currentServerIdx = idx;
             document.querySelectorAll('.srv-btn').forEach((b, i) => {
-                b.className = i === idx ? 'px-3 py-1.5 bg-red-600 rounded-lg text-[10px] font-bold srv-btn whitespace-nowrap' : 'px-3 py-1.5 bg-white/10 rounded-lg text-[10px] font-bold srv-btn whitespace-nowrap';
+                b.className = i === idx ? 'px-2.5 py-1.5 bg-red-600 rounded-lg text-[10px] font-bold srv-btn whitespace-nowrap' : 'px-2.5 py-1.5 bg-white/10 rounded-lg text-[10px] font-bold srv-btn whitespace-nowrap';
             });
             updatePlayer();
         }
@@ -360,12 +372,12 @@
 
         function renderList(key, gridId) {
             let data = JSON.parse(localStorage.getItem(key)||'[]');
-            renderGrid(data, gridId);
+            renderGrid(data, gridId, false);
         }
 
         function clearHistory() { localStorage.removeItem('stream_hist'); renderList('stream_hist', 'grid-history'); }
-        function openModal(id) { document.getElementById(id).classList.replace('hidden', 'flex'); }
-        function closeModal(id) { document.getElementById(id).classList.replace('flex', 'hidden'); if(id==='details-modal') document.getElementById('iframe-player').src=''; }
+        function openModal(id) { document.getElementById(id).classList.replace('hidden', 'block'); }
+        function closeModal(id) { document.getElementById(id).classList.replace('block', 'hidden'); if(id==='details-modal') document.getElementById('iframe-player').src=''; }
         function loadMore() { page++; loadCatalog(false); }
         function saveApi() { localStorage.setItem('s_key', document.getElementById('api-input').value); location.reload(); }
     </script>
