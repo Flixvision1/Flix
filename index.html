@@ -128,7 +128,19 @@
             <div class="px-4 space-y-4">
                 <p id="modal-desc" class="text-xs text-gray-300"></p>
 
-                <!-- 7 SERVERS (MOVED UP FOR BETTER ACCESSIBILITY) -->
+                <!-- TV SEASONS & EPISODES CONTROLS -->
+                <div id="tv-controls" class="hidden grid grid-cols-2 gap-2">
+                    <div>
+                        <label class="block text-[9px] font-bold text-gray-400 mb-1">SEASON</label>
+                        <select id="season-sel" onchange="changeSeason()" class="w-full bg-black border border-white/10 rounded-lg p-2 text-xs text-white focus:outline-none focus:border-red-500"></select>
+                    </div>
+                    <div>
+                        <label class="block text-[9px] font-bold text-gray-400 mb-1">EPISODE</label>
+                        <select id="episode-sel" onchange="updatePlayer()" class="w-full bg-black border border-white/10 rounded-lg p-2 text-xs text-white focus:outline-none focus:border-red-500"></select>
+                    </div>
+                </div>
+
+                <!-- 7 SERVERS -->
                 <div class="space-y-1.5">
                     <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-wider">Select Streaming Server</label>
                     <div class="flex gap-1.5 overflow-x-auto pb-1">
@@ -145,18 +157,6 @@
                 <!-- VIDEO PLAYER -->
                 <div class="aspect-video bg-black rounded-xl overflow-hidden border border-white/10 shadow-lg">
                     <iframe id="iframe-player" class="w-full h-full border-0" allowfullscreen allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe>
-                </div>
-
-                <!-- TV SEASONS & EPISODES CONTROLS -->
-                <div id="tv-controls" class="hidden grid grid-cols-2 gap-2 pt-2">
-                    <div>
-                        <label class="block text-[9px] font-bold text-gray-400 mb-1">SEASON</label>
-                        <select id="season-sel" onchange="changeSeason()" class="w-full bg-black border border-white/10 rounded-lg p-2 text-xs text-white focus:outline-none focus:border-red-500"></select>
-                    </div>
-                    <div>
-                        <label class="block text-[9px] font-bold text-gray-400 mb-1">EPISODE</label>
-                        <select id="episode-sel" onchange="updatePlayer()" class="w-full bg-black border border-white/10 rounded-lg p-2 text-xs text-white focus:outline-none focus:border-red-500"></select>
-                    </div>
                 </div>
 
                 <!-- MOVIE COLLECTION SECTION -->
