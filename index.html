@@ -2,1168 +2,357 @@
 <html lang="en" class="dark">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>StreamVault Pro — Ultimate Native App</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>StreamVault Pro</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {
-                    colors: {
-                        darkBg: '#050508',
-                        cardBg: '#0f111a',
-                        cardHover: '#161925',
-                        accentRed: '#e50914',
-                        accentGlow: 'rgba(229, 9, 20, 0.4)'
-                    },
-                    fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
-                    }
-                }
-            }
-        }
-    </script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        * {
-            -webkit-tap-highlight-color: transparent;
-            box-sizing: border-box;
-        }
-        html, body {
-            background-color: #050508;
-            color: #f3f4f6;
-            font-family: 'Inter', sans-serif;
-            overflow-x: hidden;
-            -webkit-font-smoothing: antialiased;
-            -webkit-overflow-scrolling: touch;
-            user-select: none;
-            -webkit-user-select: none;
-            touch-action: pan-y;
-        }
-        input, select {
-            user-select: auto;
-            -webkit-user-select: auto;
-        }
-        /* Native App Scrollbars */
-        ::-webkit-scrollbar {
-            width: 0px;
-            background: transparent;
-        }
-        /* Hardware Acceleration for Glass Panels */
-        .glass-panel {
-            background: rgba(14, 16, 23, 0.85);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            transform: translateZ(0);
-            will-change: transform;
-        }
-        .glass-modal {
-            background: rgba(8, 9, 13, 0.96);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            transform: translateZ(0);
-        }
-        .hero-gradient {
-            background: linear-gradient(0deg, #050508 0%, rgba(5,5,8,0.9) 40%, rgba(5,5,8,0.3) 100%);
-        }
-        /* Super Smooth Native Cards */
-        .card-native {
-            transition: transform 0.12s cubic-bezier(0.25, 1, 0.5, 1), box-shadow 0.12s ease;
-            transform: translateZ(0);
-            will-change: transform;
-        }
-        .card-native:active {
-            transform: scale(0.96) translateZ(0);
-        }
-        @media (hover: hover) {
-            .card-native:hover {
-                transform: translateY(-3px) translateZ(0);
-                box-shadow: 0 10px 25px -5px rgba(229, 9, 20, 0.3);
-            }
-        }
-        .native-btn {
-            transition: transform 0.08s ease, background-color 0.12s ease;
-            transform: translateZ(0);
-        }
-        .native-btn:active {
-            transform: scale(0.94) translateZ(0);
-        }
-        .pulse-glow {
-            box-shadow: 0 0 20px rgba(229, 9, 20, 0.4);
-        }
-        /* Instant Tab Transitions */
-        .tab-content {
-            display: none;
-            transform: translateZ(0);
-        }
-        .tab-content.active {
-            display: block;
-            animation: nativeFade 0.15s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-        }
-        @keyframes nativeFade {
-            from { opacity: 0; transform: translateY(6px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+        * { -webkit-tap-highlight-color: transparent; box-sizing: border-box; }
+        body { background: #050508; color: #f3f4f6; font-family: system-ui, sans-serif; overflow-x: hidden; user-select: none; }
+        input, select { user-select: auto; }
+        ::-webkit-scrollbar { width: 3px; height: 3px; }
+        ::-webkit-scrollbar-thumb { background: #e50914; border-radius: 9px; }
+        .glass { background: rgba(15, 17, 26, 0.92); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.08); }
+        .card { transition: transform 0.1s ease; will-change: transform; }
+        .card:active { transform: scale(0.96); }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
     </style>
 </head>
-<body class="min-h-screen flex flex-col antialiased selection:bg-red-600 selection:text-white">
+<body class="min-h-screen flex flex-col">
 
-    <!-- TOP NAVIGATION BAR -->
-    <header class="fixed top-0 left-0 right-0 z-50 glass-panel border-b border-white/5" id="navbar">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-18 flex items-center justify-between">
-            <div class="flex items-center space-x-8">
-                <a href="#" onclick="switchTab('home')" class="flex items-center space-x-2.5 group native-btn">
-                    <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-red-600 to-rose-500 flex items-center justify-center pulse-glow shadow-md shadow-red-600/30">
-                        <i class="fa-solid fa-play text-white text-sm"></i>
-                    </div>
-                    <span class="text-lg font-extrabold tracking-tight text-white">
-                        STREAM<span class="text-red-600">VAULT</span>
-                    </span>
-                </a>
-                <nav class="hidden md:flex items-center space-x-1">
-                    <button onclick="switchTab('home')" id="nav-btn-home" class="px-4 py-2 rounded-xl text-xs font-bold transition-all text-white bg-white/10 native-btn">Home</button>
-                    <button onclick="switchTab('movies')" id="nav-btn-movies" class="px-4 py-2 rounded-xl text-xs font-bold transition-all text-gray-400 hover:text-white hover:bg-white/5 native-btn">Movies</button>
-                    <button onclick="switchTab('tv')" id="nav-btn-tv" class="px-4 py-2 rounded-xl text-xs font-bold transition-all text-gray-400 hover:text-white hover:bg-white/5 native-btn">TV Shows</button>
-                    <button onclick="switchTab('favorites')" id="nav-btn-favorites" class="px-4 py-2 rounded-xl text-xs font-bold transition-all text-gray-400 hover:text-white hover:bg-white/5 native-btn">Favorites</button>
-                    <button onclick="switchTab('history')" id="nav-btn-history" class="px-4 py-2 rounded-xl text-xs font-bold transition-all text-gray-400 hover:text-white hover:bg-white/5 native-btn">History</button>
-                </nav>
-            </div>
-
-            <div class="flex items-center space-x-2.5">
-                <button onclick="openSearchModal()" class="flex items-center space-x-2 px-3.5 py-2 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-gray-300 hover:text-white transition-all native-btn">
-                    <i class="fa-solid fa-magnifying-glass text-red-500 text-xs"></i>
-                    <span class="hidden sm:inline text-xs font-medium">Search...</span>
-                    <kbd class="hidden lg:inline-block px-1 py-0.5 text-[9px] bg-white/10 rounded text-gray-400 font-mono">⌘K</kbd>
-                </button>
-                
-                <button onclick="openConfigModal()" title="Settings" class="w-9 h-9 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 flex items-center justify-center text-gray-300 hover:text-white transition-all native-btn">
-                    <i class="fa-solid fa-gear text-xs"></i>
-                </button>
-            </div>
+    <!-- HEADER -->
+    <header class="fixed top-0 inset-x-0 z-50 glass h-16 flex items-center justify-between px-4">
+        <a href="#" onclick="switchTab('home')" class="flex items-center space-x-2.5">
+            <div class="w-8 h-8 rounded-lg bg-red-600 flex items-center justify-center text-white font-bold"><i class="fa-solid fa-play text-xs"></i></div>
+            <span class="text-lg font-black tracking-wider">STREAM<span class="text-red-600">VAULT</span></span>
+        </a>
+        <nav class="hidden md:flex space-x-1">
+            <button onclick="switchTab('home')" id="nav-home" class="px-3 py-1.5 rounded-lg text-xs font-bold text-white bg-white/10">Home</button>
+            <button onclick="switchTab('movies')" id="nav-movies" class="px-3 py-1.5 rounded-lg text-xs font-bold text-gray-400">Movies</button>
+            <button onclick="switchTab('tv')" id="nav-tv" class="px-3 py-1.5 rounded-lg text-xs font-bold text-gray-400">TV</button>
+            <button onclick="switchTab('favorites')" id="nav-favorites" class="px-3 py-1.5 rounded-lg text-xs font-bold text-gray-400">Favorites</button>
+            <button onclick="switchTab('history')" id="nav-history" class="px-3 py-1.5 rounded-lg text-xs font-bold text-gray-400">History</button>
+        </nav>
+        <div class="flex items-center space-x-2">
+            <button onclick="openModal('search-modal')" class="p-2 rounded-xl bg-white/5 text-gray-300"><i class="fa-solid fa-magnifying-glass text-red-500"></i></button>
+            <button onclick="openModal('config-modal')" class="p-2 rounded-xl bg-white/5 text-gray-300"><i class="fa-solid fa-gear"></i></button>
         </div>
     </header>
 
-    <!-- MOBILE BOTTOM NAVIGATION BAR (NATIVE APP STYLE) -->
-    <div class="md:hidden fixed bottom-0 left-0 right-0 z-40 glass-panel border-t border-white/10 px-2 py-1.5 flex justify-around items-center backdrop-blur-lg">
-        <button onclick="switchTab('home')" class="flex flex-col items-center py-1 px-3 text-[10px] text-red-500 font-bold native-btn" id="mob-home"><i class="fa-solid fa-house text-base mb-0.5"></i><span>Home</span></button>
-        <button onclick="switchTab('movies')" class="flex flex-col items-center py-1 px-3 text-[10px] text-gray-400 native-btn" id="mob-movies"><i class="fa-solid fa-film text-base mb-0.5"></i><span>Movies</span></button>
-        <button onclick="switchTab('tv')" class="flex flex-col items-center py-1 px-3 text-[10px] text-gray-400 native-btn" id="mob-tv"><i class="fa-solid fa-tv text-base mb-0.5"></i><span>TV</span></button>
-        <button onclick="switchTab('favorites')" class="flex flex-col items-center py-1 px-3 text-[10px] text-gray-400 native-btn" id="mob-favorites"><i class="fa-solid fa-heart text-base mb-0.5"></i><span>Favs</span></button>
-        <button onclick="switchTab('history')" class="flex flex-col items-center py-1 px-3 text-[10px] text-gray-400 native-btn" id="mob-history"><i class="fa-solid fa-clock-rotate-left text-base mb-0.5"></i><span>History</span></button>
+    <!-- MOBILE BOTTOM NAV -->
+    <div class="md:hidden fixed bottom-0 inset-x-0 z-40 glass border-t border-white/10 px-2 py-2 flex justify-around">
+        <button onclick="switchTab('home')" class="flex flex-col items-center text-[10px] text-red-500 font-bold" id="m-home"><i class="fa-solid fa-house text-sm mb-0.5"></i>Home</button>
+        <button onclick="switchTab('movies')" class="flex flex-col items-center text-[10px] text-gray-400" id="m-movies"><i class="fa-solid fa-film text-sm mb-0.5"></i>Movies</button>
+        <button onclick="switchTab('tv')" class="flex flex-col items-center text-[10px] text-gray-400" id="m-tv"><i class="fa-solid fa-tv text-sm mb-0.5"></i>TV</button>
+        <button onclick="switchTab('favorites')" class="flex flex-col items-center text-[10px] text-gray-400" id="m-favorites"><i class="fa-solid fa-heart text-sm mb-0.5"></i>Favs</button>
+        <button onclick="switchTab('history')" class="flex flex-col items-center text-[10px] text-gray-400" id="m-history"><i class="fa-solid fa-clock-rotate-left text-sm mb-0.5"></i>History</button>
     </div>
 
-    <!-- MAIN CONTAINER -->
-    <main class="flex-grow pt-20 pb-20 md:pb-10 px-3 sm:px-6 lg:px-8 max-w-7xl mx-auto w-full">
-
-        <!-- TAB: HOME / CATALOGUE -->
-        <div id="tab-home" class="tab-content active space-y-6">
-            <!-- HERO BANNER -->
-            <div id="hero-banner" class="relative rounded-2xl overflow-hidden glass-panel border border-white/10 min-h-[380px] sm:min-h-[420px] flex items-end p-5 sm:p-8 shadow-xl">
-                <div class="absolute inset-0 bg-cover bg-center transition-all duration-500 transform scale-102" id="hero-bg" style="background-image: url('https://placehold.co/1920x1080/0f111a/ffffff?text=StreamVault');"></div>
-                <div class="absolute inset-0 hero-gradient"></div>
-                <div class="relative z-10 max-w-2xl space-y-3">
-                    <div class="inline-flex items-center space-x-1.5 px-3 py-0.5 rounded-full bg-red-600/20 border border-red-500/30 text-red-400 text-[10px] font-bold uppercase tracking-wider">
-                        <i class="fa-solid fa-fire text-red-500"></i>
-                        <span>Trending Spotlight</span>
-                    </div>
-                    <h1 id="hero-title" class="text-2xl sm:text-4xl font-extrabold text-white tracking-tight leading-tight">Loading Experience...</h1>
-                    <p id="hero-overview" class="text-gray-300 text-xs sm:text-sm line-clamp-2 sm:line-clamp-3 leading-relaxed">Connecting with high-speed nodes...</p>
-                    <div class="flex items-center space-x-3 pt-1">
-                        <button id="hero-play-btn" class="px-5 py-3 rounded-xl bg-red-600 hover:bg-red-700 text-white font-bold text-xs flex items-center space-x-2 shadow-lg shadow-red-600/30 native-btn">
-                            <i class="fa-solid fa-play text-[10px]"></i>
-                            <span>Watch Now</span>
-                        </button>
-                        <button id="hero-info-btn" class="px-5 py-3 rounded-xl bg-white/10 hover:bg-white/20 border border-white/10 text-white font-semibold text-xs flex items-center space-x-2 native-btn">
-                            <i class="fa-solid fa-circle-info text-[10px]"></i>
-                            <span>Details</span>
-                        </button>
-                    </div>
+    <!-- MAIN -->
+    <main class="flex-grow pt-20 pb-20 md:pb-8 px-3 max-w-7xl mx-auto w-full space-y-5">
+        <!-- HOME -->
+        <div id="tab-home" class="tab-content active space-y-5">
+            <div id="hero" class="relative rounded-2xl overflow-hidden glass min-h-[340px] flex items-end p-5 bg-cover bg-center">
+                <div class="absolute inset-0 bg-gradient-to-t from-[#050508] via-transparent"></div>
+                <div class="relative z-10 space-y-2">
+                    <span class="px-2.5 py-0.5 rounded-full bg-red-600/20 text-red-400 text-[10px] font-bold">TRENDING</span>
+                    <h1 id="hero-title" class="text-2xl font-black text-white">Loading...</h1>
+                    <p id="hero-desc" class="text-xs text-gray-300 line-clamp-2"></p>
+                    <button id="hero-btn" class="px-4 py-2 bg-red-600 text-white rounded-xl text-xs font-bold">Watch Now</button>
                 </div>
             </div>
-
-            <!-- FILTER BAR -->
-            <div class="glass-panel p-3.5 rounded-2xl space-y-3 shadow-md border border-white/10">
-                <div class="flex flex-wrap items-center justify-between gap-3">
-                    <div class="flex items-center space-x-1 bg-white/5 p-1 rounded-xl border border-white/10">
-                        <button onclick="setFilterType('all')" id="filter-type-all" class="px-3.5 py-1.5 rounded-lg text-[11px] font-bold transition-all bg-red-600 text-white shadow native-btn">All</button>
-                        <button onclick="setFilterType('movie')" id="filter-type-movie" class="px-3.5 py-1.5 rounded-lg text-[11px] font-bold transition-all text-gray-400 hover:text-white native-btn">Movies</button>
-                        <button onclick="setFilterType('tv')" id="filter-type-tv" class="px-3.5 py-1.5 rounded-lg text-[11px] font-bold transition-all text-gray-400 hover:text-white native-btn">TV Shows</button>
-                    </div>
-
-                    <div class="flex items-center space-x-2">
-                        <div class="relative">
-                            <select id="genre-select" onchange="applyFilters()" class="appearance-none bg-white/5 border border-white/10 rounded-xl px-3 py-2 pr-8 text-[11px] font-medium text-gray-200 focus:outline-none focus:border-red-500 cursor-pointer">
-                                <option value="" class="bg-[#0f111a]">All Genres</option>
-                            </select>
-                            <i class="fa-solid fa-chevron-down absolute right-3 top-3 text-[9px] text-gray-400 pointer-events-none"></i>
-                        </div>
-
-                        <div class="relative">
-                            <select id="year-select" onchange="applyFilters()" class="appearance-none bg-white/5 border border-white/10 rounded-xl px-3 py-2 pr-8 text-[11px] font-medium text-gray-200 focus:outline-none focus:border-red-500 cursor-pointer">
-                                <option value="" class="bg-[#0f111a]">All Years</option>
-                            </select>
-                            <i class="fa-solid fa-chevron-down absolute right-3 top-3 text-[9px] text-gray-400 pointer-events-none"></i>
-                        </div>
-                    </div>
-                </div>
+            
+            <div class="glass p-3 rounded-xl flex flex-wrap gap-2">
+                <select id="filter-type" onchange="loadCatalog(true)" class="bg-black/40 border border-white/10 rounded-lg px-3 py-1.5 text-xs text-white">
+                    <option value="all">All Media</option>
+                    <option value="movie">Movies</option>
+                    <option value="tv">TV Shows</option>
+                </select>
+                <select id="genre-select" onchange="loadCatalog(true)" class="bg-black/40 border border-white/10 rounded-lg px-3 py-1.5 text-xs text-white"><option value="">All Genres</option></select>
+                <select id="year-select" onchange="loadCatalog(true)" class="bg-black/40 border border-white/10 rounded-lg px-3 py-1.5 text-xs text-white"><option value="">All Years</option></select>
             </div>
 
-            <div class="flex items-center justify-between pt-1">
-                <div class="flex items-center space-x-2.5">
-                    <div class="w-2 h-5 bg-red-600 rounded-full"></div>
-                    <h2 class="text-base sm:text-lg font-extrabold text-white tracking-wide">Popular Catalog</h2>
-                </div>
-                <div class="text-[11px] text-gray-400 font-medium" id="results-count">High-speed feed</div>
-            </div>
-
-            <!-- MEDIA GRID -->
-            <div id="media-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3.5 sm:gap-5"></div>
-
-            <div id="load-more-container" class="flex justify-center pt-6 pb-2">
-                <button onclick="loadMoreMedia()" id="load-more-btn" class="px-6 py-3 rounded-xl bg-white/5 hover:bg-red-600 border border-white/10 text-white font-bold text-xs tracking-wide transition-all shadow-md flex items-center space-x-2 native-btn">
-                    <i class="fa-solid fa-circle-plus text-red-500 group-hover:text-white text-xs"></i>
-                    <span>Load More</span>
-                </button>
-            </div>
+            <div id="grid-home" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3"></div>
+            <button onclick="loadMore()" id="more-btn" class="w-full py-3 bg-white/5 rounded-xl text-xs font-bold">Load More</button>
         </div>
 
-        <!-- TAB: MOVIES -->
+        <!-- MOVIES -->
         <div id="tab-movies" class="tab-content space-y-4">
-            <div class="flex items-center space-x-2.5">
-                <div class="w-2 h-5 bg-red-600 rounded-full"></div>
-                <h2 class="text-base sm:text-lg font-extrabold text-white tracking-wide">Movies Collection</h2>
-            </div>
-            <div id="movies-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3.5 sm:gap-5"></div>
-            <div id="movies-load-more-container" class="flex justify-center pt-6 pb-2">
-                <button onclick="loadMoreMovies()" class="px-6 py-3 rounded-xl bg-white/5 hover:bg-red-600 border border-white/10 text-white font-bold text-xs tracking-wide transition-all shadow-md flex items-center space-x-2 native-btn">
-                    <i class="fa-solid fa-circle-plus text-red-500 text-xs"></i>
-                    <span>Load More Movies</span>
-                </button>
-            </div>
+            <h2 class="text-base font-bold">Movies Collection</h2>
+            <div id="grid-movies" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3"></div>
         </div>
 
-        <!-- TAB: TV SHOWS -->
+        <!-- TV -->
         <div id="tab-tv" class="tab-content space-y-4">
-            <div class="flex items-center space-x-2.5">
-                <div class="w-2 h-5 bg-red-600 rounded-full"></div>
-                <h2 class="text-base sm:text-lg font-extrabold text-white tracking-wide">TV Series & Shows</h2>
-            </div>
-            <div id="tv-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3.5 sm:gap-5"></div>
-            <div id="tv-load-more-container" class="flex justify-center pt-6 pb-2">
-                <button onclick="loadMoreTv()" class="px-6 py-3 rounded-xl bg-white/5 hover:bg-red-600 border border-white/10 text-white font-bold text-xs tracking-wide transition-all shadow-md flex items-center space-x-2 native-btn">
-                    <i class="fa-solid fa-circle-plus text-red-500 text-xs"></i>
-                    <span>Load More TV Shows</span>
-                </button>
-            </div>
+            <h2 class="text-base font-bold">TV Shows</h2>
+            <div id="grid-tv" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3"></div>
         </div>
 
-        <!-- TAB: FAVORITES -->
+        <!-- FAVORITES -->
         <div id="tab-favorites" class="tab-content space-y-4">
-            <div class="flex items-center space-x-2.5">
-                <div class="w-2 h-5 bg-red-600 rounded-full"></div>
-                <h2 class="text-base sm:text-lg font-extrabold text-white tracking-wide">My Favorites</h2>
-            </div>
-            <div id="favorites-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3.5 sm:gap-5"></div>
-            <div id="favorites-empty" class="hidden text-center py-20 text-gray-500 space-y-2">
-                <i class="fa-regular fa-heart text-3xl"></i>
-                <p class="text-xs">No favorite movies or shows added yet.</p>
-            </div>
+            <h2 class="text-base font-bold">My Favorites</h2>
+            <div id="grid-favorites" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3"></div>
         </div>
 
-        <!-- TAB: HISTORY -->
+        <!-- HISTORY -->
         <div id="tab-history" class="tab-content space-y-4">
-            <div class="flex items-center justify-between">
-                <div class="flex items-center space-x-2.5">
-                    <div class="w-2 h-5 bg-red-600 rounded-full"></div>
-                    <h2 class="text-base sm:text-lg font-extrabold text-white tracking-wide">Watched History</h2>
-                </div>
-                <button onclick="clearHistory()" class="px-3 py-1.5 rounded-xl bg-white/5 hover:bg-red-600/20 text-gray-300 hover:text-red-400 border border-white/10 text-[11px] font-semibold native-btn">
-                    Clear History
-                </button>
-            </div>
-            <div id="history-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3.5 sm:gap-5"></div>
-            <div id="history-empty" class="hidden text-center py-20 text-gray-500 space-y-2">
-                <i class="fa-solid fa-clock-rotate-left text-3xl"></i>
-                <p class="text-xs">No watch history recorded yet.</p>
-            </div>
+            <div class="flex justify-between items-center"><h2 class="text-base font-bold">History</h2><button onclick="clearHistory()" class="text-xs text-red-500">Clear</button></div>
+            <div id="grid-history" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3"></div>
         </div>
-
     </main>
 
     <!-- SEARCH MODAL -->
-    <div id="search-modal" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md hidden items-start justify-center pt-16 px-4">
-        <div class="glass-modal w-full max-w-2xl rounded-2xl p-5 shadow-2xl border border-white/15 space-y-4">
-            <div class="flex items-center justify-between border-b border-white/10 pb-3">
-                <div class="flex items-center space-x-2.5 w-full mr-3">
-                    <i class="fa-solid fa-magnifying-glass text-red-500 text-sm"></i>
-                    <input type="text" id="search-input" oninput="handleSearchInput(event)" placeholder="Search movies, TV shows..." class="w-full bg-transparent text-white placeholder-gray-500 text-sm focus:outline-none font-medium">
-                </div>
-                <button onclick="closeSearchModal()" class="w-8 h-8 rounded-full bg-white/5 hover:bg-white/10 flex items-center justify-center text-gray-400 hover:text-white native-btn">
-                    <i class="fa-solid fa-xmark text-sm"></i>
-                </button>
-            </div>
-            <div id="search-results-container" class="max-h-[55vh] overflow-y-auto space-y-2 pr-1">
-                <div class="text-center py-10 text-gray-500 text-xs">Type anything to instantly search...</div>
-            </div>
+    <div id="search-modal" class="fixed inset-0 z-50 bg-black/90 hidden flex-col p-4 glass">
+        <div class="flex items-center space-x-2 border-b border-white/10 pb-3">
+            <input type="text" id="search-input" oninput="doSearch(this.value)" placeholder="Search..." class="w-full bg-transparent text-sm focus:outline-none text-white">
+            <button onclick="closeModal('search-modal')" class="text-gray-400"><i class="fa-solid fa-xmark text-lg"></i></button>
         </div>
+        <div id="search-results" class="flex-grow overflow-y-auto space-y-2 pt-3"></div>
     </div>
 
-    <!-- DETAILS & PLAYER MODAL -->
-    <div id="details-modal" class="fixed inset-0 z-50 bg-black/95 backdrop-blur-xl hidden overflow-y-auto">
-        <div class="min-h-screen px-3 text-center flex items-center justify-center py-6">
-            <div class="glass-modal w-full max-w-4xl rounded-2xl text-left overflow-hidden shadow-2xl border border-white/15 relative">
-                <button onclick="closeDetailsModal()" class="absolute top-4 right-4 z-30 w-9 h-9 rounded-full bg-black/70 hover:bg-red-600 flex items-center justify-center text-white native-btn">
-                    <i class="fa-solid fa-xmark text-base"></i>
-                </button>
-
-                <div class="relative h-64 sm:h-80 w-full bg-cover bg-center" id="modal-backdrop">
-                    <div class="absolute inset-0 bg-gradient-to-t from-[#08090d] via-[#08090d]/50 to-transparent"></div>
-                    <div class="absolute bottom-5 left-5 right-5 flex flex-col sm:flex-row items-start sm:items-end justify-between gap-3">
-                        <div class="space-y-1.5">
-                            <div class="flex items-center space-x-2.5">
-                                <span id="modal-badge" class="px-2.5 py-0.5 rounded-full bg-red-600 text-white text-[9px] font-bold uppercase tracking-wider">Movie</span>
-                                <span id="modal-rating" class="text-yellow-400 font-bold text-xs flex items-center space-x-1"><i class="fa-solid fa-star text-[10px]"></i> <span id="modal-rating-val">8.5</span></span>
-                                <span id="modal-year" class="text-gray-300 text-xs font-medium">2026</span>
-                            </div>
-                            <h2 id="modal-title" class="text-xl sm:text-3xl font-extrabold text-white tracking-tight">Movie Title</h2>
-                        </div>
-                        <div class="flex items-center space-x-2">
-                            <button id="modal-favorite-btn" onclick="toggleFavoriteCurrent()" class="px-3.5 py-2 rounded-xl bg-white/10 hover:bg-white/20 border border-white/15 text-white text-xs font-semibold flex items-center space-x-1.5 native-btn">
-                                <i id="modal-favorite-icon" class="fa-regular fa-heart text-red-500 text-xs"></i>
-                                <span id="modal-favorite-text">Favorite</span>
-                            </button>
-                            <button id="modal-trailer-btn" onclick="openTrailerModal()" class="px-3.5 py-2 rounded-xl bg-white/10 hover:bg-white/20 border border-white/15 text-white text-xs font-semibold flex items-center space-x-1.5 native-btn">
-                                <i class="fa-brands fa-youtube text-red-500 text-xs"></i>
-                                <span>Trailer</span>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="p-5 sm:p-8 space-y-6">
-                    <div class="space-y-2.5">
-                        <p id="modal-overview" class="text-gray-300 text-xs sm:text-sm leading-relaxed">Loading overview...</p>
-                        <div id="modal-genres" class="flex flex-wrap gap-1.5"></div>
-                    </div>
-
-                    <!-- MOVIE COLLECTION SECTION -->
-                    <div id="modal-collection-section" class="hidden space-y-3 p-4 rounded-xl bg-white/5 border border-white/10">
-                        <h3 id="collection-title" class="text-xs font-bold text-white flex items-center space-x-1.5">
-                            <i class="fa-solid fa-layer-group text-red-500"></i>
-                            <span>Movie Collection</span>
-                        </h3>
-                        <div id="collection-movies-grid" class="grid grid-cols-2 sm:grid-cols-4 gap-3"></div>
-                    </div>
-
-                    <div id="tv-seasons-section" class="hidden space-y-3 p-4 rounded-xl bg-white/5 border border-white/10">
-                        <h3 class="text-xs font-bold text-white flex items-center space-x-1.5">
-                            <i class="fa-solid fa-list text-red-500"></i>
-                            <span>Select Season & Episode</span>
-                        </h3>
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                            <div>
-                                <label class="block text-[9px] font-bold text-gray-400 mb-1">SEASON</label>
-                                <select id="season-select" onchange="onSeasonChange()" class="w-full bg-[#050508] border border-white/10 rounded-xl px-3 py-2.5 text-xs text-white focus:outline-none focus:border-red-500"></select>
-                            </div>
-                            <div>
-                                <label class="block text-[9px] font-bold text-gray-400 mb-1">EPISODE</label>
-                                <select id="episode-select" onchange="onEpisodeChange()" class="w-full bg-[#050508] border border-white/10 rounded-xl px-3 py-2.5 text-xs text-white focus:outline-none focus:border-red-500"></select>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="space-y-3">
-                        <div class="flex flex-wrap items-center justify-between gap-3">
-                            <h3 class="text-xs font-bold text-white flex items-center space-x-1.5">
-                                <i class="fa-solid fa-tv text-red-500"></i>
-                                <span>Streaming Servers</span>
-                            </h3>
-                            <div class="flex flex-wrap items-center gap-1">
-                                <button onclick="setStreamingServer('vidsrc')" id="srv-btn-vidsrc" class="px-2.5 py-1 rounded-lg text-[10px] font-bold transition-all bg-red-600 text-white shadow native-btn">VidSrc 1</button>
-                                <button onclick="setStreamingServer('vidlink')" id="srv-btn-vidlink" class="px-2.5 py-1 rounded-lg text-[10px] font-bold transition-all bg-white/5 text-gray-300 hover:text-white border border-white/10 native-btn">VidLink</button>
-                                <button onclick="setStreamingServer('vidsrcto')" id="srv-btn-vidsrcto" class="px-2.5 py-1 rounded-lg text-[10px] font-bold transition-all bg-white/5 text-gray-300 hover:text-white border border-white/10 native-btn">VidSrc.to</button>
-                                <button onclick="setStreamingServer('superembed')" id="srv-btn-superembed" class="px-2.5 py-1 rounded-lg text-[10px] font-bold transition-all bg-white/5 text-gray-300 hover:text-white border border-white/10 native-btn">SuperEmbed</button>
-                                <button onclick="setStreamingServer('embed2')" id="srv-btn-embed2" class="px-2.5 py-1 rounded-lg text-[10px] font-bold transition-all bg-white/5 text-gray-300 hover:text-white border border-white/10 native-btn">2Embed</button>
-                            </div>
-                        </div>
-
-                        <div class="relative w-full aspect-video rounded-xl overflow-hidden bg-black border border-white/10 shadow-xl">
-                            <iframe id="stream-iframe" src="" class="w-full h-full border-0" allowfullscreen allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe>
-                        </div>
-                    </div>
+    <!-- DETAILS MODAL -->
+    <div id="details-modal" class="fixed inset-0 z-50 bg-black/95 hidden overflow-y-auto p-3">
+        <div class="glass max-w-3xl mx-auto rounded-2xl overflow-hidden relative space-y-4 pb-6">
+            <button onclick="closeModal('details-modal')" class="absolute top-3 right-3 z-10 w-8 h-8 rounded-full bg-black/60 flex items-center justify-center text-white"><i class="fa-solid fa-xmark"></i></button>
+            <div id="modal-bg" class="h-56 bg-cover bg-center relative flex items-end p-4">
+                <div class="absolute inset-0 bg-gradient-to-t from-[#050508]"></div>
+                <div class="relative z-10 flex justify-between items-end w-full">
+                    <h2 id="modal-title" class="text-xl font-bold"></h2>
+                    <button onclick="toggleFavorite()" id="fav-btn" class="px-3 py-1.5 bg-white/20 backdrop-blur rounded-xl text-xs font-bold flex items-center space-x-1.5 text-white">
+                        <i class="fa-regular fa-heart text-red-500" id="fav-icon"></i><span>Favorite</span>
+                    </button>
                 </div>
             </div>
-        </div>
-    </div>
+            <div class="px-4 space-y-3">
+                <p id="modal-desc" class="text-xs text-gray-300"></p>
+                
+                <!-- COLLECTION SECTION -->
+                <div id="collection-section" class="hidden space-y-2 pt-2 border-t border-white/10">
+                    <h3 class="text-xs font-bold text-red-500">Movie Collection</h3>
+                    <div id="collection-grid" class="grid grid-cols-2 sm:grid-cols-4 gap-2"></div>
+                </div>
 
-    <!-- TRAILER MODAL -->
-    <div id="trailer-modal" class="fixed inset-0 z-50 bg-black/95 backdrop-blur-xl hidden items-center justify-center p-3">
-        <div class="relative w-full max-w-3xl aspect-video rounded-2xl overflow-hidden glass-modal border border-white/20">
-            <button onclick="closeTrailerModal()" class="absolute top-3 right-3 z-20 w-8 h-8 rounded-full bg-black/70 hover:bg-red-600 flex items-center justify-center text-white native-btn">
-                <i class="fa-solid fa-xmark text-sm"></i>
-            </button>
-            <iframe id="trailer-iframe" src="" class="w-full h-full border-0" allowfullscreen allow="autoplay"></iframe>
+                <div id="tv-controls" class="hidden grid grid-cols-2 gap-2">
+                    <select id="season-sel" onchange="changeSeason()" class="bg-black border border-white/10 rounded-lg p-2 text-xs text-white"></select>
+                    <select id="episode-sel" onchange="updatePlayer()" class="bg-black border border-white/10 rounded-lg p-2 text-xs text-white"></select>
+                </div>
+                
+                <!-- 7 SERVERS -->
+                <div class="flex gap-1 overflow-x-auto pb-1">
+                    <button onclick="setServer(0)" class="px-2.5 py-1 bg-red-600 rounded text-[10px] font-bold srv-btn whitespace-nowrap">VidSrc 1</button>
+                    <button onclick="setServer(1)" class="px-2.5 py-1 bg-white/10 rounded text-[10px] font-bold srv-btn whitespace-nowrap">VidLink</button>
+                    <button onclick="setServer(2)" class="px-2.5 py-1 bg-white/10 rounded text-[10px] font-bold srv-btn whitespace-nowrap">VidSrc.to</button>
+                    <button onclick="setServer(3)" class="px-2.5 py-1 bg-white/10 rounded text-[10px] font-bold srv-btn whitespace-nowrap">SuperEmbed</button>
+                    <button onclick="setServer(4)" class="px-2.5 py-1 bg-white/10 rounded text-[10px] font-bold srv-btn whitespace-nowrap">2Embed</button>
+                    <button onclick="setServer(5)" class="px-2.5 py-1 bg-white/10 rounded text-[10px] font-bold srv-btn whitespace-nowrap">Atlantic</button>
+                    <button onclick="setServer(6)" class="px-2.5 py-1 bg-white/10 rounded text-[10px] font-bold srv-btn whitespace-nowrap">VidSrc Win</button>
+                </div>
+                
+                <div class="aspect-video bg-black rounded-xl overflow-hidden">
+                    <iframe id="iframe-player" class="w-full h-full border-0" allowfullscreen></iframe>
+                </div>
+            </div>
         </div>
     </div>
 
     <!-- SETTINGS MODAL -->
-    <div id="config-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md hidden items-center justify-center p-3">
-        <div class="glass-modal w-full max-w-sm rounded-2xl p-5 shadow-2xl border border-white/15 space-y-4">
-            <div class="flex items-center justify-between border-b border-white/10 pb-3">
-                <h3 class="text-sm font-bold text-white"><i class="fa-solid fa-gear text-red-500 mr-1.5"></i> Settings</h3>
-                <button onclick="closeConfigModal()" class="text-gray-400 hover:text-white native-btn"><i class="fa-solid fa-xmark text-sm"></i></button>
-            </div>
-            
-            <div class="flex items-center justify-between p-3 rounded-xl bg-white/5 border border-white/10">
-                <div class="space-y-0.5">
-                    <label class="block text-xs font-bold text-white">Single Giant Vertical Poster</label>
-                    <p class="text-[10px] text-gray-400">Display 1 tall vertical poster per row.</p>
-                </div>
-                <label class="relative inline-flex items-center cursor-pointer">
-                    <input type="checkbox" id="single-poster-toggle" onchange="toggleSinglePosterMode(this.checked)" class="sr-only peer">
-                    <div class="w-9 h-5 bg-gray-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-red-600"></div>
-                </label>
-            </div>
-
-            <div class="space-y-1.5 pt-1 border-t border-white/10">
-                <label class="block text-[9px] font-bold text-gray-300">TMDB API KEY</label>
-                <input type="text" id="tmdb-key-input" placeholder="Default high-speed key active" class="w-full bg-[#050508] border border-white/10 rounded-xl px-3 py-2.5 text-xs text-white focus:outline-none focus:border-red-500">
-            </div>
-
-            <div class="flex justify-end space-x-2.5 pt-1">
-                <button onclick="closeConfigModal()" class="px-3.5 py-2 rounded-xl bg-white/5 hover:bg-white/10 text-gray-300 text-xs font-semibold native-btn">Cancel</button>
-                <button onclick="saveApiKey()" class="px-4 py-2 rounded-xl bg-red-600 hover:bg-red-700 text-white text-xs font-semibold shadow-md shadow-red-600/30 native-btn">Save</button>
-            </div>
+    <div id="config-modal" class="fixed inset-0 z-50 bg-black/80 hidden items-center justify-center p-4">
+        <div class="glass w-full max-w-xs rounded-2xl p-4 space-y-3">
+            <div class="flex justify-between items-center"><h3 class="text-sm font-bold">Settings</h3><button onclick="closeModal('config-modal')"><i class="fa-solid fa-xmark"></i></button></div>
+            <input type="text" id="api-input" placeholder="TMDB API Key (Optional)" class="w-full bg-black/40 border border-white/10 rounded-lg p-2 text-xs text-white">
+            <button onclick="saveApi()" class="w-full py-2 bg-red-600 rounded-lg text-xs font-bold text-white">Save</button>
         </div>
     </div>
 
     <script>
-        const DEFAULT_TMDB_KEY = "3fd2be6f0c70a2a598f084ddfb75487c";
-        let apiKey = localStorage.getItem("streamvault_tmdb_key") || DEFAULT_TMDB_KEY;
-        const TMDB_BASE = "https://api.themoviedb.org/3";
-        const TMDB_IMG = "https://image.tmdb.org/t/p/w500";
-        const TMDB_ORIGINAL = "https://image.tmdb.org/t/p/original";
+        const API = localStorage.getItem('s_key') || '3fd2be6f0c70a2a598f084ddfb75487c';
+        const BASE = 'https://api.themoviedb.org/3', IMG = 'https://image.tmdb.org/t/p/w500';
+        let page = 1, currentId = null, currentType = 'movie', currentServerIdx = 0, detailsData = null;
 
-        let currentTab = 'home';
-        let currentFilterType = 'all';
-        let currentGenre = '';
-        let currentYear = '';
-        
-        let isSinglePosterMode = localStorage.getItem("streamvault_single_poster") === "true";
-        
-        let currentPage = 1;
-        let totalPages = 1;
-        let allMediaCache = [];
-
-        let moviesPage = 1;
-        let moviesTotalPages = 1;
-        let moviesCache = [];
-
-        let tvPage = 1;
-        let tvTotalPages = 1;
-        let tvCache = [];
-        
-        let genresMap = { movie: {}, tv: {} };
-        
-        let currentMediaId = null;
-        let currentMediaType = 'movie';
-        let currentSeason = 1;
-        let currentEpisode = 1;
-        let currentServer = 'vidsrc';
-        let currentTrailerUrl = '';
-        let currentItemDetails = null;
-
-        let favorites = JSON.parse(localStorage.getItem("streamvault_favorites") || "[]");
-        let history = JSON.parse(localStorage.getItem("streamvault_history") || "[]");
-
-        const CACHE_TTL = 60 * 60 * 1000;
-        function getCachedData(key) {
-            try {
-                const cached = localStorage.getItem('sv_cache_' + key);
-                if (!cached) return null;
-                const obj = JSON.parse(cached);
-                if (Date.now() - obj.time > CACHE_TTL) {
-                    localStorage.removeItem('sv_cache_' + key);
-                    return null;
-                }
-                return obj.data;
-            } catch (e) { return null; }
-        }
-
-        function setCachedData(key, data) {
-            try {
-                const obj = { time: Date.now(), data: data };
-                localStorage.setItem('sv_cache_' + key, JSON.stringify(obj));
-            } catch (e) { clearOldCache(); }
-        }
-
-        function clearOldCache() {
-            try {
-                for (let i = 0; i < localStorage.length; i++) {
-                    const k = localStorage.key(i);
-                    if (k && k.startsWith('sv_cache_')) localStorage.removeItem(k);
-                }
-            } catch (e) {}
-        }
-
-        async function cachedFetch(url) {
-            const cached = getCachedData(url);
-            if (cached) return cached;
-            const res = await fetch(url);
-            const data = await res.json();
-            setCachedData(url, data);
-            return data;
-        }
-
-        window.addEventListener('DOMContentLoaded', async () => {
-            document.getElementById('single-poster-toggle').checked = isSinglePosterMode;
-            initYearDropdown();
-            await loadGenres();
-            await loadCatalog(true);
-            await loadMoviesTab(true);
-            await loadTvTab(true);
-        });
-
-        function toggleSinglePosterMode(enabled) {
-            isSinglePosterMode = enabled;
-            localStorage.setItem("streamvault_single_poster", enabled);
-            renderMediaGrid(allMediaCache, 'media-grid');
-            renderMediaGrid(moviesCache, 'movies-grid');
-            renderMediaGrid(tvCache, 'tv-grid');
-            if (favorites.length > 0) renderFavorites();
-            if (history.length > 0) renderHistory();
-        }
-
-        function initYearDropdown() {
-            const yearSelect = document.getElementById('year-select');
-            for (let y = 2026; y >= 1960; y--) {
-                const opt = document.createElement('option');
-                opt.value = y;
-                opt.textContent = y;
-                opt.className = "bg-[#0f111a]";
-                yearSelect.appendChild(opt);
-            }
-        }
-
-        async function loadGenres() {
-            try {
-                const genresKey = 'genres_list';
-                let combinedGenres = getCachedData(genresKey);
-                if (!combinedGenres) {
-                    const [movieRes, tvRes] = await Promise.all([
-                        fetch(`${TMDB_BASE}/genre/movie/list?api_key=${apiKey}`),
-                        fetch(`${TMDB_BASE}/genre/tv/list?api_key=${apiKey}`)
-                    ]);
-                    const movieData = await movieRes.json();
-                    const tvData = await tvRes.json();
-
-                    combinedGenres = {};
-                    if (movieData.genres) movieData.genres.forEach(g => { genresMap.movie[g.id] = g.name; combinedGenres[g.id] = g.name; });
-                    if (tvData.genres) tvData.genres.forEach(g => { genresMap.tv[g.id] = g.name; combinedGenres[g.id] = g.name; });
-                    setCachedData(genresKey, combinedGenres);
-                }
-
-                const genreSelect = document.getElementById('genre-select');
-                genreSelect.innerHTML = '<option value="" class="bg-[#0f111a]">All Genres</option>';
-                for (const [id, name] of Object.entries(combinedGenres)) {
-                    const opt = document.createElement('option');
-                    opt.value = id;
-                    opt.textContent = name;
-                    opt.className = "bg-[#0f111a]";
-                    genreSelect.appendChild(opt);
-                }
-            } catch (err) {
-                console.error("Error loading genres:", err);
-            }
-        }
+        window.onload = async () => {
+            for (let y = 2026; y >= 1960; y--) document.getElementById('year-select').innerHTML += `<option value="${y}">${y}</option>`;
+            let gRes = await fetch(`${BASE}/genre/movie/list?api_key=${API}`).then(r => r.json());
+            if(gRes.genres) gRes.genres.forEach(g => document.getElementById('genre-select').innerHTML += `<option value="${g.id}">${g.name}</option>`);
+            loadCatalog(true);
+            loadTabContent('movie', 'grid-movies', 'movie');
+            loadTabContent('tv', 'grid-tv', 'tv');
+        };
 
         async function loadCatalog(reset = false) {
-            if (reset) {
-                currentPage = 1;
-                allMediaCache = [];
+            if (reset) page = 1;
+            let type = document.getElementById('filter-type').value;
+            let genre = document.getElementById('genre-select').value;
+            let year = document.getElementById('year-select').value;
+            let url = `${BASE}/trending/${type === 'all' ? 'all' : type}/day?api_key=${API}&page=${page}`;
+            if(genre || year) {
+                let t = type === 'all' ? 'movie' : type;
+                url = `${BASE}/discover/${t}?api_key=${API}&page=${page}`;
+                if(genre) url += `&with_genres=${genre}`;
+                if(year) url += t === 'movie' ? `&primary_release_year=${year}` : `&first_air_date_year=${year}`;
             }
-            try {
-                let url = `${TMDB_BASE}/trending/all/day?api_key=${apiKey}&page=${currentPage}`;
-                if (currentFilterType === 'movie') url = `${TMDB_BASE}/trending/movie/day?api_key=${apiKey}&page=${currentPage}`;
-                if (currentFilterType === 'tv') url = `${TMDB_BASE}/trending/tv/day?api_key=${apiKey}&page=${currentPage}`;
-
-                if (currentGenre || currentYear) {
-                    let type = currentFilterType === 'tv' ? 'tv' : (currentFilterType === 'movie' ? 'movie' : 'movie');
-                    url = `${TMDB_BASE}/discover/${type}?api_key=${apiKey}&sort_by=popularity.desc&page=${currentPage}`;
-                    
-                    if (currentGenre) url += `&with_genres=${currentGenre}`;
-                    if (currentYear) {
-                        if (type === 'movie') url += `&primary_release_year=${currentYear}`;
-                        else url += `&first_air_date_year=${currentYear}`;
-                    }
-                }
-
-                const data = await cachedFetch(url);
-                totalPages = data.total_pages || 1;
-                const newItems = (data.results || []).map(i => ({ 
-                    ...i, 
-                    media_type: i.media_type || (currentFilterType === 'tv' ? 'tv' : (currentFilterType === 'movie' ? 'movie' : (i.title ? 'movie' : 'tv'))) 
-                }));
-
-                if (reset) {
-                    allMediaCache = newItems;
-                    if (allMediaCache.length > 0) setupHero(allMediaCache[0]);
-                } else {
-                    allMediaCache = allMediaCache.concat(newItems);
-                }
-
-                renderMediaGrid(allMediaCache, 'media-grid');
-
-                const loadMoreBtnContainer = document.getElementById('load-more-container');
-                if (currentPage >= totalPages || currentPage >= 10) {
-                    loadMoreBtnContainer.style.display = 'none';
-                } else {
-                    loadMoreBtnContainer.style.display = 'flex';
-                }
-
-            } catch (err) {
-                console.error("Error loading catalog:", err);
-            }
+            let data = await fetch(url).then(r => r.json());
+            if(reset) document.getElementById('grid-home').innerHTML = '';
+            if(data.results?.[0] && reset) setHero(data.results[0]);
+            renderGrid(data.results, 'grid-home');
         }
 
-        async function loadMoviesTab(reset = false) {
-            if (reset) {
-                moviesPage = 1;
-                moviesCache = [];
-            }
-            try {
-                const url = `${TMDB_BASE}/movie/popular?api_key=${apiKey}&page=${moviesPage}`;
-                const data = await cachedFetch(url);
-                moviesTotalPages = data.total_pages || 1;
-                const items = (data.results || []).map(i => ({ ...i, media_type: 'movie' }));
-
-                if (reset) moviesCache = items;
-                else moviesCache = moviesCache.concat(items);
-
-                renderMediaGrid(moviesCache, 'movies-grid');
-
-                const btnContainer = document.getElementById('movies-load-more-container');
-                if (moviesPage >= moviesTotalPages || moviesPage >= 10) {
-                    btnContainer.style.display = 'none';
-                } else {
-                    btnContainer.style.display = 'flex';
-                }
-            } catch (err) {
-                console.error("Error loading movies:", err);
-            }
+        async function loadTabContent(type, gridId, mediaType) {
+            let data = await fetch(`${BASE}/${type}/popular?api_key=${API}`).then(r => r.json());
+            renderGrid(data.results.map(i => ({...i, media_type: mediaType})), gridId);
         }
 
-        function loadMoreMovies() {
-            if (moviesPage < moviesTotalPages) {
-                moviesPage++;
-                loadMoviesTab(false);
-            }
+        function renderGrid(items, gridId) {
+            let g = document.getElementById(gridId);
+            if(!items || items.length === 0) { g.innerHTML = '<p class="text-xs text-gray-500 col-span-full">No items found.</p>'; return; }
+            g.innerHTML = '';
+            items.forEach(i => {
+                let title = i.title || i.name || '';
+                let poster = i.poster_path ? IMG + i.poster_path : 'https://placehold.co/300x450';
+                let type = i.media_type || (i.title ? 'movie' : 'tv');
+                g.innerHTML += `<div onclick="openDetails(${i.id}, '${type}')" class="glass rounded-xl overflow-hidden card cursor-pointer">
+                    <div class="aspect-[2/3] bg-black"><img src="${poster}" class="w-full h-full object-cover" loading="lazy"></div>
+                    <div class="p-2"><h4 class="text-xs font-bold truncate text-white">${title}</h4><div class="text-[10px] text-gray-400">${(i.release_date||i.first_air_date||'').substring(0,4)}</div></div>
+                </div>`;
+            });
         }
 
-        async function loadTvTab(reset = false) {
-            if (reset) {
-                tvPage = 1;
-                tvCache = [];
-            }
-            try {
-                const url = `${TMDB_BASE}/tv/popular?api_key=${apiKey}&page=${tvPage}`;
-                const data = await cachedFetch(url);
-                tvTotalPages = data.total_pages || 1;
-                const items = (data.results || []).map(i => ({ ...i, media_type: 'tv' }));
-
-                if (reset) tvCache = items;
-                else tvCache = tvCache.concat(items);
-
-                renderMediaGrid(tvCache, 'tv-grid');
-
-                const btnContainer = document.getElementById('tv-load-more-container');
-                if (tvPage >= tvTotalPages || tvPage >= 10) {
-                    btnContainer.style.display = 'none';
-                } else {
-                    btnContainer.style.display = 'flex';
-                }
-            } catch (err) {
-                console.error("Error loading tv shows:", err);
-            }
+        function setHero(i) {
+            let type = i.media_type || (i.title ? 'movie' : 'tv');
+            document.getElementById('hero').style.backgroundImage = `url('https://image.tmdb.org/t/p/original${i.backdrop_path}')`;
+            document.getElementById('hero-title').innerText = i.title || i.name;
+            document.getElementById('hero-desc').innerText = i.overview;
+            document.getElementById('hero-btn').onclick = () => openDetails(i.id, type);
         }
 
-        function loadMoreTv() {
-            if (tvPage < tvTotalPages) {
-                tvPage++;
-                loadTvTab(false);
-            }
-        }
-
-        function loadMoreMedia() {
-            if (currentPage < totalPages) {
-                currentPage++;
-                loadCatalog(false);
-            }
-        }
-
-        function setupHero(item) {
-            const title = item.title || item.name;
-            const overview = item.overview || 'No overview available.';
-            const backdrop = item.backdrop_path ? `${TMDB_ORIGINAL}${item.backdrop_path}` : 'https://placehold.co/1920x1080/0f111a/ffffff?text=StreamVault';
+        async function openDetails(id, type) {
+            currentId = id; currentType = type;
+            detailsData = await fetch(`${BASE}/${type}/${id}?api_key=${API}`).then(r => r.json());
+            document.getElementById('modal-title').innerText = detailsData.title || detailsData.name;
+            document.getElementById('modal-desc').innerText = detailsData.overview;
+            document.getElementById('modal-bg').style.backgroundImage = `url('https://image.tmdb.org/t/p/original${detailsData.backdrop_path}')`;
             
-            document.getElementById('hero-title').textContent = title;
-            document.getElementById('hero-overview').textContent = overview;
-            document.getElementById('hero-bg').style.backgroundImage = `url('${backdrop}')`;
+            checkFavoriteState();
+
+            // Collection Check
+            let colSec = document.getElementById('collection-section');
+            if(type === 'movie' && detailsData.belongs_to_collection) {
+                colSec.classList.remove('hidden');
+                loadCollection(detailsData.belongs_to_collection.id);
+            } else {
+                colSec.classList.add('hidden');
+            }
+
+            let tvSec = document.getElementById('tv-controls');
+            if(type === 'tv' && detailsData.seasons) {
+                tvSec.classList.remove('hidden');
+                let sSel = document.getElementById('season-sel'); sSel.innerHTML = '';
+                detailsData.seasons.forEach(s => { if(s.season_number>0) sSel.innerHTML += `<option value="${s.season_number}">${s.name}</option>`; });
+                loadEpisodes(1);
+            } else { tvSec.classList.add('hidden'); updatePlayer(); }
             
-            const mediaType = item.media_type || (item.title ? 'movie' : 'tv');
-            document.getElementById('hero-play-btn').onclick = () => openDetails(item.id, mediaType);
-            document.getElementById('hero-info-btn').onclick = () => openDetails(item.id, mediaType);
+            openModal('details-modal');
+            saveHistory(detailsData, type);
         }
 
-        function switchTab(tabId) {
-            currentTab = tabId;
-            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-            document.getElementById(`tab-${tabId}`).classList.add('active');
-
-            ['home', 'movies', 'tv', 'favorites', 'history'].forEach(t => {
-                const btn = document.getElementById(`nav-btn-${t}`);
-                if (btn) btn.className = t === tabId ? "px-4 py-2 rounded-xl text-xs font-bold transition-all text-white bg-white/10 native-btn" : "px-4 py-2 rounded-xl text-xs font-bold transition-all text-gray-400 hover:text-white hover:bg-white/5 native-btn";
-                
-                const mobBtn = document.getElementById(`mob-${t}`);
-                if (mobBtn) mobBtn.className = t === tabId ? "flex flex-col items-center py-1 px-3 text-[10px] text-red-500 font-bold native-btn" : "flex flex-col items-center py-1 px-3 text-[10px] text-gray-400 native-btn";
-            });
-
-            window.scrollTo({ top: 0, behavior: 'instant' });
-
-            if (tabId === 'favorites') renderFavorites();
-            if (tabId === 'history') renderHistory();
-        }
-
-        function setFilterType(type) {
-            currentFilterType = type;
-            ['all', 'movie', 'tv'].forEach(t => {
-                const btn = document.getElementById(`filter-type-${t}`);
-                btn.className = t === type ? "px-3.5 py-1.5 rounded-lg text-[11px] font-bold transition-all bg-red-600 text-white shadow native-btn" : "px-3.5 py-1.5 rounded-lg text-[11px] font-bold transition-all text-gray-400 hover:text-white native-btn";
-            });
-            loadCatalog(true);
-        }
-
-        function applyFilters() {
-            currentGenre = document.getElementById('genre-select').value;
-            currentYear = document.getElementById('year-select').value;
-            loadCatalog(true);
-        }
-
-        function renderMediaGrid(items, containerId) {
-            const container = document.getElementById(containerId);
-            if (!container) return;
-            container.innerHTML = '';
-
-            if (isSinglePosterMode) {
-                container.className = "grid grid-cols-1 gap-5 max-w-sm mx-auto";
-            } else {
-                container.className = "grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3.5 sm:gap-5";
-            }
-
-            if (!items || items.length === 0) {
-                container.innerHTML = `<div class="col-span-full text-center py-14 text-gray-500 text-xs">No results found matching filters.</div>`;
-                return;
-            }
-
-            items.forEach(item => {
-                const title = item.title || item.name || 'Untitled';
-                const poster = item.poster_path ? `${TMDB_IMG}${item.poster_path}` : 'https://placehold.co/500x750/0f111a/71717a?text=No+Poster';
-                
-                const rating = item.vote_average ? item.vote_average.toFixed(1) : 'NR';
-                const year = (item.release_date || item.first_air_date || '2026').substring(0, 4);
-                const mediaType = item.media_type || (item.title ? 'movie' : 'tv');
-
-                const card = document.createElement('div');
-                card.className = "glass-panel rounded-2xl overflow-hidden card-native cursor-pointer group flex flex-col justify-between border border-white/5 shadow-md";
-                card.onclick = () => openDetails(item.id, mediaType);
-
-                if (isSinglePosterMode) {
-                    card.innerHTML = `
-                        <div class="relative aspect-[2/3] w-full overflow-hidden bg-[#050508]">
-                            <img src="${poster}" alt="${title}" class="w-full h-full object-cover group-hover:scale-102 transition-transform duration-300" loading="lazy">
-                            <div class="absolute top-2.5 right-2.5 bg-black/70 backdrop-blur-md px-2 py-0.5 rounded-full text-[11px] font-bold text-yellow-400 flex items-center space-x-1 border border-white/10">
-                                <i class="fa-solid fa-star text-[10px]"></i>
-                                <span>${rating}</span>
-                            </div>
-                            <div class="absolute top-2.5 left-2.5 bg-red-600/90 backdrop-blur-md px-2.5 py-0.5 rounded-full text-[9px] font-extrabold text-white uppercase tracking-wider">
-                                ${mediaType === 'tv' ? 'TV' : 'Movie'}
-                            </div>
-                        </div>
-                        <div class="p-3.5 flex items-center justify-between bg-[#0f111a]/90">
-                            <div class="space-y-0.5">
-                                <h3 class="font-bold text-white text-sm line-clamp-1 group-hover:text-red-500">${title}</h3>
-                                <div class="text-[11px] text-gray-400">${year}</div>
-                            </div>
-                            <span class="text-[10px] font-bold text-red-500 uppercase">${mediaType}</span>
-                        </div>
-                    `;
-                } else {
-                    card.innerHTML = `
-                        <div class="relative aspect-[2/3] w-full overflow-hidden bg-[#050508]">
-                            <img src="${poster}" alt="${title}" class="w-full h-full object-cover group-hover:scale-102 transition-transform duration-300" loading="lazy">
-                            <div class="absolute top-2 right-2 bg-black/70 backdrop-blur-md px-1.5 py-0.5 rounded-full text-[9px] font-bold text-yellow-400 flex items-center space-x-0.5 border border-white/10">
-                                <i class="fa-solid fa-star text-[8px]"></i>
-                                <span>${rating}</span>
-                            </div>
-                            <div class="absolute top-2 left-2 bg-red-600/90 backdrop-blur-md px-2 py-0.5 rounded-full text-[8px] font-extrabold text-white uppercase tracking-wider">
-                                ${mediaType === 'tv' ? 'TV' : 'Movie'}
-                            </div>
-                        </div>
-                        <div class="p-3 space-y-0.5">
-                            <h3 class="font-bold text-white text-[11px] line-clamp-1 group-hover:text-red-500">${title}</h3>
-                            <div class="flex items-center justify-between text-[10px] text-gray-400 font-medium">
-                                <span>${year}</span>
-                                <span class="capitalize">${mediaType}</span>
-                            </div>
-                        </div>
-                    `;
-                }
-                container.appendChild(card);
+        async function loadCollection(colId) {
+            let res = await fetch(`${BASE}/collection/${colId}?api_key=${API}`).then(r => r.json());
+            let grid = document.getElementById('collection-grid');
+            grid.innerHTML = '';
+            res.parts?.forEach(m => {
+                let poster = m.poster_path ? IMG + m.poster_path : 'https://placehold.co/200x300';
+                grid.innerHTML += `<div onclick="openDetails(${m.id}, 'movie')" class="cursor-pointer glass rounded-lg overflow-hidden"><img src="${poster}" class="w-full aspect-[2/3] object-cover"><div class="p-1 text-[10px] truncate">${m.title}</div></div>`;
             });
         }
 
-        async function openDetails(id, mediaType) {
-            currentMediaId = id;
-            currentMediaType = mediaType;
-            currentSeason = 1;
-            currentEpisode = 1;
-
-            const modal = document.getElementById('details-modal');
-            modal.classList.remove('hidden');
-            document.body.style.overflow = 'hidden';
-
-            document.getElementById('modal-title').textContent = 'Loading details...';
-            document.getElementById('modal-overview').textContent = '';
-            document.getElementById('modal-genres').innerHTML = '';
-            document.getElementById('tv-seasons-section').classList.add('hidden');
-            document.getElementById('modal-collection-section').classList.add('hidden');
-
-            try {
-                const detailsUrl = `${TMDB_BASE}/${mediaType}/${id}?api_key=${apiKey}`;
-                const trailerUrl = `${TMDB_BASE}/${mediaType}/${id}/videos?api_key=${apiKey}`;
-
-                const [details, trailers] = await Promise.all([
-                    cachedFetch(detailsUrl),
-                    cachedFetch(trailerUrl)
-                ]);
-                currentItemDetails = details;
-
-                const title = details.title || details.name;
-                document.getElementById('modal-title').textContent = title;
-                document.getElementById('modal-overview').textContent = details.overview || 'No overview.';
-                document.getElementById('modal-rating-val').textContent = details.vote_average ? details.vote_average.toFixed(1) : 'NR';
-                document.getElementById('modal-year').textContent = (details.release_date || details.first_air_date || '2026').substring(0, 4);
-                document.getElementById('modal-badge').textContent = mediaType === 'tv' ? 'TV Show' : 'Movie';
-                
-                if (details.backdrop_path) {
-                    document.getElementById('modal-backdrop').style.backgroundImage = `url('${TMDB_ORIGINAL}${details.backdrop_path}')`;
-                }
-
-                const genresContainer = document.getElementById('modal-genres');
-                if (details.genres) {
-                    details.genres.forEach(g => {
-                        const span = document.createElement('span');
-                        span.className = "px-2.5 py-0.5 rounded-full bg-white/10 border border-white/10 text-[9px] font-semibold text-gray-300";
-                        span.textContent = g.name;
-                        genresContainer.appendChild(span);
-                    });
-                }
-
-                if (details.belongs_to_collection && mediaType === 'movie') {
-                    await loadCollectionDetails(details.belongs_to_collection.id);
-                }
-
-                const ytTrailer = (trailers.results || []).find(v => v.site === 'YouTube' && v.type === 'Trailer');
-                currentTrailerUrl = ytTrailer ? `https://www.youtube.com/embed/${ytTrailer.key}?autoplay=1` : '';
-                document.getElementById('modal-trailer-btn').style.display = currentTrailerUrl ? 'flex' : 'none';
-
-                if (mediaType === 'tv' && details.seasons) {
-                    document.getElementById('tv-seasons-section').classList.remove('hidden');
-                    const seasonSelect = document.getElementById('season-select');
-                    seasonSelect.innerHTML = '';
-                    details.seasons.forEach(s => {
-                        if (s.season_number > 0) {
-                            const opt = document.createElement('option');
-                            opt.value = s.season_number;
-                            opt.textContent = `${s.name} (${s.episode_count} Eps)`;
-                            seasonSelect.appendChild(opt);
-                        }
-                    });
-                    await loadEpisodes(id, 1);
-                }
-
-                updateFavoriteButtonState();
-                addToHistory({ id, title, poster_path: details.poster_path, vote_average: details.vote_average, release_date: details.release_date || details.first_air_date, media_type: mediaType });
-                updateEmbedUrl();
-
-            } catch (err) {
-                console.error("Error loading details:", err);
-            }
+        async function loadEpisodes(season) {
+            let data = await fetch(`${BASE}/tv/${currentId}/season/${season}?api_key=${API}`).then(r => r.json());
+            let eSel = document.getElementById('episode-sel'); eSel.innerHTML = '';
+            data.episodes?.forEach(e => eSel.innerHTML += `<option value="${e.episode_number}">Ep ${e.episode_number}: ${e.name}</option>`);
+            updatePlayer();
         }
 
-        async function loadCollectionDetails(collectionId) {
-            try {
-                const url = `${TMDB_BASE}/collection/${collectionId}?api_key=${apiKey}`;
-                const colData = await cachedFetch(url);
-                if (colData && colData.parts && colData.parts.length > 0) {
-                    const section = document.getElementById('modal-collection-section');
-                    const titleEl = document.getElementById('collection-title');
-                    const grid = document.getElementById('collection-movies-grid');
-                    
-                    titleEl.innerHTML = `<i class="fa-solid fa-layer-group text-red-500"></i><span>${colData.name} (${colData.parts.length} Movies)</span>`;
-                    grid.innerHTML = '';
+        function changeSeason() { loadEpisodes(document.getElementById('season-sel').value); }
 
-                    colData.parts.forEach(movie => {
-                        const poster = movie.poster_path ? `${TMDB_IMG}${movie.poster_path}` : 'https://placehold.co/200x300/0f111a/71717a?text=No+Image';
-                        const mYear = (movie.release_date || '2026').substring(0, 4);
-                        const mCard = document.createElement('div');
-                        mCard.className = "glass-panel rounded-xl overflow-hidden card-native cursor-pointer border border-white/5 group flex flex-col justify-between";
-                        mCard.onclick = () => openDetails(movie.id, 'movie');
-                        mCard.innerHTML = `
-                            <div class="aspect-[2/3] w-full overflow-hidden bg-[#050508]">
-                                <img src="${poster}" class="w-full h-full object-cover group-hover:scale-102 transition-transform duration-300" loading="lazy">
-                            </div>
-                            <div class="p-2">
-                                <h4 class="font-bold text-white text-[10px] line-clamp-1 group-hover:text-red-500">${movie.title}</h4>
-                                <div class="text-[9px] text-gray-400">${mYear}</div>
-                            </div>
-                        `;
-                        grid.appendChild(mCard);
-                    });
-
-                    section.classList.remove('hidden');
-                }
-            } catch (e) {
-                console.error("Error loading collection:", e);
-            }
+        function updatePlayer() {
+            let s = document.getElementById('season-sel').value || 1, e = document.getElementById('episode-sel').value || 1;
+            const servers = [
+                currentType === 'tv' ? `https://vidsrc.me/embed/tv?tmdb=${currentId}&season=${s}&episode=${e}` : `https://vidsrc.me/embed/movie?tmdb=${currentId}`,
+                currentType === 'tv' ? `https://vidlink.pro/tv/${currentId}/${s}/${e}` : `https://vidlink.pro/movie/${currentId}`,
+                currentType === 'tv' ? `https://vidsrc.to/embed/tv/${currentId}/${s}/${e}` : `https://vidsrc.to/embed/movie/${currentId}`,
+                currentType === 'tv' ? `https://multiembed.mov/?video_id=${currentId}&tmdb=1&s=${s}&e=${e}` : `https://multiembed.mov/?video_id=${currentId}&tmdb=1`,
+                currentType === 'tv' ? `https://2embed.cc/embedtv/${currentId}&s=${s}&e=${e}` : `https://2embed.cc/embed/${currentId}`,
+                currentType === 'tv' ? `https://atlantic.st/tv/${currentId}/${s}/${e}` : `https://atlantic.st/movie/${currentId}`,
+                currentType === 'tv' ? `https://vidsrc.win/embed/tv/${currentId}/${s}/${e}` : `https://vidsrc.win/embed/movie/${currentId}`
+            ];
+            document.getElementById('iframe-player').src = servers[currentServerIdx];
         }
 
-        function closeDetailsModal() {
-            document.getElementById('details-modal').classList.add('hidden');
-            document.getElementById('stream-iframe').src = '';
-            document.body.style.overflow = 'auto';
-        }
-
-        async function loadEpisodes(tvId, seasonNum) {
-            try {
-                const url = `${TMDB_BASE}/tv/${tvId}/season/${seasonNum}?api_key=${apiKey}`;
-                const data = await cachedFetch(url);
-                const epSelect = document.getElementById('episode-select');
-                epSelect.innerHTML = '';
-                if (data.episodes) {
-                    data.episodes.forEach(ep => {
-                        const opt = document.createElement('option');
-                        opt.value = ep.episode_number;
-                        opt.textContent = `Episode ${ep.episode_number}: ${ep.name}`;
-                        epSelect.appendChild(opt);
-                    });
-                }
-                currentSeason = seasonNum;
-                currentEpisode = 1;
-                updateEmbedUrl();
-            } catch (err) {
-                console.error("Error loading episodes:", err);
-            }
-        }
-
-        async function onSeasonChange() {
-            currentSeason = parseInt(document.getElementById('season-select').value);
-            await loadEpisodes(currentMediaId, currentSeason);
-        }
-
-        function onEpisodeChange() {
-            currentEpisode = parseInt(document.getElementById('episode-select').value);
-            updateEmbedUrl();
-        }
-
-        function setStreamingServer(server) {
-            currentServer = server;
-            ['vidsrc', 'vidlink', 'vidsrcto', 'superembed', 'embed2'].forEach(s => {
-                const btn = document.getElementById(`srv-btn-${s}`);
-                if(btn) btn.className = s === server ? "px-2.5 py-1 rounded-lg text-[10px] font-bold transition-all bg-red-600 text-white shadow native-btn" : "px-2.5 py-1 rounded-lg text-[10px] font-bold transition-all bg-white/5 text-gray-300 hover:text-white border border-white/10 native-btn";
+        function setServer(idx) {
+            currentServerIdx = idx;
+            document.querySelectorAll('.srv-btn').forEach((b, i) => {
+                b.className = i === idx ? 'px-2.5 py-1 bg-red-600 rounded text-[10px] font-bold srv-btn whitespace-nowrap' : 'px-2.5 py-1 bg-white/10 rounded text-[10px] font-bold srv-btn whitespace-nowrap';
             });
-            updateEmbedUrl();
+            updatePlayer();
         }
 
-        function updateEmbedUrl() {
-            let url = '';
-            if (currentMediaType === 'movie') {
-                if (currentServer === 'vidsrc') url = `https://vidsrc.me/embed/movie?tmdb=${currentMediaId}`;
-                else if (currentServer === 'vidlink') url = `https://vidlink.pro/movie/${currentMediaId}`;
-                else if (currentServer === 'vidsrcto') url = `https://vidsrc.to/embed/movie/${currentMediaId}`;
-                else if (currentServer === 'superembed') url = `https://multiembed.mov/?video_id=${currentMediaId}&tmdb=1`;
-                else if (currentServer === 'embed2') url = `https://2embed.cc/embed/${currentMediaId}`;
+        function switchTab(id) {
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+            document.getElementById(`tab-${id}`).classList.add('active');
+            ['home','movies','tv','favorites','history'].forEach(t => {
+                let b = document.getElementById(`nav-${t}`), mb = document.getElementById(`m-${t}`);
+                if(b) { b.className = t === id ? 'px-3 py-1.5 rounded-lg text-xs font-bold text-white bg-white/10' : 'px-3 py-1.5 rounded-lg text-xs font-bold text-gray-400'; }
+                if(mb) { mb.className = t === id ? 'flex flex-col items-center text-[10px] text-red-500 font-bold' : 'flex flex-col items-center text-[10px] text-gray-400'; }
+            });
+            if(id === 'favorites') renderList('stream_favs', 'grid-favorites');
+            if(id === 'history') renderList('stream_hist', 'grid-history');
+        }
+
+        async function doSearch(q) {
+            if(!q) return document.getElementById('search-results').innerHTML = '';
+            let res = await fetch(`${BASE}/search/multi?api_key=${API}&query=${encodeURIComponent(q)}`).then(r => r.json());
+            let c = document.getElementById('search-results'); c.innerHTML = '';
+            res.results?.forEach(i => {
+                if(i.poster_path) c.innerHTML += `<div onclick="closeModal('search-modal');openDetails(${i.id},'${i.media_type}')" class="glass p-2 rounded-xl flex items-center space-x-3 cursor-pointer"><img src="${IMG+i.poster_path}" class="w-10 h-14 object-cover rounded"><div><h4 class="text-xs font-bold text-white">${i.title||i.name}</h4><span class="text-[10px] text-gray-400">${(i.release_date||i.first_air_date||'').substring(0,4)}</span></div></div>`;
+            });
+        }
+
+        function toggleFavorite() {
+            let favs = JSON.parse(localStorage.getItem('stream_favs')||'[]');
+            let idx = favs.findIndex(x => x.id === currentId);
+            if(idx > -1) {
+                favs.splice(idx, 1);
             } else {
-                if (currentServer === 'vidsrc') url = `https://vidsrc.me/embed/tv?tmdb=${currentMediaId}&season=${currentSeason}&episode=${currentEpisode}`;
-                else if (currentServer === 'vidlink') url = `https://vidlink.pro/tv/${currentMediaId}/${currentSeason}/${currentEpisode}`;
-                else if (currentServer === 'vidsrcto') url = `https://vidsrc.to/embed/tv/${currentMediaId}/${currentSeason}/${currentEpisode}`;
-                else if (currentServer === 'superembed') url = `https://multiembed.mov/?video_id=${currentMediaId}&tmdb=1&s=${currentSeason}&e=${currentEpisode}`;
-                else if (currentServer === 'embed2') url = `https://2embed.cc/embedtv/${currentMediaId}&s=${currentSeason}&e=${currentEpisode}`;
+                favs.unshift({id: currentId, title: detailsData.title||detailsData.name, poster_path: detailsData.poster_path, release_date: detailsData.release_date||detailsData.first_air_date, media_type: currentType});
             }
-            document.getElementById('stream-iframe').src = url;
+            localStorage.setItem('stream_favs', JSON.stringify(favs));
+            checkFavoriteState();
         }
 
-        function openTrailerModal() {
-            if (!currentTrailerUrl) return;
-            document.getElementById('trailer-iframe').src = currentTrailerUrl;
-            document.getElementById('trailer-modal').classList.remove('hidden');
-            document.getElementById('trailer-modal').classList.add('flex');
+        function checkFavoriteState() {
+            let favs = JSON.parse(localStorage.getItem('stream_favs')||'[]');
+            let isFav = favs.some(x => x.id === currentId);
+            let icon = document.getElementById('fav-icon');
+            icon.className = isFav ? "fa-solid fa-heart text-red-500" : "fa-regular fa-heart text-red-500";
         }
 
-        function closeTrailerModal() {
-            document.getElementById('trailer-iframe').src = '';
-            document.getElementById('trailer-modal').classList.add('hidden');
-            document.getElementById('trailer-modal').classList.remove('flex');
+        function saveHistory(i, type) {
+            let h = JSON.parse(localStorage.getItem('stream_hist')||'[]');
+            h = h.filter(x => x.id !== i.id);
+            h.unshift({id: i.id, title: i.title||i.name, poster_path: i.poster_path, release_date: i.release_date||i.first_air_date, media_type: type});
+            localStorage.setItem('stream_hist', JSON.stringify(h.slice(0,20)));
         }
 
-        function openSearchModal() {
-            document.getElementById('search-modal').classList.remove('hidden');
-            document.getElementById('search-modal').classList.add('flex');
-            document.getElementById('search-input').focus();
-            document.body.style.overflow = 'hidden';
+        function renderList(key, gridId) {
+            let data = JSON.parse(localStorage.getItem(key)||'[]');
+            renderGrid(data, gridId);
         }
 
-        function closeSearchModal() {
-            document.getElementById('search-modal').classList.add('hidden');
-            document.getElementById('search-modal').classList.remove('flex');
-            document.body.style.overflow = 'auto';
-        }
-
-        let searchTimeout;
-        function handleSearchInput(e) {
-            clearTimeout(searchTimeout);
-            const query = e.target.value.trim();
-            const container = document.getElementById('search-results-container');
-            if (!query) {
-                container.innerHTML = `<div class="text-center py-10 text-gray-500 text-xs">Type anything to search...</div>`;
-                return;
-            }
-
-            searchTimeout = setTimeout(async () => {
-                try {
-                    const url = `${TMDB_BASE}/search/multi?api_key=${apiKey}&query=${encodeURIComponent(query)}`;
-                    const data = await cachedFetch(url);
-                    const results = (data.results || []).filter(i => i.media_type === 'movie' || i.media_type === 'tv');
-
-                    container.innerHTML = '';
-                    if (results.length === 0) {
-                        container.innerHTML = `<div class="text-center py-8 text-gray-500 text-xs">No results found for "${query}"</div>`;
-                        return;
-                    }
-
-                    results.forEach(item => {
-                        const title = item.title || item.name;
-                        const poster = item.poster_path ? `${TMDB_IMG}${item.poster_path}` : 'https://placehold.co/200x300/0f111a/71717a?text=No+Image';
-                        const year = (item.release_date || item.first_air_date || '2026').substring(0, 4);
-                        const mediaType = item.media_type || (item.title ? 'movie' : 'tv');
-
-                        const row = document.createElement('div');
-                        row.className = "flex items-center space-x-3 p-2 rounded-xl glass-panel hover:bg-white/5 cursor-pointer transition-all border border-white/5 native-btn";
-                        row.onclick = () => { closeSearchModal(); openDetails(item.id, mediaType); };
-                        row.innerHTML = `
-                            <img src="${poster}" class="w-10 h-14 object-cover rounded-lg" loading="lazy">
-                            <div class="flex-grow space-y-0.5">
-                                <h4 class="font-bold text-white text-xs">${title}</h4>
-                                <div class="flex items-center space-x-2 text-[10px] text-gray-400 font-medium">
-                                    <span>${year}</span>
-                                    <span>•</span>
-                                    <span class="capitalize">${mediaType}</span>
-                                </div>
-                            </div>
-                        `;
-                        container.appendChild(row);
-                    });
-                } catch (err) {
-                    console.error("Search error:", err);
-                }
-            }, 150);
-        }
-
-        function toggleFavoriteCurrent() {
-            if (!currentMediaId) return;
-            const index = favorites.findIndex(f => f.id === currentMediaId);
-            if (index > -1) {
-                favorites.splice(index, 1);
-            } else {
-                favorites.push({
-                    id: currentMediaId,
-                    title: document.getElementById('modal-title').textContent,
-                    poster_path: currentItemDetails?.poster_path,
-                    vote_average: currentItemDetails?.vote_average,
-                    release_date: currentItemDetails?.release_date || currentItemDetails?.first_air_date,
-                    media_type: currentMediaType
-                });
-            }
-            localStorage.setItem("streamvault_favorites", JSON.stringify(favorites));
-            updateFavoriteButtonState();
-        }
-
-        function updateFavoriteButtonState() {
-            const isFav = favorites.some(f => f.id === currentMediaId);
-            const icon = document.getElementById('modal-favorite-icon');
-            const text = document.getElementById('modal-favorite-text');
-            if (isFav) {
-                icon.className = "fa-solid fa-heart text-red-500 text-xs";
-                text.textContent = "Favorited";
-            } else {
-                icon.className = "fa-regular fa-heart text-red-500 text-xs";
-                text.textContent = "Favorite";
-            }
-        }
-
-        function renderFavorites() {
-            renderMediaGrid(favorites, 'favorites-grid');
-            const emptyEl = document.getElementById('favorites-empty');
-            if (favorites.length === 0) emptyEl.classList.remove('hidden');
-            else emptyEl.classList.add('hidden');
-        }
-
-        function addToHistory(item) {
-            history = history.filter(h => h.id !== item.id);
-            history.unshift(item);
-            if (history.length > 30) history.pop();
-            localStorage.setItem("streamvault_history", JSON.stringify(history));
-        }
-
-        function renderHistory() {
-            renderMediaGrid(history, 'history-grid');
-            const emptyEl = document.getElementById('history-empty');
-            if (history.length === 0) emptyEl.classList.remove('hidden');
-            else emptyEl.classList.add('hidden');
-        }
-
-        function clearHistory() {
-            history = [];
-            localStorage.removeItem("streamvault_history");
-            renderHistory();
-        }
-
-        function openConfigModal() {
-            document.getElementById('single-poster-toggle').checked = isSinglePosterMode;
-            document.getElementById('tmdb-key-input').value = apiKey === DEFAULT_TMDB_KEY ? '' : apiKey;
-            document.getElementById('config-modal').classList.remove('hidden');
-            document.getElementById('config-modal').classList.add('flex');
-        }
-
-        function closeConfigModal() {
-            document.getElementById('config-modal').classList.add('hidden');
-            document.getElementById('config-modal').classList.remove('flex');
-        }
-
-        function saveApiKey() {
-            const val = document.getElementById('tmdb-key-input').value.trim();
-            if (val) {
-                apiKey = val;
-                localStorage.setItem("streamvault_tmdb_key", val);
-                clearOldCache();
-            }
-            closeConfigModal();
-            loadCatalog(true);
-        }
+        function clearHistory() { localStorage.removeItem('stream_hist'); renderList('stream_hist', 'grid-history'); }
+        function openModal(id) { document.getElementById(id).classList.replace('hidden', 'flex'); }
+        function closeModal(id) { document.getElementById(id).classList.replace('flex', 'hidden'); if(id==='details-modal') document.getElementById('iframe-player').src=''; }
+        function loadMore() { page++; loadCatalog(false); }
+        function saveApi() { localStorage.setItem('s_key', document.getElementById('api-input').value); location.reload(); }
     </script>
 </body>
 </html>
