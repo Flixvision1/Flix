@@ -114,7 +114,12 @@
                 <div class="flex flex-col gap-1.5 nc p-3 rounded-xl">
                     <span>Default Server</span>
                     <select id="setServ" class="nc text-[11px] font-semibold rounded-lg px-2 py-1.5 focus:outline-none text-gray-300">
-                        <option value="0">FlixVision 1080p</option><option value="1">VidLink Pro</option><option value="2">VidSrc.to</option><option value="3">SuperEmbed 4K</option>
+                        <option value="0">FlixVision 1080p</option>
+                        <option value="1">VidLink Pro</option>
+                        <option value="2">VidSrc.to</option>
+                        <option value="3">SuperEmbed 4K</option>
+                        <option value="4">2Embed Stream</option>
+                        <option value="5">Atlantic Stream</option>
                     </select>
                 </div>
             </div>
@@ -272,21 +277,24 @@
                         </div>
                     </div>` : '';
 
+                let s = 1, e = 1;
                 window.currCtx = { id, type, srvs: [
-                    {name:'FlixVision 1080p', u: type==='tv'?`https://vidsrc.me/embed/tv?tmdb=${id}&season=1&episode=1`:`https://vidsrc.me/embed/movie?tmdb=${id}`},
-                    {name:'VidLink Pro', u: type==='tv'?`https://vidlink.pro/tv/${id}/1/1`:`https://vidlink.pro/movie/${id}`},
-                    {name:'VidSrc.to', u: type==='tv'?`https://vidsrc.to/embed/tv/${id}/1/1`:`https://vidsrc.to/embed/movie/${id}`},
-                    {name:'SuperEmbed 4K', u: type==='tv'?`https://multiembed.mov/?video_id=${id}&tmdb=1&s=1&e=1`:`https://multiembed.mov/?video_id=${id}&tmdb=1`}
+                    { name: 'FLIXVISION SERVER 1 (Full HD 1080p)', u: type === 'tv' ? `https://vidsrc.me/embed/tv?tmdb=${id}&season=${s}&episode=${e}` : `https://vidsrc.me/embed/movie?tmdb=${id}` },
+                    { name: 'VIDLINK PRO (Fast & Clean)', u: type === 'tv' ? `https://vidlink.pro/tv/${id}/${s}/${e}` : `https://vidlink.pro/movie/${id}` },
+                    { name: 'VIDSRC.TO (High Compatibility)', u: type === 'tv' ? `https://vidsrc.to/embed/tv/${id}/${s}/${e}` : `https://vidsrc.to/embed/movie/${id}` },
+                    { name: 'SUPEREMBED 4K (Ultra Fast)', u: type === 'tv' ? `https://multiembed.mov/?video_id=${id}&tmdb=1&s=${s}&e=${e}` : `https://multiembed.mov/?video_id=${id}&tmdb=1` },
+                    { name: '2EMBED STREAM (Backup Player)', u: type === 'tv' ? `https://2embed.cc/embedtv/${id}&s=${s}&e=${e}` : `https://2embed.cc/embed/${id}` },
+                    { name: 'ATLANTIC STREAM (Direct)', u: type === 'tv' ? `https://atlantic.st/embed/tv/${id}/${s}/${e}` : `https://atlantic.st/embed/movie/${id}` }
                 ]};
 
-                let def = prefs.serv;
+                let def = parseInt(prefs.serv);
                 el('mBody').innerHTML = `
                     <div class="w-full aspect-[16/9] sm:aspect-video bg-black relative shrink-0 overflow-hidden shadow-2xl">
                         <iframe id="iframe" src="${prefs.ap ? window.currCtx.srvs[def].u : ''}" class="w-full h-full border-0 absolute inset-0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
                     </div>
                     <div class="flex flex-col gap-2 px-3 sm:px-0">
                         <label class="text-[11px] font-bold text-gray-400 uppercase"><i class="fa-solid fa-server mr-1.5"></i>Servers</label>
-                        <div class="grid grid-cols-2 md:grid-cols-4 gap-2" id="srvBtns">
+                        <div class="grid grid-cols-2 md:grid-cols-3 gap-2" id="srvBtns">
                             ${window.currCtx.srvs.map((s,i)=>`<button onclick="chSrv(${i})" id="sb-${i}" class="px-3.5 py-2.5 rounded-xl text-[11px] font-semibold text-left truncate active:scale-95 ${i===def?'bg-white text-black font-bold':'nc text-gray-300'}"><i class="fa-solid fa-play text-[8px] mr-1.5"></i>${s.name}</button>`).join('')}
                         </div>
                     </div>
@@ -332,12 +340,18 @@
         function setServer() {
             if(!window.currCtx) return;
             let idx = window.activeSrv !== undefined ? window.activeSrv : parseInt(prefs.serv);
-            let url = window.currCtx.srvs[idx].u;
-            if(window.currCtx.type === 'tv') {
-                let s = el('sSel') ? el('sSel').value : 1, e = el('eSel') ? el('eSel').value : 1, id = window.currCtx.id;
-                url = idx===0?`https://vidsrc.me/embed/tv?tmdb=${id}&season=${s}&episode=${e}`:idx===1?`https://vidlink.pro/tv/${id}/${s}/${e}`:idx===2?`https://vidsrc.to/embed/tv/${id}/${s}/${e}`:`https://multiembed.mov/?video_id=${id}&tmdb=1&s=${s}&e=${e}`;
-            }
-            el('iframe').src = url;
+            let s = el('sSel') ? el('sSel').value : 1, e = el('eSel') ? el('eSel').value : 1, id = window.currCtx.id, type = window.currCtx.type;
+            
+            window.currCtx.srvs = [
+                { name: 'FLIXVISION SERVER 1 (Full HD 1080p)', u: type === 'tv' ? `https://vidsrc.me/embed/tv?tmdb=${id}&season=${s}&episode=${e}` : `https://vidsrc.me/embed/movie?tmdb=${id}` },
+                { name: 'VIDLINK PRO (Fast & Clean)', u: type === 'tv' ? `https://vidlink.pro/tv/${id}/${s}/${e}` : `https://vidlink.pro/movie/${id}` },
+                { name: 'VIDSRC.TO (High Compatibility)', u: type === 'tv' ? `https://vidsrc.to/embed/tv/${id}/${s}/${e}` : `https://vidsrc.to/embed/movie/${id}` },
+                { name: 'SUPEREMBED 4K (Ultra Fast)', u: type === 'tv' ? `https://multiembed.mov/?video_id=${id}&tmdb=1&s=${s}&e=${e}` : `https://multiembed.mov/?video_id=${id}&tmdb=1` },
+                { name: '2EMBED STREAM (Backup Player)', u: type === 'tv' ? `https://2embed.cc/embedtv/${id}&s=${s}&e=${e}` : `https://2embed.cc/embed/${id}` },
+                { name: 'ATLANTIC STREAM (Direct)', u: type === 'tv' ? `https://atlantic.st/embed/tv/${id}/${s}/${e}` : `https://atlantic.st/embed/movie/${id}` }
+            ];
+
+            el('iframe').src = window.currCtx.srvs[idx].u;
         }
 
         function toggleModal(show) { el('modal').classList.toggle('hidden', !show); if(!show) { el('mBody').innerHTML = ''; window.currCtx = null; } }
