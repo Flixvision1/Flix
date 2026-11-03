@@ -21,14 +21,17 @@ jobs:
         run: |
           if [ -f "gradlew" ]; then
             chmod +x gradlew
+          else
+            gradle wrapper
+            chmod +x gradlew
           fi
 
-      - name: Build APK with Gradle
+      - name: Build APK
         run: |
           if [ -f "gradlew" ]; then
-            ./gradlew assembleDebug
+            ./gradlew assembleDebug || ./gradlew build
           else
-            gradle assembleDebug
+            gradle assembleDebug || gradle build
           fi
 
       - name: Upload APK Artifact
@@ -36,6 +39,6 @@ jobs:
         with:
           name: app-debug
           path: |
-            app/build/outputs/apk/debug/app-debug.apk
-            build/outputs/apk/debug/app-debug.apk
-            **/build/outputs/apk/debug/*.apk
+            app/build/outputs/apk/debug/*.apk
+            build/outputs/apk/debug/*.apk
+            **/build/outputs/apk/**/*.apk
