@@ -29,16 +29,13 @@ jobs:
       - name: Build APK
         run: |
           if [ -f "gradlew" ]; then
-            ./gradlew assembleDebug || ./gradlew build
+            ./gradlew assembleDebug
           else
-            gradle assembleDebug || gradle build
+            gradle assembleDebug
           fi
 
       - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
         with:
           name: app-debug
-          path: |
-            app/build/outputs/apk/debug/*.apk
-            build/outputs/apk/debug/*.apk
-            **/build/outputs/apk/**/*.apk
+          path: app/build/outputs/apk/debug/*.apk
