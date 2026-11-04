@@ -17,7 +17,7 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
-      - name: Prepare Project and Build
+      - name: Setup Project Structure and Gradle
         run: |
           mkdir -p app/src/main/java/com/flix/app app/src/main/res/layout
           mv *.kt app/src/main/java/com/flix/app/ 2>/dev/null || true
@@ -56,6 +56,9 @@ jobs:
           </manifest>
           EOF
 
+          # Generate gradle wrapper dynamically to fix missing gradlew
+          gradle wrapper --gradle-version 8.1.2
+          chmod +x gradlew
           ./gradlew assembleDebug --no-daemon
 
       - name: Upload APK Artifact
