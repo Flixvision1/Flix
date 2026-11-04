@@ -17,19 +17,91 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
-      - name: Create Basic Android Structure & Build
+      - name: Setup Android Project Structure
         run: |
-          mkdir -p app/src/main
-          cp -r *.kt app/src/main/ 2>/dev/null || true
-          cp -r *.xml app/src/main/ 2>/dev/null || true
-          echo "Project prepared for build check"
+          mkdir -p app/src/main/java/com/flix/app
+          mkdir -p app/src/main/res/layout
+          mkdir -p app/src/main/res/values
+          
+          # Move Kotlin files if they exist in root
+          mv *.kt app/src/main/java/com/flix/app/ 2>/dev/null || true
+          
+          # Move XML layout files if they exist in root
+          mv *.xml app/src/main/res/layout/ 2>/dev/null || true
+          
+          # Create basic build.gradle for the app
+          cat << 'EOF' > app/build.gradle
+          plugins {
+              id 'com.android.application'
+              id 'org.jetbrains.kotlin.android'
+          }
+          android {
+              namespace 'com.flix.app'
+              compileSdk 34
+              defaultConfig {
+                  applicationId "com.flix.app"
+                  minSdk 24
+                  targetSdk 34
+                  versionCode 1
+                  versionName "1.0"
+              }
+          }
+          dependencies {
+              implementation 'androidx.core:core-ktx:1.12.0'
+              implementation 'androidx.appcompat:appcompat:1.6.1'
+              implementation 'com.google.android.material:material:1.11.0'
+          }
+          EOF
 
-      - name: Upload Project Files as Artifact
+          # Create root build.gradle
+          cat << 'EOF' > build.gradle
+          buildscript {
+              repositories {
+                  google()
+                  mavenCentral()
+              }
+              dependencies {
+                  classpath 'com.android.tools.build:gradle:8.1.2'
+                  classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.9.0"
+              }
+          }
+          allprojects {
+              repositories {
+                  google()
+                  mavenCentral()
+              }
+          }
+          EOF
+
+          # Create settings.gradle
+          echo "include ':app'" > settings.gradle
+
+          # Create AndroidManifest if missing
+          if [ ! -f "app/src/main/AndroidManifest.xml" ]; then
+            cat << 'EOF' > app/src/main/AndroidManifest.xml
+            <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+                <application
+                    android:allowBackup="true"
+                    android:label="Flix"
+                    android:theme="@style/Theme.AppCompat.Light.NoActionBar">
+                    <activity
+                        android:name=".MainActivity"
+                        android:exported="true">
+                        <intent-filter>
+                            <action android:name="android.intent.action.MAIN" />
+                            <category android:name="android.intent.category.LAUNCHER" />
+                        </intent-filter>
+                    </activity>
+                </application>
+            </manifest>
+            EOF
+          fi
+
+      - name: Build APK with Gradle
+        run: ./gradlew assembleDebug --no-daemon
+
+      - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: flix-project-files
-          path: |
-            *.kt
-            *.xml
-            *.json
-            *.html
+          name: app-debug
+          path: app/build/outputs/apk/debug/app-debug.apk
