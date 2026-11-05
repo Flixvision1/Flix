@@ -6,22 +6,23 @@
     <meta name="theme-color" content="#030407">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <link rel="manifest" href='data:application/manifest+json,{"name":"CinePulse Pro","short_name":"CinePulse","start_url":".","display":"standalone","background_color":"#030407","theme_color":"#030407"}'>
-    <title>CinePulse Pro</title>
+    <link rel="manifest" href='data:application/manifest+json,{"name":"Flix Vision","short_name":"FlixVision","start_url":".","display":"standalone","background_color":"#030407","theme_color":"#030407"}'>
+    <title>Flix Vision</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
-        html,body{height:100%;margin:0;padding:0;overflow:hidden}
-        body{font-family:'Plus Jakarta Sans',sans-serif;background:#030407;color:#f1f5f9;user-select:none;-webkit-user-select:none;display:flex;flex-direction:column}
+        html,body{height:100%;margin:0;padding:0;overflow:hidden;overscroll-behavior-y:none}
+        body{font-family:'Plus Jakarta Sans',sans-serif;background:#030407;color:#f1f5f9;user-select:none;-webkit-user-select:none;display:flex;flex-direction:column;height:100vh;height:100dvh}
         .nc{background:rgba(12,14,20,0.95);border:1px solid rgba(255,255,255,0.04);backdrop-filter:blur(12px)}
         .cp{transition:transform .15s cubic-bezier(.2,.8,.2,1);will-change:transform}
         .cp:active{transform:scale(.95)}
-        .app-scroll{overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior-y:none}
+        .app-scroll{overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior-y:none;transform:translateZ(0);will-change:transform}
         .shimmer{background:linear-gradient(90deg,rgba(255,255,255,0.03) 25%,rgba(255,255,255,0.08) 50%,rgba(255,255,255,0.03) 75%);background-size:200% 100%;animation:sh 1.5s infinite}
         @keyframes sh{0%{background-position:200% 0}100%{background-position:-200% 0}}
         ::-webkit-scrollbar{width:0;height:0;display:none}
+        button, a, input, select { touch-action: manipulation; }
     </style>
 </head>
 <body class="selection:bg-white selection:text-black">
@@ -30,7 +31,7 @@
         <div class="max-w-7xl mx-auto flex items-center justify-between gap-3">
             <div class="flex items-center gap-2.5 cursor-pointer active:opacity-75" onclick="location.reload()">
                 <div class="w-8 h-8 rounded-xl bg-white text-black flex items-center justify-center font-black text-xs shadow-md"><i class="fa-solid fa-bolt"></i></div>
-                <span class="font-extrabold text-xs tracking-wider text-white">CINEPULSE</span>
+                <span class="font-extrabold text-xs tracking-wider text-white">FLIX VISION</span>
             </div>
             <div class="relative flex-1 max-w-sm hidden sm:block">
                 <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 text-[11px]"></i>
@@ -128,7 +129,7 @@
     </div>
 
     <footer class="hidden sm:block shrink-0 border-t border-white/[0.04] py-3 px-4 text-center text-[11px] text-gray-500 bg-[#030407]">
-        <p>CinePulse Pro &bull; Ultimate Edition</p>
+        <p>Flix Vision &bull; Ultimate Edition</p>
     </footer>
 
     <script>
