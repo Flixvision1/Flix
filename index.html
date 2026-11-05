@@ -266,7 +266,6 @@
             el('showCnt').innerText = "Loading Collections...";
             el('loadMoreBox').style.display = 'none';
             
-            // Popular franchise/collection IDs from TMDB
             const collectionIds = [10, 528, 1241, 264, 119, 86311, 1575, 2150, 328, 726, 2344, 1372];
             
             el('grid').innerHTML = Array.from({length: 6}, () => `
@@ -316,7 +315,6 @@
         function openCollectionDetail(collName, parts) {
             el('mTitle').innerText = collName;
             
-            // Push state for back button navigation native feel
             history.pushState({ modalOpen: true }, '');
             el('modal').classList.remove('hidden');
 
@@ -447,6 +445,35 @@
                         </div>
                     </div>` : '';
 
+                // پشکنین بۆ بوونی مجموعە/بەشەکان (Collection) لەگەڵ فیلمەکەدا
+                let collectionHtml = '';
+                if (type === 'movie' && item.belongs_to_collection) {
+                    try {
+                        let collRes = await fetch(`${BASE}/collection/${item.belongs_to_collection.id}?api_key=${API}`);
+                        let collData = await collRes.json();
+                        if (collData && collData.parts && collData.parts.length > 0) {
+                            collectionHtml = `
+                                <div class="flex flex-col gap-2.5 pt-4 border-t border-white/[0.04] mx-3 sm:mx-0">
+                                    <h3 class="text-xs font-bold text-amber-400 uppercase tracking-wider"><i class="fa-solid fa-film mr-1.5"></i>${collData.name} (${collData.parts.length} Parts)</h3>
+                                    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2.5">
+                                        ${collData.parts.map(p => `
+                                            <div class="cp nc rounded-xl overflow-hidden cursor-pointer flex flex-col relative group p-1.5 ${p.id === id ? 'border-amber-400/80 bg-white/5' : ''}" onclick="openDet(${p.id})">
+                                                <div class="relative aspect-[2/3] w-full rounded-lg overflow-hidden bg-black">
+                                                    <img src="${p.poster_path ? 'https://image.tmdb.org/t/p/w500'+p.poster_path : 'https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=500'}" loading="lazy" class="w-full h-full object-cover">
+                                                    <div class="absolute bottom-1.5 left-1.5 bg-black/80 px-1.5 py-0.5 rounded text-[9px] font-bold text-amber-400"><i class="fa-solid fa-star text-[7px]"></i> ${p.vote_average ? p.vote_average.toFixed(1) : '7.0'}</div>
+                                                </div>
+                                                <div class="p-1.5 flex flex-col justify-between flex-grow">
+                                                    <h4 class="font-bold text-[11px] line-clamp-1 text-gray-200">${p.title}</h4>
+                                                    <p class="text-[9px] text-gray-500 font-semibold mt-0.5">${(p.release_date || '0000').split('-')[0]}</p>
+                                                </div>
+                                            </div>
+                                        `).join('')}
+                                    </div>
+                                </div>`;
+                        }
+                    } catch(err) {}
+                }
+
                 let s = 1, e = 1;
                 window.currCtx = { id, type, srvs: [
                     { name: 'FLIXVISION SERVER 1 (Full HD 1080p)', u: type === 'tv' ? `https://vidsrc.me/embed/tv?tmdb=${id}&season=${s}&episode=${e}` : `https://vidsrc.me/embed/movie?tmdb=${id}` },
@@ -469,14 +496,16 @@
                         </div>
                     </div>
                     ${sHtml}
-                    <div class="flex flex-col gap-2.5 pt-2 border-t border-white/[0.04] mx-3 sm:mx-0 pb-6">
+                    <div class="flex flex-col gap-2.5 pt-2 border-t border-white/[0.04] mx-3 sm:mx-0 pb-2">
                         <div class="flex justify-between items-start">
                             <h2 class="text-base font-bold">${item.title || item.name}</h2>
                             <span class="bg-amber-400/10 text-amber-400 text-xs font-bold px-3 py-1 rounded-xl"><i class="fa-solid fa-star text-[10px]"></i> ${item.vote_average?item.vote_average.toFixed(1):'N/A'}</span>
                         </div>
                         <p class="text-[11px] text-gray-500">Release: ${item.release_date || item.first_air_date || 'N/A'} &bull; Type: <span class="uppercase text-gray-300">${type}</span></p>
                         <p class="text-xs text-gray-300 leading-relaxed">${item.overview || 'No overview.'}</p>
-                    </div>`;
+                    </div>
+                    ${collectionHtml}
+                    <div class="pb-6"></div>`;
 
                 if (type === 'tv' && item.seasons) upEps(id, 1, item.seasons);
             } catch(e) { el('mBody').innerHTML = `<p class="text-center text-rose-500 text-xs py-10">Failed to load content.</p>`; }
