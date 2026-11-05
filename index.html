@@ -12,22 +12,67 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
-        html,body{height:100%;margin:0;padding:0;overflow:hidden;overscroll-behavior-y:none}
-        body{font-family:'Plus Jakarta Sans',sans-serif;background:#030407;color:#f1f5f9;user-select:none;-webkit-user-select:none;display:flex;flex-direction:column;height:100vh;height:100dvh}
-        .nc{background:rgba(12,14,20,0.95);border:1px solid rgba(255,255,255,0.04);backdrop-filter:blur(12px)}
-        .cp{transition:transform .15s cubic-bezier(.2,.8,.2,1);will-change:transform}
-        .cp:active{transform:scale(.95)}
-        .app-scroll{overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior-y:none;transform:translateZ(0);will-change:transform}
-        .shimmer{background:linear-gradient(90deg,rgba(255,255,255,0.03) 25%,rgba(255,255,255,0.08) 50%,rgba(255,255,255,0.03) 75%);background-size:200% 100%;animation:sh 1.5s infinite}
-        @keyframes sh{0%{background-position:200% 0}100%{background-position:-200% 0}}
-        ::-webkit-scrollbar{width:0;height:0;display:none}
+        /* Native Hardware Acceleration Fixes */
+        *, *:before, *:after {
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
+        }
+
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background: #030407;
+            color: #f1f5f9;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        /* Fluid 60fps Native Scroll Area */
+        .app-scroll {
+            height: 100%;
+            overflow-y: scroll;
+            -webkit-overflow-scrolling: touch;
+            overscroll-behavior-y: contain;
+            transform: translate3d(0, 0, 0);
+            -webkit-transform: translate3d(0, 0, 0);
+            will-change: scroll-position;
+        }
+
+        /* Ultra-light containers replacing heavy blurs */
+        .nc {
+            background: #0c0e14;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        /* Fast hardware accelerated cards */
+        .cp {
+            transform: translateZ(0);
+            -webkit-transform: translateZ(0);
+            will-change: transform;
+            transition: transform 0.12s ease-out;
+        }
+        .cp:active {
+            transform: scale(0.96) translateZ(0);
+        }
+
+        .shimmer {
+            background: linear-gradient(90deg, rgba(255,255,255,0.02) 25%, rgba(255,255,255,0.06) 50%, rgba(255,255,255,0.02) 75%);
+            background-size: 200% 100%;
+            animation: sh 1.2s infinite;
+        }
+        @keyframes sh { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+
+        ::-webkit-scrollbar { display: none; width: 0; height: 0; }
         button, a, input, select { touch-action: manipulation; }
     </style>
 </head>
-<body class="selection:bg-white selection:text-black">
+<body class="selection:bg-white selection:text-black flex flex-col">
 
-    <header class="shrink-0 z-40 bg-[#030407]/95 backdrop-blur-xl border-b border-white/[0.04] px-4 lg:px-10 py-3">
+    <header class="shrink-0 z-40 bg-[#030407] border-b border-white/[0.05] px-4 lg:px-10 py-3">
         <div class="max-w-7xl mx-auto flex items-center justify-between gap-3">
             <div class="flex items-center gap-2.5 cursor-pointer active:opacity-75" onclick="location.reload()">
                 <div class="w-8 h-8 rounded-xl bg-white text-black flex items-center justify-center font-black text-xs shadow-md"><i class="fa-solid fa-bolt"></i></div>
@@ -51,7 +96,7 @@
         </div>
     </div>
 
-    <main class="app-scroll flex-grow max-w-7xl mx-auto w-full p-4 lg:p-8 flex flex-col gap-4 pb-20 sm:pb-8">
+    <main class="app-scroll flex-grow max-w-7xl mx-auto w-full p-4 lg:p-8 flex flex-col gap-4 pb-24 sm:pb-8">
         <div class="flex flex-col md:flex-row items-start md:items-center justify-between border-b border-white/[0.04] pb-3 gap-3">
             <div class="flex items-center gap-1.5 overflow-x-auto w-full md:w-auto py-1" id="typeTabs">
                 <button onclick="switchType('movie',false)" id="tbMovie" class="px-4 py-2 rounded-xl bg-white text-black text-xs font-bold transition shadow-sm active:scale-95">Movies</button>
@@ -81,7 +126,7 @@
     </main>
 
     <!-- Bottom Nav -->
-    <nav class="sm:hidden fixed bottom-0 left-0 right-0 z-40 nc border-t border-white/[0.06] bg-[#030407]/95 backdrop-blur-xl px-6 py-2.5 flex justify-around items-center">
+    <nav class="sm:hidden fixed bottom-0 left-0 right-0 z-40 bg-[#030407] border-t border-white/[0.08] px-6 py-3 flex justify-around items-center">
         <button onclick="switchType('movie',false)" class="flex flex-col items-center gap-1 text-gray-400 hover:text-white active:scale-95"><i class="fa-solid fa-house text-sm"></i><span class="text-[10px] font-semibold">Home</span></button>
         <button onclick="toggleFavView()" class="flex flex-col items-center gap-1 text-gray-400 hover:text-white active:scale-95"><i class="fa-solid fa-heart text-rose-500 text-sm"></i><span class="text-[10px] font-semibold">Saved</span></button>
         <button onclick="toggleSet(true)" class="flex flex-col items-center gap-1 text-gray-400 hover:text-white active:scale-95"><i class="fa-solid fa-gear text-sm"></i><span class="text-[10px] font-semibold">Settings</span></button>
@@ -97,7 +142,7 @@
     </div>
 
     <!-- Settings Modal -->
-    <div id="setModal" class="fixed inset-0 z-50 bg-black/90 backdrop-blur-xl hidden flex items-center justify-center p-4">
+    <div id="setModal" class="fixed inset-0 z-50 bg-black/95 hidden flex items-center justify-center p-4">
         <div class="nc rounded-2xl w-full max-w-sm p-5 flex flex-col gap-4 border border-white/10 shadow-2xl">
             <div class="flex justify-between items-center border-b border-white/[0.04] pb-3">
                 <h3 class="text-xs font-bold tracking-wide">APP PREFERENCES</h3>
@@ -129,7 +174,7 @@
     </div>
 
     <footer class="hidden sm:block shrink-0 border-t border-white/[0.04] py-3 px-4 text-center text-[11px] text-gray-500 bg-[#030407]">
-        <p>Flix Vision &bull; Ultimate Edition</p>
+        <p>Flix Vision &bull; Native Optimized</p>
     </footer>
 
     <script>
@@ -229,9 +274,9 @@
             el('grid').innerHTML = items.length ? items.map(i => `
                 <div class="cp nc rounded-2xl overflow-hidden cursor-pointer flex flex-col relative group" onclick="openDet(${i.id})">
                     <div class="relative aspect-[2/3] w-full bg-[#050608]">
-                        <img src="${i.poster}" loading="lazy" class="w-full h-full object-cover">
-                        <button onclick="toggleFav(event,${i.id})" class="absolute top-2.5 right-2.5 z-10 w-8 h-8 rounded-full bg-black/60 backdrop-blur-md flex items-center justify-center text-xs ${favs.some(f=>f.id===i.id)?'text-rose-500':'text-gray-300'} active:scale-90"><i class="${favs.some(f=>f.id===i.id)?'fa-solid':'fa-regular'} fa-heart"></i></button>
-                        <div class="absolute bottom-2.5 left-2.5 bg-black/70 backdrop-blur-md px-2 py-0.5 rounded-lg text-[10px] font-bold text-amber-400 flex items-center gap-1"><i class="fa-solid fa-star text-[8px]"></i> ${i.vote}</div>
+                        <img src="${i.poster}" loading="lazy" decoding="async" class="w-full h-full object-cover">
+                        <button onclick="toggleFav(event,${i.id})" class="absolute top-2.5 right-2.5 z-10 w-8 h-8 rounded-full bg-black/70 flex items-center justify-center text-xs ${favs.some(f=>f.id===i.id)?'text-rose-500':'text-gray-300'} active:scale-90"><i class="${favs.some(f=>f.id===i.id)?'fa-solid':'fa-regular'} fa-heart"></i></button>
+                        <div class="absolute bottom-2.5 left-2.5 bg-black/80 px-2 py-0.5 rounded-lg text-[10px] font-bold text-amber-400 flex items-center gap-1"><i class="fa-solid fa-star text-[8px]"></i> ${i.vote}</div>
                     </div>
                     <div class="p-3 flex flex-col justify-between flex-grow">
                         <h3 class="font-bold text-xs line-clamp-1 text-gray-200">${i.title}</h3>
