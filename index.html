@@ -333,10 +333,35 @@
 
         async function openDet(id) {
             el('mTitle').innerText = "Loading stream...";
-            el('mBody').innerHTML = `<div class="py-24 text-center text-xs"><i class="fa-solid fa-spinner animate-spin text-2xl"></i><p class="mt-3">Connecting Player...</p></div>`;
-            
-            history.pushState({ modalOpen: true }, '');
             el('modal').classList.remove('hidden');
+            history.pushState({ modalOpen: true }, '');
+
+            let s = 1, e = 1;
+            window.currCtx = { id, type, srvs: [
+                { name: 'FLIXVISION SERVER 1 (Full HD 1080p)', u: type === 'tv' ? `https://vidsrc.me/embed/tv?tmdb=${id}&season=${s}&episode=${e}` : `https://vidsrc.me/embed/movie?tmdb=${id}` },
+                { name: 'VIDLINK PRO (Fast & Clean)', u: type === 'tv' ? `https://vidlink.pro/tv/${id}/${s}/${e}` : `https://vidlink.pro/movie/${id}` },
+                { name: 'VIDSRC.TO (High Compatibility)', u: type === 'tv' ? `https://vidsrc.to/embed/tv/${id}/${s}/${e}` : `https://vidsrc.to/embed/movie/${id}` },
+                { name: 'SUPEREMBED 4K (Ultra Fast)', u: type === 'tv' ? `https://multiembed.mov/?video_id=${id}&tmdb=1&s=${s}&e=${e}` : `https://multiembed.mov/?video_id=${id}&tmdb=1` },
+                { name: '2EMBED STREAM (Backup Player)', u: type === 'tv' ? `https://2embed.cc/embedtv/${id}&s=${s}&e=${e}` : `https://2embed.cc/embed/${id}` },
+                { name: 'ATLANTIC STREAM (Direct)', u: type === 'tv' ? `https://atlantic.st/embed/tv/${id}/${s}/${e}` : `https://atlantic.st/embed/movie/${id}` }
+            ]};
+
+            let def = parseInt(prefs.serv);
+
+            // نیشاندانی دەستبەجێی پلەیەر و سەروەرەکان پێش ئەوەی داتای تری کۆلێکشن بێت
+            el('mBody').innerHTML = `
+                <div class="player-container">
+                    <iframe id="iframe" src="${prefs.ap ? window.currCtx.srvs[def].u : ''}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen scrolling="no"></iframe>
+                </div>
+                <div class="flex flex-col gap-2 px-3 sm:px-0">
+                    <label class="text-[11px] font-bold text-gray-400 uppercase"><i class="fa-solid fa-server mr-1.5"></i>Servers</label>
+                    <div class="grid grid-cols-2 md:grid-cols-3 gap-2" id="srvBtns">
+                        ${window.currCtx.srvs.map((s,i)=>`<button onclick="chSrv(${i})" id="sb-${i}" class="px-3.5 py-2.5 rounded-xl text-[11px] font-semibold text-left truncate active:scale-95 ${i===def?'bg-white text-black font-bold':'nc text-gray-300'}"><i class="fa-solid fa-play text-[8px] mr-1.5"></i>${s.name}</button>`).join('')}
+                    </div>
+                </div>
+                <div id="extraDetails" class="flex flex-col gap-4">
+                    <div class="py-10 text-center text-xs text-gray-500"><i class="fa-solid fa-spinner animate-spin text-lg"></i><p class="mt-2">Loading info & collections...</p></div>
+                </div>`;
 
             try {
                 let res = await fetch(`${BASE}/${type}/${id}?api_key=${API}`), item = await res.json();
@@ -351,7 +376,6 @@
                         </div>
                     </div>` : '';
 
-                // کۆلێکشن و بەشەکانی فیلم (Collection Parts)
                 let collectionHtml = '';
                 if (type === 'movie' && item.belongs_to_collection) {
                     try {
@@ -380,41 +404,27 @@
                     } catch(err) {}
                 }
 
-                let s = 1, e = 1;
-                window.currCtx = { id, type, srvs: [
-                    { name: 'FLIXVISION SERVER 1 (Full HD 1080p)', u: type === 'tv' ? `https://vidsrc.me/embed/tv?tmdb=${id}&season=${s}&episode=${e}` : `https://vidsrc.me/embed/movie?tmdb=${id}` },
-                    { name: 'VIDLINK PRO (Fast & Clean)', u: type === 'tv' ? `https://vidlink.pro/tv/${id}/${s}/${e}` : `https://vidlink.pro/movie/${id}` },
-                    { name: 'VIDSRC.TO (High Compatibility)', u: type === 'tv' ? `https://vidsrc.to/embed/tv/${id}/${s}/${e}` : `https://vidsrc.to/embed/movie/${id}` },
-                    { name: 'SUPEREMBED 4K (Ultra Fast)', u: type === 'tv' ? `https://multiembed.mov/?video_id=${id}&tmdb=1&s=${s}&e=${e}` : `https://multiembed.mov/?video_id=${id}&tmdb=1` },
-                    { name: '2EMBED STREAM (Backup Player)', u: type === 'tv' ? `https://2embed.cc/embedtv/${id}&s=${s}&e=${e}` : `https://2embed.cc/embed/${id}` },
-                    { name: 'ATLANTIC STREAM (Direct)', u: type === 'tv' ? `https://atlantic.st/embed/tv/${id}/${s}/${e}` : `https://atlantic.st/embed/movie/${id}` }
-                ]};
-
-                let def = parseInt(prefs.serv);
-                el('mBody').innerHTML = `
-                    <div class="player-container">
-                        <iframe id="iframe" src="${prefs.ap ? window.currCtx.srvs[def].u : ''}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen scrolling="no"></iframe>
-                    </div>
-                    <div class="flex flex-col gap-2 px-3 sm:px-0">
-                        <label class="text-[11px] font-bold text-gray-400 uppercase"><i class="fa-solid fa-server mr-1.5"></i>Servers</label>
-                        <div class="grid grid-cols-2 md:grid-cols-3 gap-2" id="srvBtns">
-                            ${window.currCtx.srvs.map((s,i)=>`<button onclick="chSrv(${i})" id="sb-${i}" class="px-3.5 py-2.5 rounded-xl text-[11px] font-semibold text-left truncate active:scale-95 ${i===def?'bg-white text-black font-bold':'nc text-gray-300'}"><i class="fa-solid fa-play text-[8px] mr-1.5"></i>${s.name}</button>`).join('')}
+                let extraEl = el('extraDetails');
+                if(extraEl) {
+                    extraEl.innerHTML = `
+                        ${sHtml}
+                        <div class="flex flex-col gap-2.5 pt-2 border-t border-white/[0.04] mx-3 sm:mx-0 pb-2">
+                            <div class="flex justify-between items-start">
+                                <h2 class="text-base font-bold">${item.title || item.name}</h2>
+                                <span class="bg-amber-400/10 text-amber-400 text-xs font-bold px-3 py-1 rounded-xl"><i class="fa-solid fa-star text-[10px]"></i> ${item.vote_average?item.vote_average.toFixed(1):'N/A'}</span>
+                            </div>
+                            <p class="text-[11px] text-gray-500">Release: ${item.release_date || item.first_air_date || 'N/A'} &bull; Type: <span class="uppercase text-gray-300">${type}</span></p>
+                            <p class="text-xs text-gray-300 leading-relaxed">${item.overview || 'No overview.'}</p>
                         </div>
-                    </div>
-                    ${sHtml}
-                    <div class="flex flex-col gap-2.5 pt-2 border-t border-white/[0.04] mx-3 sm:mx-0 pb-2">
-                        <div class="flex justify-between items-start">
-                            <h2 class="text-base font-bold">${item.title || item.name}</h2>
-                            <span class="bg-amber-400/10 text-amber-400 text-xs font-bold px-3 py-1 rounded-xl"><i class="fa-solid fa-star text-[10px]"></i> ${item.vote_average?item.vote_average.toFixed(1):'N/A'}</span>
-                        </div>
-                        <p class="text-[11px] text-gray-500">Release: ${item.release_date || item.first_air_date || 'N/A'} &bull; Type: <span class="uppercase text-gray-300">${type}</span></p>
-                        <p class="text-xs text-gray-300 leading-relaxed">${item.overview || 'No overview.'}</p>
-                    </div>
-                    ${collectionHtml}
-                    <div class="pb-6"></div>`;
+                        ${collectionHtml}
+                        <div class="pb-6"></div>`;
+                }
 
                 if (type === 'tv' && item.seasons) upEps(id, 1, item.seasons);
-            } catch(e) { el('mBody').innerHTML = `<p class="text-center text-rose-500 text-xs py-10">Failed to load content.</p>`; }
+            } catch(e) {
+                let extraEl = el('extraDetails');
+                if(extraEl) extraEl.innerHTML = `<p class="text-center text-rose-500 text-xs py-5">Failed to load extended details.</p>`;
+            }
         }
 
         async function upEps(tvId, sNum, seasons) {
@@ -429,7 +439,8 @@
                     if (s) count = s.episode_count;
                 } catch(e){}
             }
-            el('eSel').innerHTML = Array.from({length: count}, (_,i)=>`<option value="${i+1}">Episode ${i+1}</option>`).join('');
+            let eSel = el('eSel');
+            if(eSel) eSel.innerHTML = Array.from({length: count}, (_,i)=>`<option value="${i+1}">Episode ${i+1}</option>`).join('');
             setServer();
         }
 
