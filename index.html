@@ -6,11 +6,11 @@
     <meta name="theme-color" content="#030407">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <link rel="manifest" href='data:application/manifest+json,{"name":"Flix Vision","short_name":"FlixVision","start_url":".","display":"standalone","background_color":"#030407","theme_color":"#030407"}'>
-    <title>Flix Vision - Native Optimized</title>
+    <link rel="manifest" href='data:application/manifest+json,{"name":"Flix Vision Native","short_name":"FlixVision","start_url":".","display":"standalone","background_color":"#030407","theme_color":"#030407"}'>
+    <title>Flix Vision Native Ultimate</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         *, *:before, *:after {
             box-sizing: border-box;
@@ -92,14 +92,15 @@
 </head>
 <body class="selection:bg-white selection:text-black flex flex-col">
 
-    <!-- Header -->
+    <!-- App Header -->
     <header class="shrink-0 z-40 bg-[#030407] border-b border-white/[0.05] px-4 lg:px-10 py-3">
         <div class="max-w-7xl mx-auto flex items-center justify-between gap-3">
-            <div class="flex items-center gap-2.5 cursor-pointer active:opacity-75 shrink-0" onclick="location.reload()">
+            <div class="flex items-center gap-2.5 cursor-pointer active:opacity-75 shrink-0" onclick="resetToHome()">
                 <div class="w-8 h-8 rounded-xl bg-white text-black flex items-center justify-center font-black text-xs shadow-md"><i class="fa-solid fa-bolt"></i></div>
                 <span class="font-extrabold text-xs tracking-wider text-white hidden xs:inline">FLIX VISION</span>
             </div>
             
+            <!-- Universal Search Input Bar -->
             <div class="relative flex-1 max-w-md mx-2">
                 <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 text-[11px]"></i>
                 <input type="text" id="sInp" oninput="onSearch(this)" placeholder="Search movies, series..." class="w-full nc rounded-xl pl-9 pr-4 py-2 text-xs focus:outline-none focus:border-white/40 text-gray-200 placeholder-gray-500">
@@ -143,12 +144,12 @@
 
     <!-- Bottom Nav -->
     <nav class="sm:hidden fixed bottom-0 left-0 right-0 z-40 bg-[#030407] border-t border-white/[0.08] px-6 py-3 flex justify-around items-center">
-        <button onclick="switchType('movie',false)" class="flex flex-col items-center gap-1 text-gray-400 hover:text-white active:scale-95"><i class="fa-solid fa-house text-sm"></i><span class="text-[10px] font-semibold">Home</span></button>
+        <button onclick="resetToHome()" class="flex flex-col items-center gap-1 text-gray-400 hover:text-white active:scale-95"><i class="fa-solid fa-house text-sm"></i><span class="text-[10px] font-semibold">Home</span></button>
         <button onclick="toggleFavView()" class="flex flex-col items-center gap-1 text-gray-400 hover:text-white active:scale-95"><i class="fa-solid fa-heart text-rose-500 text-sm"></i><span class="text-[10px] font-semibold">Saved</span></button>
         <button onclick="toggleSet(true)" class="flex flex-col items-center gap-1 text-gray-400 hover:text-white active:scale-95"><i class="fa-solid fa-gear text-sm"></i><span class="text-[10px] font-semibold">Settings</span></button>
     </nav>
 
-    <!-- Modal -->
+    <!-- Modal: Movie Details & Stream -->
     <div id="modal" class="fixed inset-0 z-50 bg-black hidden flex flex-col">
         <div class="flex items-center justify-between px-4 py-3 bg-[#030407] border-b border-white/[0.05] shrink-0">
             <span id="mTitle" class="text-xs font-bold text-white truncate max-w-[80%]">Loading...</span>
@@ -190,8 +191,23 @@
         </div>
     </div>
 
+    <!-- Native App Exit Dialog Modal -->
+    <div id="exitModal" class="fixed inset-0 z-50 bg-black/90 backdrop-blur-md hidden flex items-center justify-center p-4">
+        <div class="nc rounded-2xl w-full max-w-xs p-5 flex flex-col gap-4 border border-white/10 shadow-2xl text-center">
+            <div class="w-12 h-12 rounded-full bg-rose-500/10 text-rose-500 flex items-center justify-center mx-auto text-lg"><i class="fa-solid fa-power-off"></i></div>
+            <div class="flex flex-col gap-1">
+                <h3 class="text-sm font-bold text-white">دەرچوون لە ئەپەکە</h3>
+                <p class="text-xs text-gray-400">ئایا دڵنیایت دەتەوێت لە ئەپی Flix Vision دەربچیت؟</p>
+            </div>
+            <div class="grid grid-cols-2 gap-2 mt-1">
+                <button onclick="toggleExitModal(false)" class="py-2.5 rounded-xl nc text-xs font-semibold text-gray-300 hover:text-white active:scale-95">بمێنەرەوە</button>
+                <button onclick="confirmAppExit()" class="py-2.5 rounded-xl bg-rose-600 text-white text-xs font-bold shadow-md active:scale-95">دەرچوون</button>
+            </div>
+        </div>
+    </div>
+
     <footer class="hidden sm:block shrink-0 border-t border-white/[0.04] py-3 px-4 text-center text-[11px] text-gray-500 bg-[#030407]">
-        <p>Flix Vision &bull; Native Optimized</p>
+        <p>Flix Vision &bull; Native Hardware Optimized</p>
     </footer>
 
     <script>
@@ -209,13 +225,53 @@
             updateGridStyle();
             loadData();
             
+            // Native Hardware Back Button Routing Mechanics
+            history.replaceState({ page: 'home' }, '');
+            
             window.addEventListener('popstate', (e) => {
-                if (!el('modal').classList.contains('hidden')) {
+                if (!el('exitModal').classList.contains('hidden')) {
+                    toggleExitModal(false);
+                    pushHomeState();
+                } else if (!el('modal').classList.contains('hidden')) {
                     toggleModal(false, false);
+                    pushHomeState();
                 } else if (!el('setModal').classList.contains('hidden')) {
                     toggleSet(false);
+                    pushHomeState();
+                } else if (isFavView) {
+                    resetToHome();
+                    pushHomeState();
+                } else {
+                    toggleExitModal(true);
+                    pushHomeState();
                 }
             });
+        }
+
+        function pushHomeState() {
+            history.pushState({ page: 'home' }, '');
+        }
+
+        function resetToHome() {
+            isFavView = false;
+            query = '';
+            el('sInp').value = '';
+            switchType('movie', false);
+        }
+
+        function toggleExitModal(show) {
+            el('exitModal').classList.toggle('hidden', !show);
+        }
+
+        function confirmAppExit() {
+            toggleExitModal(false);
+            if (navigator.app && navigator.app.exitApp) {
+                navigator.app.exitApp();
+            } else if (navigator.device && navigator.device.exitApp) {
+                navigator.device.exitApp();
+            } else {
+                window.close();
+            }
         }
 
         function toggleSet(show) { 
@@ -227,7 +283,9 @@
                 localStorage.prefs = JSON.stringify(prefs);
                 updateGridStyle();
                 render();
-            } 
+            } else {
+                pushHomeState();
+            }
         }
 
         function updateGridStyle() {
@@ -324,12 +382,13 @@
             el('secTitle').innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-rose-500"></span> Saved Collection (${favs.length})`;
             render();
             el('loadMoreBox').style.display = 'none';
+            pushHomeState();
         }
 
         async function openDet(id) {
             el('mTitle').innerText = "Loading stream...";
             el('modal').classList.remove('hidden');
-            history.pushState({ modalOpen: true }, '');
+            pushHomeState();
 
             let s = 1, e = 1;
             window.currCtx = { id, type, srvs: [
@@ -471,14 +530,11 @@
             let modal = el('modal');
             if (!show) {
                 let iframe = el('iframe');
-                if (iframe) iframe.src = 'about:blank'; // پاککردنەوەی خێرای ممۆری و ڕێگریکردن لە گەرمبوونی پرۆسێسەر
+                if (iframe) iframe.src = 'about:blank'; // Clear memory instantly to prevent heating
                 modal.classList.add('hidden');
                 el('playerSection').innerHTML = '';
                 el('mBody').innerHTML = ''; 
                 window.currCtx = null;
-                if (triggerHistory && history.state && history.state.modalOpen) {
-                    history.back();
-                }
             } else {
                 modal.classList.remove('hidden');
             }
