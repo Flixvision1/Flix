@@ -7,7 +7,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <link rel="manifest" href='data:application/manifest+json,{"name":"Flix Vision","short_name":"FlixVision","start_url":".","display":"standalone","background_color":"#030407","theme_color":"#030407"}'>
-    <title>Flix Vision</title>
+    <title>Flix Vision - Native Optimized</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -28,6 +28,7 @@
             font-family: 'Plus Jakarta Sans', sans-serif;
             user-select: none;
             -webkit-user-select: none;
+            -webkit-font-smoothing: antialiased;
         }
 
         .app-scroll {
@@ -49,7 +50,7 @@
             transform: translateZ(0);
             -webkit-transform: translateZ(0);
             will-change: transform;
-            transition: transform 0.12s ease-out;
+            transition: transform 0.1s ease-out;
         }
         .cp:active {
             transform: scale(0.96) translateZ(0);
@@ -64,6 +65,7 @@
             -webkit-transform: translateZ(0);
             overflow: hidden;
             contain: layout paint style;
+            backface-visibility: hidden;
         }
 
         .player-container iframe {
@@ -74,6 +76,7 @@
             height: 100%;
             border: 0;
             background: #000;
+            will-change: contents;
         }
 
         .shimmer {
@@ -89,7 +92,7 @@
 </head>
 <body class="selection:bg-white selection:text-black flex flex-col">
 
-    <!-- Header with visible search bar for all screen sizes -->
+    <!-- Header -->
     <header class="shrink-0 z-40 bg-[#030407] border-b border-white/[0.05] px-4 lg:px-10 py-3">
         <div class="max-w-7xl mx-auto flex items-center justify-between gap-3">
             <div class="flex items-center gap-2.5 cursor-pointer active:opacity-75 shrink-0" onclick="location.reload()">
@@ -97,7 +100,6 @@
                 <span class="font-extrabold text-xs tracking-wider text-white hidden xs:inline">FLIX VISION</span>
             </div>
             
-            <!-- Universal Search Input Bar -->
             <div class="relative flex-1 max-w-md mx-2">
                 <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 text-[11px]"></i>
                 <input type="text" id="sInp" oninput="onSearch(this)" placeholder="Search movies, series..." class="w-full nc rounded-xl pl-9 pr-4 py-2 text-xs focus:outline-none focus:border-white/40 text-gray-200 placeholder-gray-500">
@@ -146,16 +148,13 @@
         <button onclick="toggleSet(true)" class="flex flex-col items-center gap-1 text-gray-400 hover:text-white active:scale-95"><i class="fa-solid fa-gear text-sm"></i><span class="text-[10px] font-semibold">Settings</span></button>
     </nav>
 
-    <!-- Modal: Fixed layout with scrollable body -->
+    <!-- Modal -->
     <div id="modal" class="fixed inset-0 z-50 bg-black hidden flex flex-col">
         <div class="flex items-center justify-between px-4 py-3 bg-[#030407] border-b border-white/[0.05] shrink-0">
             <span id="mTitle" class="text-xs font-bold text-white truncate max-w-[80%]">Loading...</span>
             <button onclick="toggleModal(false)" class="w-8 h-8 rounded-full bg-white/10 text-white flex items-center justify-center hover:bg-white hover:text-black transition active:scale-90"><i class="fa-solid fa-xmark text-xs"></i></button>
         </div>
-        <!-- Player Container Fixed at Top -->
         <div id="playerSection" class="shrink-0 w-full bg-black"></div>
-        
-        <!-- Scrollable Details & Collections Container -->
         <div id="mBody" class="app-scroll flex-grow p-4 sm:p-6 flex flex-col gap-4 bg-[#030407]"></div>
     </div>
 
@@ -217,10 +216,6 @@
                     toggleSet(false);
                 }
             });
-
-            if ('serviceWorker' in navigator) {
-                navigator.serviceWorker.register(URL.createObjectURL(new Blob([`self.addEventListener('fetch',e=>{})`], {type:'text/javascript'}))).catch(()=>{});
-            }
         }
 
         function toggleSet(show) { 
@@ -350,7 +345,7 @@
 
             el('playerSection').innerHTML = `
                 <div class="player-container">
-                    <iframe id="iframe" src="${prefs.ap ? window.currCtx.srvs[def].u : ''}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen scrolling="no"></iframe>
+                    <iframe id="iframe" src="${prefs.ap ? window.currCtx.srvs[def].u : ''}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen scrolling="no" loading="lazy"></iframe>
                 </div>
                 <div class="flex flex-col gap-2 p-3 bg-[#030407] border-b border-white/[0.05]">
                     <label class="text-[11px] font-bold text-gray-400 uppercase"><i class="fa-solid fa-server mr-1.5"></i>Servers</label>
@@ -476,7 +471,7 @@
             let modal = el('modal');
             if (!show) {
                 let iframe = el('iframe');
-                if (iframe) iframe.src = 'about:blank'; 
+                if (iframe) iframe.src = 'about:blank'; // پاککردنەوەی خێرای ممۆری و ڕێگریکردن لە گەرمبوونی پرۆسێسەر
                 modal.classList.add('hidden');
                 el('playerSection').innerHTML = '';
                 el('mBody').innerHTML = ''; 
