@@ -223,12 +223,13 @@
                 <div class="flex flex-col gap-1.5 nc p-3 rounded-xl">
                     <span>Default Server</span>
                     <select id="setServ" class="nc text-[11px] font-semibold rounded-lg px-2 py-1.5 text-gray-300">
-                        <option value="0">FlixVision 1080p</option>
-                        <option value="1">VidLink Pro</option>
-                        <option value="2">VidSrc.to</option>
-                        <option value="3">SuperEmbed 4K</option>
-                        <option value="4">2Embed Stream</option>
-                        <option value="5">Atlantic Stream</option>
+                        <option value="0">VidLink Pro (Fast & Clean)</option>
+                        <option value="1">SuperEmbed 4K (Ultra Fast)</option>
+                        <option value="2">FLIXVISION SERVER 1 (1080p)</option>
+                        <option value="3">VidSrc.to (High Compatibility)</option>
+                        <option value="4">2Embed Stream (Backup Player)</option>
+                        <option value="5">SmashyStream HD (Alternative)</option>
+                        <option value="6">Atlantic Stream (Direct)</option>
                     </select>
                 </div>
             </div>
@@ -449,19 +450,21 @@
         function buildServers(id, mediaType, s = 1, e = 1) {
             return mediaType === 'tv'
                 ? [
-                    { name: 'FLIXVISION SERVER 1 (Full HD 1080p)', u: `https://vidsrc.me/embed/tv?tmdb=${id}&season=${s}&episode=${e}` },
                     { name: 'VIDLINK PRO (Fast & Clean)', u: `https://vidlink.pro/tv/${id}/${s}/${e}` },
-                    { name: 'VIDSRC.TO (High Compatibility)', u: `https://vidsrc.to/embed/tv/${id}/${s}/${e}` },
                     { name: 'SUPEREMBED 4K (Ultra Fast)', u: `https://multiembed.mov/?video_id=${id}&tmdb=1&s=${s}&e=${e}` },
+                    { name: 'FLIXVISION SERVER 1 (1080p)', u: `https://vidsrc.me/embed/tv?tmdb=${id}&season=${s}&episode=${e}` },
+                    { name: 'VIDSRC.TO (High Compatibility)', u: `https://vidsrc.to/embed/tv/${id}/${s}/${e}` },
                     { name: '2EMBED STREAM (Backup Player)', u: `https://2embed.cc/embedtv/${id}&s=${s}&e=${e}` },
+                    { name: 'SMASHYSTREAM HD (Alternative)', u: `https://player.smashy.stream/tv/${id}?s=${s}&e=${e}` },
                     { name: 'ATLANTIC STREAM (Direct)', u: `https://atlantic.st/embed/tv/${id}/${s}/${e}` }
                   ]
                 : [
-                    { name: 'FLIXVISION SERVER 1 (Full HD 1080p)', u: `https://vidsrc.me/embed/movie?tmdb=${id}` },
                     { name: 'VIDLINK PRO (Fast & Clean)', u: `https://vidlink.pro/movie/${id}` },
-                    { name: 'VIDSRC.TO (High Compatibility)', u: `https://vidsrc.to/embed/movie/${id}` },
                     { name: 'SUPEREMBED 4K (Ultra Fast)', u: `https://multiembed.mov/?video_id=${id}&tmdb=1` },
+                    { name: 'FLIXVISION SERVER 1 (1080p)', u: `https://vidsrc.me/embed/movie?tmdb=${id}` },
+                    { name: 'VIDSRC.TO (High Compatibility)', u: `https://vidsrc.to/embed/movie/${id}` },
                     { name: '2EMBED STREAM (Backup Player)', u: `https://2embed.cc/embed/${id}` },
+                    { name: 'SMASHYSTREAM HD (Alternative)', u: `https://player.smashy.stream/movie/${id}` },
                     { name: 'ATLANTIC STREAM (Direct)', u: `https://atlantic.st/embed/movie/${id}` }
                   ];
         }
@@ -471,9 +474,10 @@
             el('modal').classList.remove('hidden');
             pushHomeState();
 
-            let def = Math.min(Math.max(parseInt(prefs.serv, 10) || 0, 0), 5);
+            const srvsList = buildServers(id, type, 1, 1);
+            let def = Math.min(Math.max(parseInt(prefs.serv, 10) || 0, 0), srvsList.length - 1);
             window.activeSrv = def;
-            window.currCtx = { id, type, srvs: buildServers(id, type, 1, 1) };
+            window.currCtx = { id, type, srvs: srvsList };
 
             el('playerSection').innerHTML = `
                 <div id="playerBox" class="player-container">
