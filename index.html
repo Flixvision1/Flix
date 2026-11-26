@@ -76,7 +76,7 @@
       background-image:
         radial-gradient(ellipse 80% 45% at 50% -10%, rgba(255, 33, 67, 0.09), transparent 70%),
         radial-gradient(ellipse 60% 40% at 90% 10%, rgba(56, 189, 248, 0.06), transparent 65%);
-      background-attachment: fixed;
+      background-attachment: scroll;
       color: var(--text-primary);
       overflow-x: hidden;
       padding-bottom: calc(var(--bottom-nav-h) + var(--safe-bottom) + 16px);
@@ -625,9 +625,11 @@
     }
 
     /* Section Headers & Rails */
-    .section-block {
-      margin-bottom: 32px;
-    }
+ .section-block {
+   margin-bottom: 32px;
+   content-visibility: auto;
+   contain-intrinsic-size: 0 320px;
+ }
 
     .section-head {
       display: flex;
@@ -862,24 +864,27 @@
     }
 
     /* Media Card */
-    .media-card {
-      position: relative;
-      display: flex;
-      flex-direction: column;
-      border-radius: var(--radius-lg);
-      background: var(--bg-card);
-      border: 1px solid var(--border-subtle);
-      overflow: hidden;
-      scroll-snap-align: start;
-      transition: transform 0.22s var(--ease-out), border-color 0.2s ease, box-shadow 0.22s ease;
-      cursor: pointer;
-    }
+.media-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  border-radius: var(--radius-lg);
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  overflow: hidden;
+  scroll-snap-align: start;
+  content-visibility: auto;
+  contain-intrinsic-size: 0 310px;
+  transition: transform 0.2s var(--ease-out), border-color 0.2s ease, box-shadow 0.2s ease;
+  cursor: pointer;
+}
 
-    .media-card:hover {
-      transform: translateY(-4px);
-      border-color: var(--border-strong);
-      box-shadow: 0 14px 32px rgba(0, 0, 0, 0.65);
-    }
+.media-card:hover {
+  transform: translateY(-4px);
+  will-change: transform;
+  border-color: var(--border-strong);
+  box-shadow: 0 14px 32px rgba(0, 0, 0, 0.65);
+}
 
     .media-grid.layout-single .media-card {
       flex-direction: row;
@@ -954,8 +959,8 @@
       font-weight: 800;
       letter-spacing: 0.05em;
       text-transform: uppercase;
-      backdrop-filter: blur(8px);
-      background: rgba(3, 4, 7, 0.78);
+      
+      background: rgba(3, 4, 7, 0.88);
       border: 1px solid rgba(255, 255, 255, 0.14);
       color: #fff;
     }
@@ -972,10 +977,10 @@
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      background: rgba(3, 4, 7, 0.78);
+      background: rgba(3, 4, 7, 0.88);
       border: 1px solid rgba(255, 255, 255, 0.16);
       color: #fff;
-      backdrop-filter: blur(8px);
+      
       transition: transform 0.15s ease, background-color 0.2s ease, border-color 0.2s ease;
     }
 
@@ -996,7 +1001,7 @@
       left: 8px;
       padding: 3px 8px;
       border-radius: 6px;
-      background: rgba(3, 4, 7, 0.82);
+      background: rgba(3, 4, 7, 0.88);
       border: 1px solid rgba(255, 255, 255, 0.12);
       font-size: 0.74rem;
       font-weight: 700;
@@ -1005,7 +1010,8 @@
       align-items: center;
       gap: 4px;
       font-variant-numeric: tabular-nums;
-      backdrop-filter: blur(8px);
+      
+
     }
 
     .card-body {
@@ -2211,7 +2217,7 @@
       const TMDB_BASE = 'https://api.themoviedb.org/3';
       const IMG_BASE = 'https://image.tmdb.org/t/p';
 
-      const STREAM_SERVERS = [
+            const STREAM_SERVERS = [
         {
           id: 'vidlink',
           name: 'VidLink Pro',
@@ -2230,15 +2236,15 @@
           id: 'flixvision',
           name: 'FlixVision HD',
           badge: '1080p',
-          movieUrl: (id) => `https://vidsrc.xyz/embed/movie/${id}`,
-          tvUrl: (id, s, e) => `https://vidsrc.xyz/embed/tv/${id}/${s}/${e}`
+          movieUrl: (id) => `https://vidsrc.icu/embed/movie/${id}`,
+          tvUrl: (id, s, e) => `https://vidsrc.icu/embed/tv/${id}/${s}/${e}`
         },
         {
           id: 'vidsrc_to',
           name: 'VidSrc.to',
           badge: 'High Compatibility',
-          movieUrl: (id) => `https://vidsrc.to/embed/movie/${id}`,
-          tvUrl: (id, s, e) => `https://vidsrc.to/embed/tv/${id}/${s}/${e}`
+          movieUrl: (id) => `https://vidsrc.xyz/embed/movie/${id}`,
+          tvUrl: (id, s, e) => `https://vidsrc.xyz/embed/tv/${id}/${s}/${e}`
         },
         {
           id: 'twoembed',
@@ -2322,7 +2328,8 @@
         recentSearches: readStorage(STORAGE_KEYS.searches, []),
         settings: Object.assign({}, DEFAULT_SETTINGS, readStorage(STORAGE_KEYS.settings, {})),
         activeAbortController: null,
-        modal: {
+    modalAbortController: null,
+    modal: {
           open: false,
           loading: false,
           item: null,
@@ -2723,9 +2730,11 @@
           .filter((r) => forcedType || r.media_type === 'movie' || r.media_type === 'tv')
           .map((r) => normalizeItem(r, forcedType));
 
-        if (state.tab === 'anime') {
-          const animeOnly = mapped.filter((m) => m.isAnime || m.genre_ids.includes(16));
-          if (animeOnly.length > 0) mapped = animeOnly;
+                if (state.tab === 'anime') {
+          const animeOnly = mapped.filter(
+            (m) => m.isAnime || m.genre_ids.includes(16) || m.original_language === 'ja'
+          );
+          mapped = animeOnly.length > 0 ? animeOnly : mapped;
         }
 
         state.items = append ? dedupeItems([...state.items, ...mapped]) : mapped;
@@ -3290,6 +3299,11 @@
 
       function closeDetailModal() {
         destroyPlayer();
+        if (state.modalAbortController) {
+  state.modalAbortController.abort();
+}
+const modalController = new AbortController();
+state.modalAbortController = modalController;
         state.modal.open = false;
         state.modal.streamActive = false;
         detailBackdrop.classList.remove('open');
@@ -3340,8 +3354,8 @@
 
         try {
           const detailData = await tmdbFetch(`/${mediaType}/${id}`, {
-            append_to_response: 'credits'
-          });
+  append_to_response: 'credits'
+}, modalController.signal);
 
           const normalized = normalizeItem(detailData, mediaType, state.modal.item.isAnime);
           state.modal.item = normalized;
@@ -3802,7 +3816,7 @@
         });
         document.getElementById('mobile-history-btn').classList.toggle('active', nextTab === 'history');
 
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+        window.scrollTo({ top: 0, behavior: 'instant' });
         loadCurrentView();
       }
 
