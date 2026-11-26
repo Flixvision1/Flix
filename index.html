@@ -51,7 +51,7 @@
             transform: scale(0.97);
         }
 
-        /* Player responsive across Mobile, Laptop & Smart TV */
+        /* Player responsive & lossless aspect ratio across Mobile, Laptop & Smart TV */
         .player-container {
             position: relative;
             width: 100%;
@@ -63,6 +63,22 @@
             border-radius: 14px;
         }
 
+        .player-container:fullscreen,
+        .player-container:-webkit-full-screen,
+        .player-container:-moz-full-screen,
+        .player-container:-ms-fullscreen {
+            width: 100vw;
+            height: 100vh;
+            max-width: 100vw;
+            max-height: 100vh;
+            aspect-ratio: auto;
+            border-radius: 0;
+            background: #000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
         .player-container iframe {
             position: absolute;
             inset: 0;
@@ -70,6 +86,17 @@
             height: 100%;
             border: 0;
             background: #000;
+        }
+
+        .player-container:fullscreen iframe,
+        .player-container:-webkit-full-screen iframe,
+        .player-container:-moz-full-screen iframe,
+        .player-container:-ms-fullscreen iframe {
+            position: static;
+            width: 100%;
+            height: 100%;
+            max-width: 100%;
+            max-height: 100%;
         }
 
         .shimmer {
@@ -449,13 +476,13 @@
             window.currCtx = { id, type, srvs: buildServers(id, type, 1, 1) };
 
             el('playerSection').innerHTML = `
-                <div class="player-container">
+                <div id="playerBox" class="player-container">
                     <iframe id="iframe" src="${prefs.ap ? window.currCtx.srvs[def].u : ''}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen; web-share" allowfullscreen referrerpolicy="no-referrer"></iframe>
                 </div>
                 <div class="flex flex-col gap-2.5 p-3.5 mt-3 nc rounded-2xl">
-                    <div class="flex items-center justify-between">
+                    <div class="flex items-center justify-between gap-2 flex-wrap">
                         <label class="text-[11px] font-bold text-gray-400 uppercase tracking-wider"><i class="fa-solid fa-server mr-1.5"></i>Servers</label>
-                        <button onclick="requestPlayerFullscreen()" class="px-3 py-1.5 rounded-lg bg-white/10 hover:bg-white hover:text-black text-[11px] font-semibold transition flex items-center gap-1.5">
+                        <button id="fsBtn" onclick="requestPlayerFullscreen()" class="px-3 py-1.5 rounded-lg bg-white/10 hover:bg-white hover:text-black text-[11px] font-semibold transition flex items-center gap-1.5">
                             <i class="fa-solid fa-expand text-[10px]"></i> Fullscreen
                         </button>
                     </div>
@@ -533,12 +560,27 @@
         }
 
         function requestPlayerFullscreen() {
-            const container = document.querySelector('.player-container');
+            const box = el('playerBox');
             const iframe = el('iframe');
-            const target = iframe || container;
+            const fsElem = document.fullscreenElement || document.webkitFullscreenElement || document.mozFullScreenElement || document.msFullscreenElement;
+
+            if (fsElem) {
+                const exit = document.exitFullscreen || document.webkitExitFullscreen || document.mozCancelFullScreen || document.msExitFullscreen;
+                if (exit) exit.call(document).catch(() => {});
+                return;
+            }
+
+            const target = box || iframe;
             if (!target) return;
             const req = target.requestFullscreen || target.webkitRequestFullscreen || target.mozRequestFullScreen || target.msRequestFullscreen;
-            if (req) req.call(target).catch(() => {});
+            if (req) {
+                req.call(target).catch(() => {
+                    if (iframe && iframe !== target) {
+                        const iReq = iframe.requestFullscreen || iframe.webkitRequestFullscreen || iframe.mozRequestFullScreen || iframe.msRequestFullscreen;
+                        if (iReq) iReq.call(iframe).catch(() => {});
+                    }
+                });
+            }
         }
 
         async function upEps(tvId, sNum, seasons) {
@@ -584,6 +626,11 @@
         function toggleModal(show) {
             let modal = el('modal');
             if (!show) {
+                const fsElem = document.fullscreenElement || document.webkitFullscreenElement || document.mozFullScreenElement || document.msFullscreenElement;
+                if (fsElem) {
+                    const exit = document.exitFullscreen || document.webkitExitFullscreen || document.mozCancelFullScreen || document.msExitFullscreen;
+                    if (exit) exit.call(document).catch(() => {});
+                }
                 let iframe = el('iframe');
                 if (iframe) iframe.src = 'about:blank';
                 modal.classList.add('hidden');
