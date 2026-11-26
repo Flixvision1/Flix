@@ -3298,26 +3298,28 @@
       }
 
       function closeDetailModal() {
+  destroyPlayer();
+  state.modal.open = false;
+  state.modal.streamActive = false;
+  detailBackdrop.classList.remove('open');
+  detailContentEl.innerHTML = '';
+  if (!settingsBackdrop.classList.contains('open')) {
+    document.body.classList.remove('modal-open');
+  }
+  if (state.tab === 'home' || state.tab === 'history') {
+    renderMain();
+  }
+}
+        
+      
+
+      async function openDetailModal(id, mediaType, opts = {}) {
         destroyPlayer();
         if (state.modalAbortController) {
   state.modalAbortController.abort();
 }
 const modalController = new AbortController();
 state.modalAbortController = modalController;
-        state.modal.open = false;
-        state.modal.streamActive = false;
-        detailBackdrop.classList.remove('open');
-        detailContentEl.innerHTML = '';
-        if (!settingsBackdrop.classList.contains('open')) {
-          document.body.classList.remove('modal-open');
-        }
-        if (state.tab === 'home' || state.tab === 'history') {
-          renderMain();
-        }
-      }
-
-      async function openDetailModal(id, mediaType, opts = {}) {
-        destroyPlayer();
 
         const historyMatch = state.history.find((h) => h.id === Number(id) && h.media_type === mediaType);
         const seed = findItemContext(id, mediaType) || {
