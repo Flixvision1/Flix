@@ -2,7 +2,7 @@
 <html lang="en" class="dark">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover">
     <meta name="theme-color" content="#030407">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -15,68 +15,61 @@
         *, *:before, *:after {
             box-sizing: border-box;
             -webkit-tap-highlight-color: transparent;
-            touch-action: manipulation;
         }
 
         html, body {
+            min-height: 100%;
             height: 100%;
             margin: 0;
             padding: 0;
-            overflow: hidden;
             background: #030407;
             color: #f1f5f9;
             font-family: 'Plus Jakarta Sans', sans-serif;
-            user-select: none;
-            -webkit-user-select: none;
             -webkit-font-smoothing: antialiased;
         }
 
         .app-scroll {
-            height: 100%;
-            overflow-y: scroll;
+            overflow-y: auto;
             -webkit-overflow-scrolling: touch;
             overscroll-behavior-y: contain;
-            transform: translate3d(0, 0, 0);
-            -webkit-transform: translate3d(0, 0, 0);
-            will-change: scroll-position;
         }
 
         .nc {
             background: #0c0e14;
-            border: 1px solid rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.06);
         }
 
         .cp {
-            transform: translateZ(0);
-            -webkit-transform: translateZ(0);
-            will-change: transform;
-            transition: transform 0.1s ease-out;
+            transition: transform 0.14s ease-out, border-color 0.14s ease-out;
+        }
+        .cp:hover, .cp:focus-visible {
+            transform: translateY(-2px);
+            border-color: rgba(255, 255, 255, 0.28);
+            outline: none;
         }
         .cp:active {
-            transform: scale(0.96) translateZ(0);
+            transform: scale(0.97);
         }
 
+        /* Player responsive across Mobile, Laptop & Smart TV */
         .player-container {
             position: relative;
             width: 100%;
             aspect-ratio: 16 / 9;
+            max-height: 62vh;
+            margin: 0 auto;
             background: #000;
-            transform: translateZ(0);
-            -webkit-transform: translateZ(0);
             overflow: hidden;
-            contain: layout paint style;
-            backface-visibility: hidden;
+            border-radius: 14px;
         }
 
         .player-container iframe {
             position: absolute;
-            top: 0;
-            left: 0;
+            inset: 0;
             width: 100%;
             height: 100%;
             border: 0;
             background: #000;
-            will-change: contents;
         }
 
         .shimmer {
@@ -86,45 +79,59 @@
         }
         @keyframes sh { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
 
-        ::-webkit-scrollbar { display: none; width: 0; height: 0; }
-        button, a, input, select { touch-action: manipulation; }
+        /* Better focus ring for TV remote & keyboard navigation */
+        button:focus-visible, select:focus-visible, input:focus-visible {
+            outline: 2px solid #ffffff;
+            outline-offset: 2px;
+        }
+
+        /* Subtle scrollbar on desktop/TV while keeping mobile clean */
+        @media (pointer: fine) {
+            ::-webkit-scrollbar { width: 6px; height: 6px; }
+            ::-webkit-scrollbar-track { background: #030407; }
+            ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.16); border-radius: 999px; }
+            ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.3); }
+        }
+        @media (pointer: coarse) {
+            ::-webkit-scrollbar { display: none; width: 0; height: 0; }
+        }
     </style>
 </head>
-<body class="selection:bg-white selection:text-black flex flex-col">
+<body class="selection:bg-white selection:text-black flex flex-col overflow-hidden">
 
     <!-- App Header -->
-    <header class="shrink-0 z-40 bg-[#030407] border-b border-white/[0.05] px-4 lg:px-10 py-3">
+    <header class="shrink-0 z-40 bg-[#030407] border-b border-white/[0.06] px-4 lg:px-10 py-3">
         <div class="max-w-7xl mx-auto flex items-center justify-between gap-3">
-            <div class="flex items-center gap-2.5 cursor-pointer active:opacity-75 shrink-0" onclick="resetToHome()">
+            <div class="flex items-center gap-2.5 cursor-pointer shrink-0" tabindex="0" role="button" onclick="resetToHome()" onkeydown="if(event.key==='Enter')resetToHome()">
                 <div class="w-8 h-8 rounded-xl bg-white text-black flex items-center justify-center font-black text-xs shadow-md"><i class="fa-solid fa-bolt"></i></div>
-                <span class="font-extrabold text-xs tracking-wider text-white hidden xs:inline">FLIX VISION</span>
+                <span class="font-extrabold text-xs tracking-wider text-white hidden sm:inline">FLIX VISION</span>
             </div>
             
             <!-- Universal Search Input Bar -->
             <div class="relative flex-1 max-w-md mx-2">
                 <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 text-[11px]"></i>
-                <input type="text" id="sInp" oninput="onSearch(this)" placeholder="Search movies, series..." class="w-full nc rounded-xl pl-9 pr-4 py-2 text-xs focus:outline-none focus:border-white/40 text-gray-200 placeholder-gray-500">
+                <input type="text" id="sInp" oninput="onSearch(this)" placeholder="Search movies, series..." class="w-full nc rounded-xl pl-9 pr-4 py-2 text-xs focus:border-white/40 text-gray-200 placeholder-gray-500">
             </div>
 
             <div class="flex items-center gap-2 shrink-0">
-                <button onclick="toggleFavView()" class="hidden sm:flex px-3.5 py-2 rounded-xl nc text-xs font-semibold text-gray-300 hover:text-white items-center gap-1.5 active:scale-95"><i class="fa-solid fa-heart text-rose-500 text-[10px]"></i> Saved</button>
-                <button onclick="toggleSet(true)" class="w-9 h-9 rounded-xl nc flex items-center justify-center text-gray-300 hover:text-white active:scale-95"><i class="fa-solid fa-gear text-xs"></i></button>
+                <button onclick="toggleFavView()" class="hidden sm:flex px-3.5 py-2 rounded-xl nc text-xs font-semibold text-gray-300 hover:text-white items-center gap-1.5"><i class="fa-solid fa-heart text-rose-500 text-[10px]"></i> Saved</button>
+                <button onclick="toggleSet(true)" aria-label="Settings" class="w-9 h-9 rounded-xl nc flex items-center justify-center text-gray-300 hover:text-white"><i class="fa-solid fa-gear text-xs"></i></button>
             </div>
         </div>
     </header>
 
-    <main class="app-scroll flex-grow max-w-7xl mx-auto w-full p-4 lg:p-8 flex flex-col gap-4 pb-24 sm:pb-8">
-        <div class="flex flex-col md:flex-row items-start md:items-center justify-between border-b border-white/[0.04] pb-3 gap-3">
+    <main class="app-scroll flex-grow max-w-7xl mx-auto w-full p-4 lg:p-8 flex flex-col gap-4 pb-24 sm:pb-10">
+        <div class="flex flex-col md:flex-row items-start md:items-center justify-between border-b border-white/[0.05] pb-3 gap-3">
             <div class="flex items-center gap-1.5 overflow-x-auto w-full md:w-auto py-1" id="typeTabs">
-                <button onclick="switchType('movie',false)" id="tbMovie" class="px-4 py-2 rounded-xl bg-white text-black text-xs font-bold transition shadow-sm active:scale-95">Movies</button>
-                <button onclick="switchType('tv',false)" id="tbTv" class="px-4 py-2 rounded-xl nc text-xs font-semibold text-gray-400 hover:text-white transition active:scale-95">Series</button>
-                <button onclick="switchType('tv',true)" id="tbAnime" class="px-4 py-2 rounded-xl nc text-xs font-semibold text-gray-400 hover:text-white transition active:scale-95">Anime</button>
+                <button onclick="switchType('movie',false)" id="tbMovie" class="px-4 py-2 rounded-xl bg-white text-black text-xs font-bold transition shadow-sm shrink-0">Movies</button>
+                <button onclick="switchType('tv',false)" id="tbTv" class="px-4 py-2 rounded-xl nc text-xs font-semibold text-gray-400 hover:text-white transition shrink-0">Series</button>
+                <button onclick="switchType('tv',true)" id="tbAnime" class="px-4 py-2 rounded-xl nc text-xs font-semibold text-gray-400 hover:text-white transition shrink-0">Anime</button>
             </div>
             <div class="flex items-center gap-2 overflow-x-auto w-full md:w-auto py-1">
-                <select id="genreSel" onchange="loadData()" class="nc text-[11px] font-medium rounded-xl px-3 py-2 focus:outline-none text-gray-300">
+                <select id="genreSel" onchange="loadData()" class="nc text-[11px] font-medium rounded-xl px-3 py-2 text-gray-300">
                     <option value="all">All Genres</option><option value="28">Action</option><option value="12">Adventure</option><option value="16">Animation</option><option value="35">Comedy</option><option value="80">Crime</option><option value="99">Documentary</option><option value="18">Drama</option><option value="10751">Family</option><option value="14">Fantasy</option><option value="36">History</option><option value="27">Horror</option><option value="10402">Music</option><option value="9648">Mystery</option><option value="10749">Romance</option><option value="878">Sci-Fi</option><option value="53">Thriller</option><option value="10752">War</option><option value="37">Western</option>
                 </select>
-                <select id="sortSel" onchange="loadData()" class="nc text-[11px] font-medium rounded-xl px-3 py-2 focus:outline-none text-gray-300">
+                <select id="sortSel" onchange="loadData()" class="nc text-[11px] font-medium rounded-xl px-3 py-2 text-gray-300">
                     <option value="popularity.desc">Popular</option><option value="primary_release_date.desc">Newest</option><option value="vote_average.desc">Top Rated</option>
                 </select>
             </div>
@@ -138,31 +145,42 @@
         <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3.5" id="grid"></div>
 
         <div class="flex justify-center mt-6 mb-6" id="loadMoreBox">
-            <button onclick="loadMore()" class="px-6 py-2.5 rounded-xl nc text-xs font-semibold text-gray-300 hover:text-white transition flex items-center gap-2 active:scale-95"><i class="fa-solid fa-arrow-down text-[10px]"></i> Load More</button>
+            <button onclick="loadMore()" class="px-6 py-2.5 rounded-xl nc text-xs font-semibold text-gray-300 hover:text-white transition flex items-center gap-2"><i class="fa-solid fa-arrow-down text-[10px]"></i> Load More</button>
         </div>
     </main>
 
-    <!-- Bottom Nav -->
+    <!-- Bottom Nav (Mobile) -->
     <nav class="sm:hidden fixed bottom-0 left-0 right-0 z-40 bg-[#030407] border-t border-white/[0.08] px-6 py-3 flex justify-around items-center">
-        <button onclick="resetToHome()" class="flex flex-col items-center gap-1 text-gray-400 hover:text-white active:scale-95"><i class="fa-solid fa-house text-sm"></i><span class="text-[10px] font-semibold">Home</span></button>
-        <button onclick="toggleFavView()" class="flex flex-col items-center gap-1 text-gray-400 hover:text-white active:scale-95"><i class="fa-solid fa-heart text-rose-500 text-sm"></i><span class="text-[10px] font-semibold">Saved</span></button>
-        <button onclick="toggleSet(true)" class="flex flex-col items-center gap-1 text-gray-400 hover:text-white active:scale-95"><i class="fa-solid fa-gear text-sm"></i><span class="text-[10px] font-semibold">Settings</span></button>
+        <button onclick="resetToHome()" class="flex flex-col items-center gap-1 text-gray-400 hover:text-white"><i class="fa-solid fa-house text-sm"></i><span class="text-[10px] font-semibold">Home</span></button>
+        <button onclick="toggleFavView()" class="flex flex-col items-center gap-1 text-gray-400 hover:text-white"><i class="fa-solid fa-heart text-rose-500 text-sm"></i><span class="text-[10px] font-semibold">Saved</span></button>
+        <button onclick="toggleSet(true)" class="flex flex-col items-center gap-1 text-gray-400 hover:text-white"><i class="fa-solid fa-gear text-sm"></i><span class="text-[10px] font-semibold">Settings</span></button>
     </nav>
 
-    <!-- Modal: Movie Details & Stream -->
-    <div id="modal" class="fixed inset-0 z-50 bg-black hidden flex flex-col">
-        <div class="flex items-center justify-between px-4 py-3 bg-[#030407] border-b border-white/[0.05] shrink-0">
-            <span id="mTitle" class="text-xs font-bold text-white truncate max-w-[80%]">Loading...</span>
-            <button onclick="toggleModal(false)" class="w-8 h-8 rounded-full bg-white/10 text-white flex items-center justify-center hover:bg-white hover:text-black transition active:scale-90"><i class="fa-solid fa-xmark text-xs"></i></button>
+    <!-- Modal: Movie Details & Stream (Responsive for Mobile, Laptop & Smart TV) -->
+    <div id="modal" class="fixed inset-0 z-50 bg-[#030407] hidden flex flex-col overflow-hidden">
+        <div class="flex items-center justify-between px-4 lg:px-8 py-3 bg-[#030407] border-b border-white/[0.06] shrink-0">
+            <span id="mTitle" class="text-xs lg:text-sm font-bold text-white truncate max-w-[80%]">Loading...</span>
+            <button onclick="closeModal()" aria-label="Close" class="w-9 h-9 rounded-full bg-white/10 text-white flex items-center justify-center hover:bg-white hover:text-black transition"><i class="fa-solid fa-xmark text-xs"></i></button>
         </div>
-        <div id="playerSection" class="shrink-0 w-full bg-black"></div>
-        <div id="mBody" class="app-scroll flex-grow p-4 sm:p-6 flex flex-col gap-4 bg-[#030407]"></div>
+
+        <!-- Scrollable body containing Player + Servers + Details on all screens -->
+        <div class="app-scroll flex-grow w-full max-w-7xl mx-auto p-3 sm:p-5 lg:p-6">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
+                <!-- Left / Top: Player & Servers -->
+                <div class="lg:col-span-8 flex flex-col gap-3">
+                    <div id="playerSection" class="w-full"></div>
+                </div>
+
+                <!-- Right / Bottom: Seasons, Overview & Collection -->
+                <div id="mBody" class="lg:col-span-4 flex flex-col gap-4"></div>
+            </div>
+        </div>
     </div>
 
     <!-- Settings Modal -->
     <div id="setModal" class="fixed inset-0 z-50 bg-black/95 hidden flex items-center justify-center p-4">
         <div class="nc rounded-2xl w-full max-w-sm p-5 flex flex-col gap-4 border border-white/10 shadow-2xl">
-            <div class="flex justify-between items-center border-b border-white/[0.04] pb-3">
+            <div class="flex justify-between items-center border-b border-white/[0.05] pb-3">
                 <h3 class="text-xs font-bold tracking-wide">APP PREFERENCES</h3>
                 <button onclick="toggleSet(false)" class="text-gray-400 hover:text-white"><i class="fa-solid fa-xmark text-xs"></i></button>
             </div>
@@ -177,7 +195,7 @@
                 </div>
                 <div class="flex flex-col gap-1.5 nc p-3 rounded-xl">
                     <span>Default Server</span>
-                    <select id="setServ" class="nc text-[11px] font-semibold rounded-lg px-2 py-1.5 focus:outline-none text-gray-300">
+                    <select id="setServ" class="nc text-[11px] font-semibold rounded-lg px-2 py-1.5 text-gray-300">
                         <option value="0">FlixVision 1080p</option>
                         <option value="1">VidLink Pro</option>
                         <option value="2">VidSrc.to</option>
@@ -187,12 +205,12 @@
                     </select>
                 </div>
             </div>
-            <button onclick="toggleSet(false)" class="w-full py-2.5 rounded-xl bg-white text-black font-bold text-xs shadow-md active:scale-95">Save</button>
+            <button onclick="toggleSet(false)" class="w-full py-2.5 rounded-xl bg-white text-black font-bold text-xs shadow-md">Save</button>
         </div>
     </div>
 
     <!-- Native App Exit Dialog Modal -->
-    <div id="exitModal" class="fixed inset-0 z-50 bg-black/90 backdrop-blur-md hidden flex items-center justify-center p-4">
+    <div id="exitModal" class="fixed inset-0 z-50 bg-black/90 hidden flex items-center justify-center p-4">
         <div class="nc rounded-2xl w-full max-w-xs p-5 flex flex-col gap-4 border border-white/10 shadow-2xl text-center">
             <div class="w-12 h-12 rounded-full bg-rose-500/10 text-rose-500 flex items-center justify-center mx-auto text-lg"><i class="fa-solid fa-power-off"></i></div>
             <div class="flex flex-col gap-1">
@@ -200,14 +218,14 @@
                 <p class="text-xs text-gray-400">ئایا دڵنیایت دەتەوێت لە ئەپی Flix Vision دەربچیت؟</p>
             </div>
             <div class="grid grid-cols-2 gap-2 mt-1">
-                <button onclick="toggleExitModal(false)" class="py-2.5 rounded-xl nc text-xs font-semibold text-gray-300 hover:text-white active:scale-95">بمێنەرەوە</button>
-                <button onclick="confirmAppExit()" class="py-2.5 rounded-xl bg-rose-600 text-white text-xs font-bold shadow-md active:scale-95">دەرچوون</button>
+                <button onclick="toggleExitModal(false)" class="py-2.5 rounded-xl nc text-xs font-semibold text-gray-300 hover:text-white">بمێنەرەوە</button>
+                <button onclick="confirmAppExit()" class="py-2.5 rounded-xl bg-rose-600 text-white text-xs font-bold shadow-md">دەرچوون</button>
             </div>
         </div>
     </div>
 
-    <footer class="hidden sm:block shrink-0 border-t border-white/[0.04] py-3 px-4 text-center text-[11px] text-gray-500 bg-[#030407]">
-        <p>Flix Vision &bull; Native Hardware Optimized</p>
+    <footer class="hidden sm:block shrink-0 border-t border-white/[0.05] py-3 px-4 text-center text-[11px] text-gray-500 bg-[#030407]">
+        <p>Flix Vision &bull; Universal Multi-Device Stream</p>
     </footer>
 
     <script>
@@ -224,11 +242,10 @@
             el('setServ').value = prefs.serv;
             updateGridStyle();
             loadData();
-            
-            // Native Hardware Back Button Routing Mechanics
+
             history.replaceState({ page: 'home' }, '');
-            
-            window.addEventListener('popstate', (e) => {
+
+            window.addEventListener('popstate', () => {
                 if (!el('exitModal').classList.contains('hidden')) {
                     toggleExitModal(false);
                     pushHomeState();
@@ -244,6 +261,15 @@
                 } else {
                     toggleExitModal(true);
                     pushHomeState();
+                }
+            });
+
+            // Keyboard / TV Remote Escape & Back support
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') {
+                    if (!el('exitModal').classList.contains('hidden')) toggleExitModal(false);
+                    else if (!el('setModal').classList.contains('hidden')) toggleSet(false);
+                    else if (!el('modal').classList.contains('hidden')) closeModal();
                 }
             });
         }
@@ -274,12 +300,12 @@
             }
         }
 
-        function toggleSet(show) { 
-            el('setModal').classList.toggle('hidden', !show); 
-            if(!show) { 
-                prefs.ap = el('setAP').checked; 
+        function toggleSet(show) {
+            el('setModal').classList.toggle('hidden', !show);
+            if (!show) {
+                prefs.ap = el('setAP').checked;
                 prefs.single = el('setSingle').checked;
-                prefs.serv = el('setServ').value; 
+                prefs.serv = parseInt(el('setServ').value, 10) || 0;
                 localStorage.prefs = JSON.stringify(prefs);
                 updateGridStyle();
                 render();
@@ -289,14 +315,18 @@
         }
 
         function updateGridStyle() {
-            el('grid').className = prefs.single ? "grid grid-cols-1 max-w-sm mx-auto w-full gap-4" : "grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3.5";
+            el('grid').className = prefs.single
+                ? "grid grid-cols-1 max-w-sm mx-auto w-full gap-4"
+                : "grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3.5";
         }
 
         function switchType(t, anime) {
             isFavView = false; type = t; isAnime = anime; el('genreSel').value = 'all';
             ['tbMovie','tbTv','tbAnime'].forEach((id, idx) => {
                 let active = (idx===0 && t==='movie' && !anime) || (idx===1 && t==='tv' && !anime) || (idx===2 && anime);
-                el(id).className = active ? "px-4 py-2 rounded-xl bg-white text-black text-xs font-bold shadow-sm" : "px-4 py-2 rounded-xl nc text-xs font-semibold text-gray-400";
+                el(id).className = active
+                    ? "px-4 py-2 rounded-xl bg-white text-black text-xs font-bold transition shadow-sm shrink-0"
+                    : "px-4 py-2 rounded-xl nc text-xs font-semibold text-gray-400 hover:text-white transition shrink-0";
             });
             el('secTitle').innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-white"></span> ${anime ? 'Anime Collection' : (t==='movie'?'Movies Feed':'Series Feed')}`;
             loadData();
@@ -306,7 +336,7 @@
         function onSearch(inputElem) {
             clearTimeout(sTimer);
             query = inputElem.value;
-            if(el('sInp').value !== query) el('sInp').value = query;
+            if (el('sInp').value !== query) el('sInp').value = query;
             sTimer = setTimeout(loadData, 200);
         }
 
@@ -316,8 +346,8 @@
             if (fetching || isFavView) return;
             fetching = true;
             el('showCnt').innerText = "Syncing...";
-            
-            if(!append) {
+
+            if (!append) {
                 el('grid').innerHTML = Array.from({length: prefs.single ? 4 : 12}, () => `
                     <div class="nc rounded-2xl overflow-hidden flex flex-col gap-2 p-2">
                         <div class="shimmer aspect-[2/3] w-full rounded-xl"></div>
@@ -327,7 +357,9 @@
             }
 
             let cleanQuery = query.trim();
-            let url = cleanQuery ? `${BASE}/search/${type}?api_key=${API}&query=${encodeURIComponent(cleanQuery)}&page=${page}` : `${BASE}/discover/${type}?api_key=${API}&page=${page}&sort_by=${el('sortSel').value}`;
+            let url = cleanQuery
+                ? `${BASE}/search/${type}?api_key=${API}&query=${encodeURIComponent(cleanQuery)}&page=${page}`
+                : `${BASE}/discover/${type}?api_key=${API}&page=${page}&sort_by=${el('sortSel').value}`;
             if (!cleanQuery && el('genreSel').value !== 'all') url += `&with_genres=${el('genreSel').value}`;
             if (!cleanQuery && isAnime) url += `&with_genres=16&with_original_language=ja`;
 
@@ -343,7 +375,9 @@
                 }));
                 items = append ? [...items, ...mapped] : mapped;
                 render();
-            } catch(e) { el('showCnt').innerText = "Ready"; }
+            } catch (e) {
+                el('showCnt').innerText = "Ready";
+            }
             fetching = false;
             el('loadMoreBox').style.display = page >= totalPages ? 'none' : 'flex';
         }
@@ -351,10 +385,10 @@
         function render() {
             updateGridStyle();
             el('grid').innerHTML = items.length ? items.map(i => `
-                <div class="cp nc rounded-2xl overflow-hidden cursor-pointer flex flex-col relative group" onclick="openDet(${i.id})">
+                <div tabindex="0" role="button" class="cp nc rounded-2xl overflow-hidden cursor-pointer flex flex-col relative group" onclick="openDet(${i.id})" onkeydown="if(event.key==='Enter')openDet(${i.id})">
                     <div class="relative aspect-[2/3] w-full bg-[#050608]">
                         <img src="${i.poster}" loading="lazy" decoding="async" class="w-full h-full object-cover">
-                        <button onclick="toggleFav(event,${i.id})" class="absolute top-2.5 right-2.5 z-10 w-8 h-8 rounded-full bg-black/70 flex items-center justify-center text-xs ${favs.some(f=>f.id===i.id)?'text-rose-500':'text-gray-300'} active:scale-90"><i class="${favs.some(f=>f.id===i.id)?'fa-solid':'fa-regular'} fa-heart"></i></button>
+                        <button onclick="toggleFav(event,${i.id})" aria-label="Save" class="absolute top-2.5 right-2.5 z-10 w-8 h-8 rounded-full bg-black/75 flex items-center justify-center text-xs ${favs.some(f=>f.id===i.id)?'text-rose-500':'text-gray-300'}"><i class="${favs.some(f=>f.id===i.id)?'fa-solid':'fa-regular'} fa-heart"></i></button>
                         <div class="absolute bottom-2.5 left-2.5 bg-black/80 px-2 py-0.5 rounded-lg text-[10px] font-bold text-amber-400 flex items-center gap-1"><i class="fa-solid fa-star text-[8px]"></i> ${i.vote}</div>
                     </div>
                     <div class="p-3 flex flex-col justify-between flex-grow">
@@ -385,31 +419,48 @@
             pushHomeState();
         }
 
+        function buildServers(id, mediaType, s = 1, e = 1) {
+            return mediaType === 'tv'
+                ? [
+                    { name: 'FLIXVISION SERVER 1 (Full HD 1080p)', u: `https://vidsrc.me/embed/tv?tmdb=${id}&season=${s}&episode=${e}` },
+                    { name: 'VIDLINK PRO (Fast & Clean)', u: `https://vidlink.pro/tv/${id}/${s}/${e}` },
+                    { name: 'VIDSRC.TO (High Compatibility)', u: `https://vidsrc.to/embed/tv/${id}/${s}/${e}` },
+                    { name: 'SUPEREMBED 4K (Ultra Fast)', u: `https://multiembed.mov/?video_id=${id}&tmdb=1&s=${s}&e=${e}` },
+                    { name: '2EMBED STREAM (Backup Player)', u: `https://2embed.cc/embedtv/${id}&s=${s}&e=${e}` },
+                    { name: 'ATLANTIC STREAM (Direct)', u: `https://atlantic.st/embed/tv/${id}/${s}/${e}` }
+                  ]
+                : [
+                    { name: 'FLIXVISION SERVER 1 (Full HD 1080p)', u: `https://vidsrc.me/embed/movie?tmdb=${id}` },
+                    { name: 'VIDLINK PRO (Fast & Clean)', u: `https://vidlink.pro/movie/${id}` },
+                    { name: 'VIDSRC.TO (High Compatibility)', u: `https://vidsrc.to/embed/movie/${id}` },
+                    { name: 'SUPEREMBED 4K (Ultra Fast)', u: `https://multiembed.mov/?video_id=${id}&tmdb=1` },
+                    { name: '2EMBED STREAM (Backup Player)', u: `https://2embed.cc/embed/${id}` },
+                    { name: 'ATLANTIC STREAM (Direct)', u: `https://atlantic.st/embed/movie/${id}` }
+                  ];
+        }
+
         async function openDet(id) {
             el('mTitle').innerText = "Loading stream...";
             el('modal').classList.remove('hidden');
             pushHomeState();
 
-            let s = 1, e = 1;
-            window.currCtx = { id, type, srvs: [
-                { name: 'FLIXVISION SERVER 1 (Full HD 1080p)', u: type === 'tv' ? `https://vidsrc.me/embed/tv?tmdb=${id}&season=${s}&episode=${e}` : `https://vidsrc.me/embed/movie?tmdb=${id}` },
-                { name: 'VIDLINK PRO (Fast & Clean)', u: type === 'tv' ? `https://vidlink.pro/tv/${id}/${s}/${e}` : `https://vidlink.pro/movie/${id}` },
-                { name: 'VIDSRC.TO (High Compatibility)', u: type === 'tv' ? `https://vidsrc.to/embed/tv/${id}/${s}/${e}` : `https://vidsrc.to/embed/movie/${id}` },
-                { name: 'SUPEREMBED 4K (Ultra Fast)', u: type === 'tv' ? `https://multiembed.mov/?video_id=${id}&tmdb=1&s=${s}&e=${e}` : `https://multiembed.mov/?video_id=${id}&tmdb=1` },
-                { name: '2EMBED STREAM (Backup Player)', u: type === 'tv' ? `https://2embed.cc/embedtv/${id}&s=${s}&e=${e}` : `https://2embed.cc/embed/${id}` },
-                { name: 'ATLANTIC STREAM (Direct)', u: type === 'tv' ? `https://atlantic.st/embed/tv/${id}/${s}/${e}` : `https://atlantic.st/embed/movie/${id}` }
-            ]};
-
-            let def = parseInt(prefs.serv);
+            let def = Math.min(Math.max(parseInt(prefs.serv, 10) || 0, 0), 5);
+            window.activeSrv = def;
+            window.currCtx = { id, type, srvs: buildServers(id, type, 1, 1) };
 
             el('playerSection').innerHTML = `
                 <div class="player-container">
-                    <iframe id="iframe" src="${prefs.ap ? window.currCtx.srvs[def].u : ''}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen scrolling="no" loading="lazy"></iframe>
+                    <iframe id="iframe" src="${prefs.ap ? window.currCtx.srvs[def].u : ''}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen; web-share" allowfullscreen referrerpolicy="no-referrer"></iframe>
                 </div>
-                <div class="flex flex-col gap-2 p-3 bg-[#030407] border-b border-white/[0.05]">
-                    <label class="text-[11px] font-bold text-gray-400 uppercase"><i class="fa-solid fa-server mr-1.5"></i>Servers</label>
-                    <div class="grid grid-cols-2 md:grid-cols-3 gap-2" id="srvBtns">
-                        ${window.currCtx.srvs.map((s,i)=>`<button onclick="chSrv(${i})" id="sb-${i}" class="px-3.5 py-2.5 rounded-xl text-[11px] font-semibold text-left truncate active:scale-95 ${i===def?'bg-white text-black font-bold':'nc text-gray-300'}"><i class="fa-solid fa-play text-[8px] mr-1.5"></i>${s.name}</button>`).join('')}
+                <div class="flex flex-col gap-2.5 p-3.5 mt-3 nc rounded-2xl">
+                    <div class="flex items-center justify-between">
+                        <label class="text-[11px] font-bold text-gray-400 uppercase tracking-wider"><i class="fa-solid fa-server mr-1.5"></i>Servers</label>
+                        <button onclick="requestPlayerFullscreen()" class="px-3 py-1.5 rounded-lg bg-white/10 hover:bg-white hover:text-black text-[11px] font-semibold transition flex items-center gap-1.5">
+                            <i class="fa-solid fa-expand text-[10px]"></i> Fullscreen
+                        </button>
+                    </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2" id="srvBtns">
+                        ${window.currCtx.srvs.map((s,i)=>`<button onclick="chSrv(${i})" id="sb-${i}" class="px-3.5 py-2.5 rounded-xl text-[11px] font-semibold text-left truncate ${i===def?'bg-white text-black font-bold':'nc text-gray-300 hover:text-white'}"><i class="fa-solid fa-play text-[8px] mr-1.5"></i>${s.name}</button>`).join('')}
                     </div>
                 </div>`;
 
@@ -421,13 +472,13 @@
             try {
                 let res = await fetch(`${BASE}/${type}/${id}?api_key=${API}`), item = await res.json();
                 el('mTitle').innerText = item.title || item.name;
-                
+
                 let sHtml = type === 'tv' && item.seasons ? `
                     <div class="nc p-3.5 rounded-2xl flex flex-col gap-2">
                         <span class="text-[11px] font-bold text-gray-400 uppercase"><i class="fa-solid fa-layer-group mr-1.5"></i>Seasons & Episodes</span>
                         <div class="grid grid-cols-2 gap-2">
-                            <select id="sSel" onchange="upEps(${id},this.value)" class="nc text-xs rounded-xl px-3 py-2.5 focus:outline-none">${item.seasons.filter(s=>s.season_number>0).map(s=>`<option value="${s.season_number}">Season ${s.season_number} (${s.episode_count} Eps)</option>`).join('')}</select>
-                            <select id="eSel" onchange="setServer()" class="nc text-xs rounded-xl px-3 py-2.5 focus:outline-none"><option value="1">Episode 1</option></select>
+                            <select id="sSel" onchange="upEps(${id},this.value)" class="nc text-xs rounded-xl px-3 py-2.5">${item.seasons.filter(s=>s.season_number>0).map(s=>`<option value="${s.season_number}">Season ${s.season_number} (${s.episode_count} Eps)</option>`).join('')}</select>
+                            <select id="eSel" onchange="setServer()" class="nc text-xs rounded-xl px-3 py-2.5"><option value="1">Episode 1</option></select>
                         </div>
                     </div>` : '';
 
@@ -438,11 +489,11 @@
                         let collData = await collRes.json();
                         if (collData && collData.parts && collData.parts.length > 0) {
                             collectionHtml = `
-                                <div class="flex flex-col gap-2.5 pt-4 border-t border-white/[0.04]">
+                                <div class="flex flex-col gap-2.5 pt-4 border-t border-white/[0.05]">
                                     <h3 class="text-xs font-bold text-amber-400 uppercase tracking-wider"><i class="fa-solid fa-film mr-1.5"></i>${collData.name} (${collData.parts.length} Parts)</h3>
-                                    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2.5">
+                                    <div class="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
                                         ${collData.parts.map(p => `
-                                            <div class="cp nc rounded-xl overflow-hidden cursor-pointer flex flex-col relative group p-1.5 ${p.id === id ? 'border-amber-400/80 bg-white/5' : ''}" onclick="openDet(${p.id})">
+                                            <div tabindex="0" role="button" class="cp nc rounded-xl overflow-hidden cursor-pointer flex flex-col relative p-1.5 ${p.id === id ? 'border-amber-400/80 bg-white/5' : ''}" onclick="openDet(${p.id})" onkeydown="if(event.key==='Enter')openDet(${p.id})">
                                                 <div class="relative aspect-[2/3] w-full rounded-lg overflow-hidden bg-black">
                                                     <img src="${p.poster_path ? 'https://image.tmdb.org/t/p/w500'+p.poster_path : 'https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=500'}" loading="lazy" class="w-full h-full object-cover">
                                                     <div class="absolute bottom-1.5 left-1.5 bg-black/80 px-1.5 py-0.5 rounded text-[9px] font-bold text-amber-400"><i class="fa-solid fa-star text-[7px]"></i> ${p.vote_average ? p.vote_average.toFixed(1) : '7.0'}</div>
@@ -456,30 +507,38 @@
                                     </div>
                                 </div>`;
                         }
-                    } catch(err) {}
+                    } catch (err) {}
                 }
 
                 let extraEl = el('extraDetails');
-                if(extraEl) {
+                if (extraEl) {
                     extraEl.innerHTML = `
                         ${sHtml}
-                        <div class="flex flex-col gap-2.5 pt-2 border-t border-white/[0.04] pb-2">
-                            <div class="flex justify-between items-start">
+                        <div class="nc p-4 rounded-2xl flex flex-col gap-2.5">
+                            <div class="flex justify-between items-start gap-2">
                                 <h2 class="text-base font-bold">${item.title || item.name}</h2>
-                                <span class="bg-amber-400/10 text-amber-400 text-xs font-bold px-3 py-1 rounded-xl"><i class="fa-solid fa-star text-[10px]"></i> ${item.vote_average?item.vote_average.toFixed(1):'N/A'}</span>
+                                <span class="bg-amber-400/10 text-amber-400 text-xs font-bold px-3 py-1 rounded-xl shrink-0"><i class="fa-solid fa-star text-[10px]"></i> ${item.vote_average?item.vote_average.toFixed(1):'N/A'}</span>
                             </div>
                             <p class="text-[11px] text-gray-500">Release: ${item.release_date || item.first_air_date || 'N/A'} &bull; Type: <span class="uppercase text-gray-300">${type}</span></p>
                             <p class="text-xs text-gray-300 leading-relaxed">${item.overview || 'No overview.'}</p>
                         </div>
-                        ${collectionHtml}
-                        <div class="pb-10"></div>`;
+                        ${collectionHtml}`;
                 }
 
                 if (type === 'tv' && item.seasons) upEps(id, 1, item.seasons);
-            } catch(e) {
+            } catch (e) {
                 let extraEl = el('extraDetails');
-                if(extraEl) extraEl.innerHTML = `<p class="text-center text-rose-500 text-xs py-5">Failed to load extended details.</p>`;
+                if (extraEl) extraEl.innerHTML = `<p class="text-center text-rose-500 text-xs py-5">Failed to load extended details.</p>`;
             }
+        }
+
+        function requestPlayerFullscreen() {
+            const container = document.querySelector('.player-container');
+            const iframe = el('iframe');
+            const target = iframe || container;
+            if (!target) return;
+            const req = target.requestFullscreen || target.webkitRequestFullscreen || target.mozRequestFullScreen || target.msRequestFullscreen;
+            if (req) req.call(target).catch(() => {});
         }
 
         async function upEps(tvId, sNum, seasons) {
@@ -492,10 +551,10 @@
                     let res = await fetch(`${BASE}/tv/${tvId}?api_key=${API}`), data = await res.json();
                     let s = data.seasons.find(x => x.season_number == sNum);
                     if (s) count = s.episode_count;
-                } catch(e){}
+                } catch (e) {}
             }
             let eSel = el('eSel');
-            if(eSel) eSel.innerHTML = Array.from({length: count}, (_,i)=>`<option value="${i+1}">Episode ${i+1}</option>`).join('');
+            if (eSel) eSel.innerHTML = Array.from({length: count}, (_,i)=>`<option value="${i+1}">Episode ${i+1}</option>`).join('');
             setServer();
         }
 
@@ -503,43 +562,39 @@
             window.activeSrv = idx;
             window.currCtx.srvs.forEach((_,i)=>{
                 let b = el(`sb-${i}`);
-                if(b) b.className = i===idx ? "px-3.5 py-2.5 rounded-xl text-[11px] font-semibold text-left truncate active:scale-95 bg-white text-black font-bold" : "px-3.5 py-2.5 rounded-xl text-[11px] font-semibold text-left truncate active:scale-95 nc text-gray-300";
+                if (b) b.className = i===idx
+                    ? "px-3.5 py-2.5 rounded-xl text-[11px] font-semibold text-left truncate bg-white text-black font-bold"
+                    : "px-3.5 py-2.5 rounded-xl text-[11px] font-semibold text-left truncate nc text-gray-300 hover:text-white";
             });
             setServer();
         }
 
         function setServer() {
-            if(!window.currCtx) return;
-            let idx = window.activeSrv !== undefined ? window.activeSrv : parseInt(prefs.serv);
-            let s = el('sSel') ? el('sSel').value : 1, e = el('eSel') ? el('eSel').value : 1, id = window.currCtx.id, type = window.currCtx.type;
-            
-            window.currCtx.srvs = [
-                { name: 'FLIXVISION SERVER 1 (Full HD 1080p)', u: type === 'tv' ? `https://vidsrc.me/embed/tv?tmdb=${id}&season=${s}&episode=${e}` : `https://vidsrc.me/embed/movie?tmdb=${id}` },
-                { name: 'VIDLINK PRO (Fast & Clean)', u: type === 'tv' ? `https://vidlink.pro/tv/${id}/${s}/${e}` : `https://vidlink.pro/movie/${id}` },
-                { name: 'VIDSRC.TO (High Compatibility)', u: type === 'tv' ? `https://vidsrc.to/embed/tv/${id}/${s}/${e}` : `https://vidsrc.to/embed/movie/${id}` },
-                { name: 'SUPEREMBED 4K (Ultra Fast)', u: type === 'tv' ? `https://multiembed.mov/?video_id=${id}&tmdb=1&s=${s}&e=${e}` : `https://multiembed.mov/?video_id=${id}&tmdb=1` },
-                { name: '2EMBED STREAM (Backup Player)', u: type === 'tv' ? `https://2embed.cc/embedtv/${id}&s=${s}&e=${e}` : `https://2embed.cc/embed/${id}` },
-                { name: 'ATLANTIC STREAM (Direct)', u: type === 'tv' ? `https://atlantic.st/embed/tv/${id}/${s}/${e}` : `https://atlantic.st/embed/movie/${id}` }
-            ];
+            if (!window.currCtx) return;
+            let idx = window.activeSrv !== undefined ? window.activeSrv : (parseInt(prefs.serv, 10) || 0);
+            let s = el('sSel') ? el('sSel').value : 1, e = el('eSel') ? el('eSel').value : 1;
+            let id = window.currCtx.id, mediaType = window.currCtx.type;
+
+            window.currCtx.srvs = buildServers(id, mediaType, s, e);
 
             let iframe = el('iframe');
-            if(iframe) iframe.src = window.currCtx.srvs[idx].u;
+            if (iframe && window.currCtx.srvs[idx]) iframe.src = window.currCtx.srvs[idx].u;
         }
 
-        function toggleModal(show, triggerHistory = true) { 
+        function toggleModal(show) {
             let modal = el('modal');
             if (!show) {
                 let iframe = el('iframe');
-                if (iframe) iframe.src = 'about:blank'; // Clear memory instantly to prevent heating
+                if (iframe) iframe.src = 'about:blank';
                 modal.classList.add('hidden');
                 el('playerSection').innerHTML = '';
-                el('mBody').innerHTML = ''; 
+                el('mBody').innerHTML = '';
                 window.currCtx = null;
             } else {
                 modal.classList.remove('hidden');
             }
         }
-        
+
         function closeModal() { toggleModal(false); }
 
         init();
