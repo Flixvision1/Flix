@@ -4339,8 +4339,8 @@
               <span class="tmdb-pill-bar"></span>
             </div>
             <button type="button" id="home-profile-btn" class="profile-chip" aria-label="Customize Profile">
-              <span id="home-profile-avatar" class="profile-avatar">K</span>
-              <span id="home-profile-name" class="profile-name">kanilan</span>
+              <span id="home-profile-avatar" class="profile-avatar">U</span>
+              <span id="home-profile-name" class="profile-name">user</span>
             </button>
           </div>
           <div class="home-topbar-actions">
@@ -4628,7 +4628,7 @@
                   <span class="toggle-title">Display Name</span>
                   <span class="toggle-desc">Shown in Home top bar</span>
                 </div>
-                <input id="setting-profile-name" class="settings-input" type="text" maxlength="24" placeholder="kanilan" />
+                <input id="setting-profile-name" class="settings-input" type="text" maxlength="24" placeholder="User" />
               </div>
               <div class="settings-row">
                 <div class="toggle-label-col">
@@ -5348,7 +5348,7 @@
       ];
 
       const DEFAULT_SETTINGS = {
-        profileName: "kanilan",
+        profileName: "User",
         avatarColor: "#16a34a",
         autoplayStream: true,
         defaultServerId: "vidlink",
@@ -10538,7 +10538,7 @@
           s.avatarColor || "#16a34a"
         );
 
-        const cleanName = String(s.profileName || "kanilan").trim() || "kanilan";
+        const cleanName = String(s.profileName || "User").trim() || "User";
         const avatarEl = $("home-profile-avatar");
         const nameEl = $("home-profile-name");
         if (avatarEl) {
